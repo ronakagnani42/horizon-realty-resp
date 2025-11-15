@@ -1,0 +1,2706 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}{{ property.get_property_type_display }} - {{ property.locations.name }} | Horizon Reality{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/index.css' %}" rel="stylesheet">
+<style>
+  /* Property Detail Page Styles */
+  .property-detail-header {
+    background-color: var(--accent-color);
+    padding: 120px 0 50px;
+    margin-bottom: 50px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+  }
+  
+* {
+    font-family: 'Times New Roman', Times, serif;
+}
+  .property-detail-header:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color));
+    }
+  .property-detail-header h1 {
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 2.5rem;
+  }
+  
+  /* Main Property Carousel Styles */
+ .main-property-carousel {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 35px;
+  height: 450px;
+  transition: all 0.3s ease;
+}
+  
+.main-carousel-item {
+  height: 450px;
+  position: relative;
+}
+.main-carousel-item:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  pointer-events: none;
+}
+
+  
+.main-property-image {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  transition: transform 0.5s ease;
+}
+.main-property-carousel:hover .main-property-image {
+  transform: scale(1.02);
+}
+  /* Gallery Styles */
+  .property-gallery {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 30px;
+    margin-bottom: 35px;
+    transition: all 0.3s ease;
+  }
+  .property-gallery:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .property-gallery h4 {
+    color: var(--secondary-color);
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 12px;
+    font-size: 1.5rem;
+  }
+  
+  .property-gallery h4:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+  }
+  
+  .gallery-carousel {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .property-gallery-image {
+    height: 400px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    transition: transform 0.5s ease;
+  }
+  .carousel-item:hover .property-gallery-image {
+  transform: scale(1.02);
+  }
+  .property-gallery-video {
+  height: 400px;
+  object-fit: contain;
+  background-color: #000;
+  border-radius: var(--border-radius);
+  }
+  
+  .carousel-indicators {
+    bottom: -40px;
+  }
+
+  .carousel-indicators [data-bs-target] {
+    background-color: var(--primary-color);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 6px;
+  }
+
+  .carousel-control-prev, .carousel-control-next {
+    color: var(--primary-color);
+    opacity: 0.8;
+    width: 10%;
+  }
+
+  .carousel-control-prev:hover, .carousel-control-next:hover {
+    opacity: 1;
+  }
+
+  .carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 15px;
+    width: 45px;
+    height: 45px;
+    transition: all 0.3s ease;
+  }
+
+  .carousel-control-prev:hover .carousel-control-prev-icon,
+  .carousel-control-next:hover .carousel-control-next-icon {
+    transform: scale(1.1);
+  }
+  .no-media-placeholder {
+    height: 400px;
+    border-radius: var(--border-radius);
+    background-color: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .property-gallery-video {
+    height: 400px;
+    object-fit: contain;
+    background-color: #000;
+    border-radius: var(--border-radius);
+  }
+  
+  
+  .gallery-thumbnails {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 12px;
+    margin-top: 25px;
+    padding: 15px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
+  }
+  
+  .gallery-thumbnail {
+    width: 110px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    flex: 0 0 auto;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  .gallery-thumbnails::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 3px;
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .gallery-thumbnail.active {
+    border-color: var(--primary-color);
+    transform: scale(1.08);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+  }
+  .gallery-thumbnail:hover:not(.active) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  }
+  
+  .gallery-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .gallery-thumbnail:hover img {
+    transform: scale(1.1);
+  }
+  
+  .gallery-thumbnail video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .gallery-thumbnail.video-thumb:after {
+  content: "\f04b";
+  font-family: "bootstrap-icons";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+  
+  /* Property Info Styles */
+  .property-info {
+    padding: 35px;
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    margin-bottom: 35px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+  }
+  .property-info:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  
+  .property-info h2 {
+    color: var(--secondary-color);
+    margin-bottom: 25px;
+    font-weight: 700;
+    line-height: 1.3;
+    font-size: 1.8rem;
+  }
+  .property-info h4 {
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+
+  .property-info h4:after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background-color: var(--primary-color);
+  }
+    
+  .property-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-bottom: 35px;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: var(--border-radius);
+  }
+  
+  .property-meta-item {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    padding: 8px 12px;
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .property-meta-item:hover {
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+  .property-meta-item i {
+    color: var(--primary-color);
+    font-size: 22px;
+    margin-right: 12px;
+  }
+  
+  .property-price {
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 25px;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, var(--primary-color));
+    display: inline-block;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .property-price:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: skewX(-20deg);
+    animation: shine 2s infinite;
+  }
+  @keyframes shine {
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+  }
+
+  .property-feature {
+    margin-bottom: 18px;
+    padding-left: 35px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .property-feature:hover {
+    transform: translateX(5px);
+  }
+  .property-feature i {
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+    top: 3px;
+    font-size: 16px;
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .property-cta {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+/* Similar Properties Grid Styles */
+.related-properties {
+  padding: 70px 0;
+  background-color: var(--accent-color);
+  position: relative;
+}
+
+.related-properties:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary-color));
+}
+
+.related-title {
+  margin-bottom: 50px;
+}
+
+.related-title h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 15px;
+  color: var(--secondary-color);
+}
+
+.related-title h2:after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 70px;
+  height: 4px;
+  background: var(--primary-color);
+  bottom: 0;
+  left: 0;
+}
+
+.related-properties-swiper {
+  overflow: visible;
+  padding: 0 50px 50px 50px;
+}
+
+.related-properties-swiper .swiper-wrapper {
+  align-items: stretch;
+}
+.related-properties-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+.related-properties-swiper .portfolio-item {
+  height: 100%;
+  margin-bottom: 0;
+  width: 100%;
+}
+.related-swiper-next,
+.related-swiper-prev {
+  width: 50px;
+  height: 50px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  top: 50%;
+  margin-top: -25px;
+}
+.related-swiper-next:hover,
+.related-swiper-prev:hover {
+  background: var(--secondary-color);
+  transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+.related-swiper-next {
+  right: 10px;
+}
+
+.related-swiper-prev {
+  left: 10px;
+}
+
+.related-swiper-next:after,
+.related-swiper-prev:after {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Custom Pagination */
+.related-swiper-pagination {
+  bottom: 10px;
+  position: relative;
+  margin-top: 30px;
+}
+
+.related-swiper-pagination .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background: #ccc;
+  opacity: 0.7;
+  margin: 0 6px;
+  transition: all 0.3s ease;
+}
+
+.related-swiper-pagination .swiper-pagination-bullet-active {
+  background: var(--primary-color);
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .related-properties-swiper {
+    padding: 0 40px 40px 40px;
+  }
+  
+  .related-swiper-next {
+    right: 5px;
+  }
+  
+  .related-swiper-prev {
+    left: 5px;
+  }
+}
+
+@media (max-width: 767px) {
+  .related-properties-swiper {
+    padding: 0 30px 30px 30px;
+  }
+  
+  .related-swiper-next,
+  .related-swiper-prev {
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+  }
+  
+  .related-swiper-next:after,
+  .related-swiper-prev:after {
+    font-size: 14px;
+  }
+}
+
+/* Improved Portfolio Grid Styles */
+.portfolio-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+}
+
+.portfolio-item {
+  flex: 0 0 calc(33.333% - 25px);
+  max-width: calc(33.333% - 25px);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0;
+  background-color: #fff;
+}
+
+.portfolio-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.portfolio-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.portfolio-item-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+/* Fixed-height images for consistency */
+.portfolio-wrap img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+
+.portfolio-item:hover .portfolio-wrap img {
+  transform: scale(1.05);
+}
+
+.portfolio-info {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  position: relative;
+  z-index: 1;
+}
+
+.portfolio-info h4 {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--secondary-color);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.portfolio-info p {
+  margin-bottom: 8px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.portfolio-info p:last-child {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.portfolio-info .details-link {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.portfolio-info .details-link i {
+  font-size: 20px;
+}
+
+.portfolio-info .details-link:hover {
+  background: var(--secondary-color);
+  width: 45px;
+  height: 45px;
+}
+
+/* Property CTA button */
+.properties-btn {
+  background: linear-gradient(135deg, var(--primary-color));
+  color: white;
+  padding: 12px 30px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.properties-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .portfolio-item {
+    flex: 0 0 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
+  
+  .portfolio-wrap img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 767px) {
+  .portfolio-container {
+    gap: 15px;
+  }
+  
+  .portfolio-item {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .portfolio-wrap img {
+    height: 200px;
+  }
+}
+  /* Inquiry Modal Styles */
+  .inquiry-btn {
+    background: linear-gradient(135deg,var(--secondary-color));
+    color: white;
+    padding: 14px 30px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .inquiry-btn i {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+
+  .inquiry-btn:hover {
+    background: linear-gradient(135deg,var(--primary-color));
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+  
+  .modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--primary-color));
+    color: white;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    padding: 20px 30px;
+  }
+
+  .modal-header .btn-close {
+    color: white;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+  }
+
+  .modal-header .btn-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  .modal-body {
+    padding: 35px;
+  }
+  .form-group {
+  margin-bottom: 25px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 8px;
+}
+
+.form-control {
+  border-radius: var(--border-radius);
+  padding: 14px;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+}
+
+  
+.submit-btn {
+  background: linear-gradient(135deg, var(--primary-color));
+  color: white;
+  padding: 14px 30px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: none;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, var(--primary-color));
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+  
+  /* Download Button Styles */
+  .download-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 12px 30px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  
+  .download-btn:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-3px);
+    color: white;
+    text-decoration: none;
+  }
+  
+  #inquiry-success {
+    padding: 30px;
+    animation: fadeIn 0.5s ease;
+  }
+  @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+  /* Success icon styles */
+  .inquiry-success-icon {
+    color: #28a745;
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.chat-bubble {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background-color: #f4b400;
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+    font-size: 24px;
+    animation: bounceBubble 1.2s ease-in-out infinite;
+}
+
+.chat-bubble::before {
+    content: 'Chat with us!';
+    position: absolute;
+    bottom: 70px; /* Adjusted to start closer to bubble center */
+    right: 0px; /* Centered relative to bubble */
+    transform-origin: center bottom; /* Origin at bubble's top center */
+    background-color: #333;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: scale(0.5); /* Start small, as if from inside */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1001;
+    animation: fadeInOutTooltip 4s ease-in-out 1s infinite;
+}
+
+.chat-bubble:hover::before {
+    animation: none; /* Disable tooltip animation on hover */
+    opacity: 1;
+    transform: scale(1) translateY(-10px); /* Slight upward shift on hover */
+}
+
+.chat-bubble.typing::before {
+    content: 'Typing...';
+    animation: none; /* Disable tooltip animation during typing */
+    opacity: 1;
+    transform: scale(1) translateY(-10px);
+}
+
+.chat-bubble:hover {
+    transform: scale(1.1); /* Override bounce animation on hover */
+    background-color: #f4b400;
+    animation: none; /* Disable bounce animation on hover */
+}
+
+.chat-bubble.typing {
+    animation: pulse 1.5s infinite; /* Use existing pulse for typing */
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bounceBubble {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px); /* Increased upward bounce */
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInOutTooltip {
+    0% {
+        opacity: 0;
+        transform: scale(0.5); /* Start small, from bubble center */
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1) translateY(-10px); /* Move up and full size */
+    }
+    80% {
+        opacity: 1;
+        transform: scale(1) translateY(-10px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5); /* Shrink back to center */
+    }
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Chat Overlay - Positioned from Right Bottom */
+.chat-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: flex-end;
+    justify-content: flex-end;
+    transition: opacity 0.3s ease;
+}
+
+.chat-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* Chat Container - Made Much Wider */
+.chat-container {
+    width: 100%;
+    max-width: 600px; /* Increased from 400px to 600px */
+    height: 80vh;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.chat-overlay.show .chat-container {
+    transform: translateY(0);
+}
+
+/* Chat Header */
+.chat-header {
+    background: #f4b400;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.chat-header small {
+    opacity: 0.9;
+    font-size: 0.8em;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    /* color: white; */
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.chat-close:hover {
+    background: white;
+}
+
+/* Chat Messages Area */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px; /* Increased padding for wider container */
+}
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Message Styling */
+.message {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.message.bot {
+    flex-direction: row;
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    font-size: 20px;
+}
+.message .content {
+    max-width: 80%; /* Increased from 70% to 80% for wider messages */
+    padding: 10px 15px;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+.message.bot .content {
+    background: #f1f0f0;
+}
+
+.message.user .content {
+    background: #f4b400;
+    color: #fff;
+}
+
+.message.user::before {
+    display: none !important;
+}
+
+.message.user .user-label {
+    display: none !important;
+}
+
+.message.user .avatar {
+    /* background: #f4b400; */
+    color: white;
+}
+
+.message.bot .avatar {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+.message .content {
+    max-width: 80%; /* Increased from 75% to 80% */
+    padding: 12px 16px;
+    border-radius: 18px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message.user .content {
+    background: #f4b400;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.message.bot .content {
+    background: #f8f9fa;
+    color: #333;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+/* BLACK LINKS STYLING */
+.chat-messages .content a {
+    color: #000000 !important; /* Black color for all links */
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid #000000;
+    transition: all 0.3s ease;
+}
+
+.chat-messages .content a:hover {
+    color: #333333 !important; /* Slightly lighter black on hover */
+    border-bottom-color: #333333;
+    text-decoration: none;
+}
+
+.chat-messages .content .property-link {
+    background: #000000 !important; /* Black background */
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: none;
+    display: inline-block;
+    margin-left: 8px;
+    font-weight: 500;
+    border-bottom: none;
+}
+
+.chat-messages .content .property-link:hover {
+    background: #333333 !important; /* Dark gray on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.chat-messages .content .contact-link {
+    background: #000000 !important; /* Black background */
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: none;
+    display: inline-block;
+    margin-left: 8px;
+    font-weight: 500;
+    border-bottom: none;
+}
+
+.chat-messages .content .contact-link:hover {
+    background: #333333 !important; /* Dark gray on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+}
+
+.typing-indicator.show {
+    display: flex;
+    opacity: 1;
+}
+
+.typing-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.typing-content {
+    display: flex;
+    align-items: center;
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background: #888;
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: typing 1s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}
+
+.chat-input {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input-group {
+    display: flex;
+    align-items: center;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-send-btn {
+    background: #f4b400;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.chat-send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+@keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; }
+    30% { opacity: 1; }
+}
+
+/* Chat Input */
+.chat-input {
+    padding: 15px 20px;
+    border-top: 1px solid #e9ecef;
+    border-radius: 0 0 12px 12px;
+    background: white;
+}
+
+.chat-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.chat-input input:focus {
+    border-color: #f4b400;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.chat-send-btn {
+    width: 45px;
+    height: 45px;
+    border: none;
+    background: #f4b400;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+    background: #f4b400;
+    transform: scale(1.05);
+}
+
+.chat-send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Mobile Responsiveness - Updated for wider chatbox */
+@media (max-width: 768px) {
+    .chat-container {
+        width: 98vw; /* Increased from 95vw */
+        height: 80vh;
+        margin: 10px;
+        margin-bottom: 80px;
+        max-width: 500px; /* Set max-width for tablets */
+    }
+    
+    .chat-bubble {
+        bottom: 15px;
+        right: 15px;
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
+    }
+    
+    .chat-overlay {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-container {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+        max-width: none; /* Remove max-width restriction on small screens */
+    }
+    
+    .chat-header {
+        border-radius: 0;
+    }
+    
+    .chat-input {
+        border-radius: 0;
+    }
+    
+    .message .content {
+        max-width: 85%; /* Even wider on mobile for better use of space */
+    }
+}
+
+.quick-options {
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.quick-options-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quick-options-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quick-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.quick-option-btn:hover {
+    background: #f4b400;
+    color: white;
+    border-color: #f4b400;
+    transform: translateY(-1px);
+    /* box-shadow: 0 4px 12px rgba(0,123,255,0.3); */
+}
+
+.quick-option-btn:active {
+    transform: translateY(0);
+    /* box-shadow: 0 2px 4px rgba(0,123,255,0.2); */
+}
+
+.quick-option-btn i {
+    font-size: 14px;
+    color: #f4b400;
+    transition: color 0.3s ease;
+}
+
+.quick-option-btn:hover i {
+    color: white;
+}
+
+/* Animation for quick options appearance */
+.quick-options {
+    animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .quick-options {
+        padding: 12px 15px;
+        margin-bottom: 12px;
+    }
+    
+    .quick-option-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+        border-radius: 16px;
+    }
+    
+    .quick-options-buttons {
+        gap: 6px;
+    }
+}
+  
+  /* Hide brochure button initially */
+  .brochure-container {
+    display: none;
+  }
+  
+  /* Make similar properties clickable */
+  .portfolio-item {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.portfolio-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.portfolio-wrap {
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.portfolio-wrap img {
+  transition: transform 0.8s ease;
+}
+
+.portfolio-item:hover .portfolio-wrap img {
+  transform: scale(1.05);
+}
+  
+  /* Ensure the details icon remains clickable */
+  .details-link {
+    position: relative;
+    z-index: 15;
+  }
+  
+  /* Fullscreen gallery modal */
+  .fullscreen-gallery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.fullscreen-gallery.active {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+.fullscreen-content {
+  max-width: 90%;
+  max-height: 90%;
+  position: relative;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.fullscreen-image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.fullscreen-video {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.fullscreen-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  z-index: 10000;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.fullscreen-close:hover {
+  background-color: var(--primary-color);
+  transform: rotate(90deg);
+}
+
+.fullscreen-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  z-index: 10000;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.fullscreen-nav:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.fullscreen-prev {
+  left: 20px;
+}
+
+.fullscreen-next {
+  right: 20px;
+}
+
+.video-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 2.5rem;
+}
+
+.video-loading i {
+  animation: spin 1.5s infinite linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .property-detail-header h1 {
+    font-size: 2rem;
+  }
+  
+  .main-property-carousel, .main-carousel-item, .main-property-image {
+    height: 380px;
+  }
+  
+  .property-gallery-image, .property-gallery-video {
+    height: 350px;
+  }
+  
+  .property-info {
+    padding: 25px;
+  }
+  
+  .property-info h2 {
+    font-size: 1.6rem;
+  }
+  
+  .property-price {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 767px) {
+  .property-detail-header {
+    padding: 100px 0 40px;
+  }
+  
+  .property-detail-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .main-property-carousel, .main-carousel-item, .main-property-image {
+    height: 300px;
+  }
+  
+  .property-gallery-image, .property-gallery-video, .no-media-placeholder {
+    height: 280px;
+  }
+  
+  .gallery-thumbnail {
+    width: 90px;
+    height: 65px;
+  }
+  
+  .property-meta {
+    gap: 15px;
+  }
+  
+  .property-meta-item {
+    font-size: 14px;
+  }
+  
+  .property-meta-item i {
+    font-size: 18px;
+  }
+  
+  .inquiry-btn, .download-btn, .submit-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .fullscreen-nav {
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-detail-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .property-gallery, .property-info {
+    padding: 20px;
+  }
+  
+  .property-price {
+    font-size: 18px;
+    padding: 10px 16px;
+  }
+  
+  .property-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .gallery-thumbnail {
+    width: 70px;
+    height: 50px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+}
+.breadcrumb-section {
+  background-color: #ffffff;
+  padding: -30px 0;
+  border-bottom: 1px solid #e9ecef;
+  margin-top: 10px; /* Space below the fixed header */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+  padding: 0;
+  background: transparent;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+  padding-left: 1.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "\F285"; /* Bootstrap icon chevron-right */
+  font-family: "bootstrap-icons";
+  color: #ccc;
+  font-size: 12px;
+  padding-right: 1.5rem;
+}
+
+.breadcrumb-item a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-item a:hover {
+  color: #ff9d1f;
+}
+
+.breadcrumb-item.active {
+  color: #ff9d1f;
+  font-weight: 600;
+}
+
+/* Home icon styling */
+.breadcrumb-home-icon {
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+/* Animation for hover state */
+.breadcrumb-item a::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #ff9d1f;
+  transition: width 0.3s;
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+}
+
+.breadcrumb-item a:hover::after {
+  width: 100%;
+}
+</style>
+{% endblock %}
+
+{% block body_class %}property-detail-page{% endblock %}
+
+{% block content %}
+<!-- Property Detail Header -->
+<!-- Property Detail Header -->
+<section class="property-detail-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1>  {% if property.project_name %}
+          {{ property.project_name }} -
+        {% endif %}
+        {{ property.get_property_type_display }}
+        {% if property.configuration %}
+          {{ property.get_configuration_display }}
+        {% endif %}
+        {% if property.commercial_type %}
+          {{ property.get_commercial_type_display }}
+        {% endif %}
+        </h1>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="breadcrumb-section">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'home' %}">
+            <i class="bi bi-house-door-fill breadcrumb-home-icon"></i>Home
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'property:property_home' %}">
+            Properties
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ property.project_name }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+
+<!-- Property Details -->
+<section class="property-details section">
+  <div class="container">
+    <div class="row">
+      <!-- Property Images and Main Info -->
+      <div class="col-lg-8">
+        <!-- Main Property Image Carousel -->
+        <div id="mainPropertyCarousel" class="carousel slide main-property-carousel" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <!-- Main Property Image -->
+            {% if property.image %}
+            <div class="carousel-item main-carousel-item active">
+              <img src="{{ property.image.url }}" class="d-block w-100 main-property-image" alt="{{ property }}">
+            </div>
+            {% else %}
+            <div class="carousel-item main-carousel-item active">
+              <img src="{% static 'img/default-property.jpg' %}" class="d-block w-100 main-property-image" alt="{{ property }}">
+            </div>
+            {% endif %}
+
+            <!-- Add gallery images to main carousel -->
+            {% if property_images %}
+              {% for image in property_images %}
+                <div class="carousel-item main-carousel-item">
+                  <img src="{{ image.image.url }}" class="d-block w-100 main-property-image" alt="{{ image.caption|default:"Property Image" }}">
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <!-- Carousel controls -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#mainPropertyCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#mainPropertyCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        
+        <!-- Gallery Section -->
+        <div class="property-gallery">
+          <h4>Property Gallery</h4>
+          
+          <!-- Gallery Carousel -->
+          <div id="propertyGalleryCarousel" class="carousel slide gallery-carousel" data-bs-ride="false">
+            <div class="carousel-indicators">
+              {% if property_images %}
+                {% for image in property_images %}
+                  <button type="button" data-bs-target="#propertyGalleryCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %} aria-current="true" aria-label="Image {{ forloop.counter }}"></button>
+                {% endfor %}
+              {% endif %}
+              
+              {% if property_videos %}
+                {% for video in property_videos %}
+                  <button type="button" data-bs-target="#propertyGalleryCarousel" data-bs-slide-to="{{ property_images.count|add:forloop.counter0 }}" {% if not property_images and forloop.first %}class="active"{% endif %} aria-label="Video {{ forloop.counter }}"></button>
+                {% endfor %}
+              {% endif %}
+            </div>
+            
+            <div class="carousel-inner">
+              <!-- Property Images -->
+              {% if property_images %}
+                {% for image in property_images %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}" data-media-type="image" data-media-url="{{ image.image.url }}">
+                    <img src="{{ image.image.url }}" class="d-block w-100 property-gallery-image" alt="{{ image.caption|default:"Property Image" }}">
+                    {% if image.caption %}
+                      <div class="carousel-caption d-none d-md-block">
+                        <p>{{ image.caption }}</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              {% endif %}
+              
+              <!-- Property Videos -->
+              {% if property_videos %}
+                {% for video in property_videos %}
+                  <div class="carousel-item {% if not property_images and forloop.first %}active{% endif %}" data-media-type="video" data-media-url="{{ video.video.url }}">
+                    <video class="d-block w-100 property-gallery-video" controls {% if video.thumbnail %}poster="{{ video.thumbnail.url }}"{% endif %}>
+                      <source src="{{ video.video.url }}" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                    {% if video.title %}
+                      <div class="carousel-caption d-none d-md-block">
+                        <p>{{ video.title }}</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              {% endif %}
+              
+              <!-- Fallback if no images or videos -->
+              {% if not property_images and not property_videos %}
+                <div class="carousel-item active">
+                  <div class="no-media-placeholder d-flex justify-content-center align-items-center bg-light">
+                    <p class="text-center text-muted">No additional media available for this property</p>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            
+            <button class="carousel-control-prev" type="button" data-bs-target="#propertyGalleryCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#propertyGalleryCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+          
+          <!-- Thumbnails Navigation -->
+          <div class="gallery-thumbnails">
+            {% if property_images %}
+              {% for image in property_images %}
+                <div class="gallery-thumbnail position-relative {% if forloop.first %}active{% endif %}" data-bs-target="#propertyGalleryCarousel" data-bs-slide-to="{{ forloop.counter0 }}">
+                  <img src="{{ image.image.url }}" alt="{{ image.caption|default:"Thumbnail" }}">
+                </div>
+              {% endfor %}
+            {% endif %}
+            
+            {% if property_videos %}
+              {% for video in property_videos %}
+                <div class="gallery-thumbnail position-relative video-thumb {% if not property_images and forloop.first %}active{% endif %}" data-bs-target="#propertyGalleryCarousel" data-bs-slide-to="{{ property_images.count|add:forloop.counter0 }}">
+                  {% if video.thumbnail %}
+                    <img src="{{ video.thumbnail.url }}" alt="{{ video.title|default:"Video Thumbnail" }}">
+                  {% else %}
+                    <video class="thumbnail-video">
+                      <source src="{{ video.video.url }}" type="video/mp4">
+                    </video>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Property Information -->
+        <div class="property-info">
+          <h2>
+            {{property.project_name}} -
+            {{ property.get_property_type_display }}
+            {% if property.configuration %}
+              {{ property.get_configuration_display }}
+            {% endif %}
+            {% if property.commercial_type %}
+              {{ property.get_commercial_type_display }}
+            {% endif %}
+            at {{ property.locations.name }}
+          </h2>
+          
+          <div class="property-price">
+            {% if property.min_budget == property.max_budget and property.min_budget_unit == property.max_budget_unit %}
+              <!-- Show single price if min and max are the same -->
+              ₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }}
+            {% else %}
+              <!-- Show price range -->
+              ₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }} - 
+              ₹{{ property.max_budget }} {{ property.get_max_budget_unit_display }}
+            {% endif %}
+          </div>
+          
+          <div class="property-meta">
+            <div class="property-meta-item">
+              <i class="bi bi-rulers"></i>
+              <span>{{ property.area }} sq.ft.</span>
+            </div>
+            
+            {% if property.area_in_sqyards %}
+            <div class="property-meta-item">
+              <i class="bi bi-grid"></i>
+              <span>{{ property.area_in_sqyards }} sq.yds.</span>
+            </div>
+            {% endif %}
+            
+            <div class="property-meta-item">
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ property.locations.name }}</span>
+            </div>
+            
+            <div class="property-meta-item">
+              <i class="bi bi-tag"></i>
+              <span>{{ property.get_status_display }}</span>
+            </div>
+            
+            {% if property.furnishing %}
+            <div class="property-meta-item">
+              <i class="bi bi-house-door"></i>
+              <span>{{ property.get_furnishing_display }}</span>
+            </div>
+            {% endif %}
+          </div>
+          
+          <div class="property-description">
+            <h4>Property Overview</h4>
+            <p>This premium {{property.project_name}} {{ property.get_property_type_display }}
+              {% if property.configuration %}
+                {{ property.get_configuration_display }}
+              {% endif %}
+              {% if property.commercial_type %}
+                {{ property.get_commercial_type_display }}
+              {% endif %}
+              is located in the highly sought-after area of {{ property.locations.name }}. With a spacious {{ property.area }} sq.ft. of living space, this property offers the perfect balance of comfort and luxury.
+            </p>
+            
+            <h4 class="mt-4">Property Features</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>Possession Date: {{property.possession_date}}</span>
+                </div>
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>{{ property.area }} sq.ft. Area</span>
+                </div>
+                {% if property.configuration %}
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>{{ property.get_configuration_display }} Configuration</span>
+                </div>
+                {% endif %}
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>Number of Lifts: {{property.number_of_lifts }}</span>
+                </div>
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>Salients: {{property.salient_features }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                {% if property.commercial_type %}
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>{{ property.get_commercial_type_display }}</span>
+                </div>
+                {% endif %}
+                {% if property.furnishing %}
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>{{ property.get_furnishing_display }}</span>
+                </div>
+                {% endif %}
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>{{ property.get_status_display }} Property</span>
+                </div>
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>Number of Units: {{ property.number_of_units }} </span>
+                </div>
+                <div class="property-feature">
+                  <i class="bi bi-check-circle"></i>
+                  <span>Number of Storey: {{ property.number_of_storey }} </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="property-cta text-center">
+              <button class="inquiry-btn" data-bs-toggle="modal" data-bs-target="#inquiryModal">
+                <i class="bi bi-chat-text me-2"></i>Inquire Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Property Actions -->
+        <div class="property-info">
+          <h4 class="text-center mb-4">Interested in this property?</h4>
+          <div class="text-center mb-4">
+            <button class="inquiry-btn w-100" data-bs-toggle="modal" data-bs-target="#inquiryModal">
+              <i class="bi bi-chat-text me-2"></i>Download Brochure
+            </button>
+          </div>
+          
+          
+          {% if contact_info %}
+          <div class="mt-4">
+            <h5>Contact Information</h5>
+            <p><i class="bi bi-telephone me-2"></i> {{ contact_info.primary_phone }}</p>
+            {% if contact_info.secondary_phone %}
+            <p><i class="bi bi-telephone-plus me-2"></i> {{ contact_info.secondary_phone }}</p>
+            {% endif %}
+            <p><i class="bi bi-envelope me-2"></i> {{ contact_info.primary_email }}</p>
+            {% if contact_info.secondary_email %}
+            <p><i class="bi bi-envelope-plus me-2"></i> {{ contact_info.secondary_email }}</p>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+        
+        <!-- Featured Amenities -->
+        <div class="property-info">
+          <h4>Featured Amenities</h4>
+          <div class="amenities-list">
+            {% for amenity in feature_amenities %}
+              <div class="property-feature">
+                <i class="bi bi-check-circle"></i>
+                <span>{{ amenity.name }}</span>
+              </div>
+            {% empty %}
+              <p>No amenities listed for this property.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="property-info">
+          <h4>Nearby Places</h4>
+          <div class="amenities-list">
+            {% for places in nearby_places %}
+              <div class="property-feature">
+                <i class="bi bi-check-circle"></i>
+                <span>{{ places.name }} ({{ places.distance_value }} {{ places.distance_unit }})</span>
+              </div>
+            {% empty %}
+              <p>No Nearby places listed for this property.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- /Property Details -->
+
+<!-- Fullscreen Gallery Modal -->
+<div class="fullscreen-gallery" id="fullscreenGallery">
+  <span class="fullscreen-close" id="fullscreenClose">
+    <i class="bi bi-x-lg"></i>
+  </span>
+  <div class="fullscreen-nav fullscreen-prev" id="fullscreenPrev">
+    <i class="bi bi-chevron-left"></i>
+  </div>
+  <div class="fullscreen-content" id="fullscreenContent">
+    <!-- Content will be loaded dynamically -->
+  </div>
+  <div class="fullscreen-nav fullscreen-next" id="fullscreenNext">
+    <i class="bi bi-chevron-right"></i>
+  </div>
+</div>
+
+<!-- Inquiry Modal -->
+<div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inquiryModalLabel">Inquire About This Property</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'property:property_inquiry' property.slug %}" id="inquiryForm">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name" class="form-label">Your Name*</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address*</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number*</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="4" placeholder="I'm interested in learning more about this property..."></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send Inquiry</button>
+        </form>
+        
+        <!-- Success message with download button (hidden by default) -->
+        <div id="inquiry-success" class="text-center py-4" style="display: none;">
+          <div class="mb-4">
+            <i class="bi bi-check-circle-fill inquiry-success-icon"></i>
+            <h4 class="mt-3">Thank You!</h4>
+            <p>Your inquiry has been submitted successfully. We'll contact you shortly.</p>
+          </div>
+          
+          {% if property.brochure_pdf %}
+          <div class="mt-4">
+            <p>Download our property brochure for more details:</p>
+            <a href="{{ property.brochure_pdf.url }}" class="download-btn" download>
+              <!-- Continuing from where the code was cut off -->
+<i class="bi bi-file-earmark-pdf me-2"></i>Download Brochure
+</a>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Related Properties Section -->
+{% if related_properties %}
+<section id="portfolio" class="related-properties">
+<div class="container">
+<div class="related-title">
+<h2>Similar Properties</h2>
+<p>Explore other properties similar to this one in the same location or with comparable features.</p>
+</div>
+
+<!-- Swiper Container -->
+<div class="swiper related-properties-swiper">
+  <div class="swiper-wrapper">
+    {% for related in related_properties %}
+    <div class="swiper-slide portfolio-item">
+      <a href="{% url 'property:property_detail' related.slug %}" class="portfolio-item-link"></a>
+      <div class="portfolio-wrap">
+        {% if related.image %}
+        <img src="{{ related.image.url }}" class="img-fluid" alt="{{ related }}">
+        {% else %}
+        <img src="{% static 'img/default-property.jpg' %}" class="img-fluid" alt="{{ related }}">
+        {% endif %}
+        <div class="portfolio-info">
+          <h4>{{related.project_name}}-{{ related.get_property_type_display }}</h4>
+          <p>
+            {% if related.configuration %}{{ related.get_configuration_display }}{% endif %}
+            {% if related.commercial_type %}{{ related.get_commercial_type_display }}{% endif %}
+            - {{ related.area }} sqft
+          </p>
+          <p>
+            {% if related.min_budget == related.max_budget and related.min_budget_unit == related.max_budget_unit %}
+            ₹{{ related.min_budget }} {{ related.get_min_budget_unit_display }}
+            {% else %}
+            ₹{{ related.min_budget }} {{ related.get_min_budget_unit_display }} - 
+            ₹{{ related.max_budget }} {{ related.get_max_budget_unit_display }}
+            {% endif %} - {% if related.locations %}{{ related.locations.name }}{% endif %}
+          </p>
+          <a href="{% url 'property:property_detail' related.slug %}" title="More Details" class="details-link">
+            <i class="bi bi-link-45deg"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Navigation buttons (only show if more than 3 items) -->
+  {% if related_properties.count > 3 %}
+  <div class="swiper-button-next related-swiper-next"></div>
+  <div class="swiper-button-prev related-swiper-prev"></div>
+  {% endif %}
+  
+  <!-- Pagination (only show if more than 3 items) -->
+  {% if related_properties.count > 3 %}
+  <div class="swiper-pagination related-swiper-pagination"></div>
+  {% endif %}
+</div>
+
+<div class="container text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+  <a href="{% url 'property_list' %}" class="cta-btn properties-btn">View More Properties</a>
+</div>
+</div>
+</section>
+{% endif %}
+div>
+<button class="chat-bubble" id="chatBubble">
+  <i class="bi bi-chat-dots"></i>
+</button>
+
+<!-- Chat Overlay -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h5>AskHorizon</h5>
+        <small>Property Assistant</small>
+      </div>
+      <button class="chat-close" id="chatClose">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="avatar">👩</div>
+        <div class="content">
+        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
+        </div>
+      </div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar">👩</div>
+      <div class="typing-content">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <div class="quick-options" id="quickOptions">
+      <div class="quick-options-title">Quick Options:</div>
+      <div class="quick-options-buttons">
+        <button class="quick-option-btn" data-option="about">
+          <i class="bi bi-info-circle"></i>
+          What is Horizon Reality?
+        </button>
+        <button class="quick-option-btn" data-option="services">
+          <i class="bi bi-gear"></i>
+          Our Services
+        </button>
+        <button class="quick-option-btn" data-option="properties">
+          <i class="bi bi-house"></i>
+          Show Properties
+        </button>
+      </div>
+    </div>
+
+    <!-- FIXED Typing Indicator -->
+    
+
+    <div class="chat-input">
+      <div class="chat-input-group">
+        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+        <button class="chat-send-btn" id="chatSend">
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/property-detail.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+     const chatBubble = document.getElementById('chatBubble');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickOptions = document.getElementById('quickOptions');
+
+    // Ensure all elements are found
+    if (!chatBubble || !chatOverlay || !chatClose || !chatInput || !chatSend || !chatMessages || !typingIndicator) {
+        console.error('One or more chat elements not found');
+        return;
+    }
+
+    // Initialize typing indicator
+    typingIndicator.style.display = 'none';
+
+    // Quick options responses
+    const quickOptionsResponses = {
+        about: `🏠 **About Horizon Reality**
+
+👋 Welcome to Horizon Reality : Your Gateway to Real Estate Excellence!
+
+I'm your virtual guide here to make your real estate journey easy, informed, and personalized.
+✨ Whether you're buying, selling, investing, or designing your space, we've got you covered.
+
+• Get expert help with managing your investment portfolio, financing, legal advice, and interiors.
+• Access premium properties through our trusted developer network.
+• Explore trending listings and unlock the best market deals.
+• Receive tailored support backed by real insights.
+
+Personal Consultation: Book time with our team for personalized guidance.
+Let's turn your dream space into a reality with trust, transparency, and complete support.
+
+How can I assist you today? 💬`,
+
+        services: `🛠️ **Our Services**
+
+**Property Services:**
+🛠 Our Services
+
+Property Services:
+🏠 Residential Properties
+🏢 Commercial Properties
+🔄 Resale & Leasing 
+💰 Property Investment Consultation
+
+Additional Services:
+🎨 Interior Design consultancy & Turnkey Solutions
+📋 Legal Documentation & Financing
+📊 Market Analysis & Insights
+🤝 Developer Partnerships
+
+Why Choose Us:
+✨ Client-centric approach with personalized solutions
+✨ Transparent and reliable processes
+✨ One-stop solution for all property needs
+✨ Strong network with trusted developers
+
+Want to know more about any specific service? Just ask! 😊`,
+
+        properties: `🏘️ **Our Property Portfolio**
+
+**Residential Properties:**
+🏠 1BHK, 2BHK, 3BHK, 4BHK, 5BHK Apartments
+🏡 Villas & Bungalows
+🏘 Duplex & Penthouse Options
+🏠 Tenements & Row Houses
+
+Commercial Properties:
+🏢 Office Spaces
+🏪 Retail Showrooms
+🏬 Shop Spaces
+🏢 Corporate Floors
+
+Property Categories:
+🆕 New Launch Projects
+🔄 Resale Properties
+🏠 Rental/Leasing Options
+💼 Investment Properties
+
+Some of the Popular Locations in Ahmedabad:
+📍Thaltej , South Bopal, Shela
+📍 Gota , Vaishnodevi, Science Park 
+📍 Prahlad Nagar, Satellite, SG Highway
+📍  Iscon, Ambli, Bodakdev, Vastrapur 
+
+Want to search for specific properties? Try asking:
+• "2BHK in Bopal under 50 lakhs"
+• "Commercial office space in SG Highway"
+• "Villas in Shela"`
+    };
+
+    // Handle quick option clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quick-option-btn')) {
+            const option = e.target.getAttribute('data-option');
+            const optionText = e.target.textContent.trim();
+            
+            // Add user message
+            addMessage(optionText, 'user');
+            
+            // KEEP QUICK OPTIONS VISIBLE - Remove this line
+            // if (quickOptions) {
+            //     quickOptions.style.display = 'none';
+            // }
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate delay and show response
+            setTimeout(() => {
+                hideTyping();
+                const response = quickOptionsResponses[option] || "Thanks for your question! How can I help you with your property needs?";
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+    });
+
+    chatBubble.addEventListener('click', () => {
+        console.log('Chat bubble clicked');
+        chatOverlay.classList.add('show');
+        
+        // Quick options are always visible, no need to show/hide
+        
+        setTimeout(() => {
+            chatInput.focus();
+        }, 300);
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatOverlay.classList.remove('show');
+        
+        // Quick options remain visible, no reset needed
+    });
+
+    chatOverlay.addEventListener('click', function (e) {
+        if (e.target === chatOverlay) {
+            chatOverlay.classList.remove('show');
+            
+            // Quick options remain visible, no reset needed
+        }
+    });
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    console.log('Sending message:', message);
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Ensure quick options remain visible (no hiding)
+    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
+    
+    chatSend.disabled = true;
+    chatInput.disabled = true;
+    chatBubble.classList.add('typing');
+
+    showTyping();
+
+    setTimeout(() => {
+        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
+                addMessage(formattedResponse, 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            })
+            .catch(error => {
+                console.error('Chat error:', error);
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            });
+    }, 1500);
+}
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+
+        if (sender === 'user') {
+            // Remove the "You" label by just showing the content
+            div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
+        } else {
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/🔗\s*<a\s+href="([^"]+)"\s+target="_blank"\s+class="property-link">([^<]+)<\/a>/g,
+                    '🔗 <a href="$1" target="_blank" class="property-link">$2</a>')
+                .replace(/📞\s*<a\s+href="([^"]+)"\s+class="contact-link">([^<]+)<\/a>/g,
+                    '📞 <a href="$1" class="contact-link">$2</a>');
+
+            div.innerHTML = `<div class="avatar">👩</div><div class="content">${formattedText}</div>`;
+        }
+
+        chatMessages.appendChild(div);
+
+        // Handle property links
+        div.querySelectorAll('.property-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                window.open(url, '_blank');
+                console.log('Opening property link:', url);
+            });
+        });
+
+        // Handle contact links
+        div.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                console.log('Calling:', this.getAttribute('href'));
+            });
+        });
+
+        // Smooth scroll to bottom
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function formatBotResponse(response) {
+        let formatted = response
+            .replace(/\*\*[^*]+\*\*/g, match => match)
+            .replace(/🏠|🏡|🔑|💰|📍|🏢|🔗|✅|📊|🛠️|🏘️|🆕|🔄|💼|📋|🎨|🏗️|🤝|✨|🌟|😊|😄|👋|💙|🤗|🌟|💫/g, match => match)
+            .replace(/Location:\s*/g, '\n📍 Location: ')
+            .replace(/Type:\s*/g, '\n🏗️ Type: ')
+            .replace(/Area:\s*/g, '\n📐 Area: ')
+            .replace(/Budget:\s*/g, '\n💰 Budget: ')
+            .replace(/Status:\s*/g, '\n📅 Status: ')
+            .replace(/View Details:/g, '\n🔗 View Details: ')
+            .replace(/\s+/g, ' ')
+            .replace(/\n+/g, '\n')
+            .trim();
+
+        if (formatted.includes('Found') && formatted.includes('properties')) {
+            formatted = formatted.replace(/Found \d+ properties for you:/, 'I found some properties for you:\n\n');
+            formatted = formatted.replace(/\n\n+/g, '\n\n');
+        }
+
+        return formatted;
+    }
+
+    function showTyping() {
+        console.log('Showing typing indicator');
+        typingIndicator.style.display = 'flex';
+        typingIndicator.classList.add('show');
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function hideTyping() {
+        console.log('Hiding typing indicator');
+        typingIndicator.classList.remove('show');
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+        }, 300);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Optional: Keyboard shortcut Ctrl + Space to open chat
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.code === 'Space') {
+            e.preventDefault();
+            if (!chatOverlay.classList.contains('show')) {
+                chatBubble.click();
+            }
+        }
+    });
+
+    // Make makeCall function globally available
+    window.makeCall = makeCall;
+});
+</script>
+{% endblock %}

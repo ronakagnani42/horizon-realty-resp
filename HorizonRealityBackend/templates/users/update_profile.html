@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Update Profile - Horizon Reality{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/update_profile.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumb-section">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">
+              <i class="bi bi-house-door-fill breadcrumb-home-icon"></i>Home
+            </a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+           Update Profile
+          </li>
+        </ol>
+      </nav>
+    </div>
+</div>
+<div class="container main-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="profile-card">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <h2><i class="fas fa-user-edit me-2"></i>Update Profile</h2>
+                    <div class="user-info">
+                        <div class="user-email">{{ user.email }}</div>
+                        {% if user.user_type %}
+                            <div class="user-badge">
+                                {{ user.get_user_type_display }}
+                                {% if user.is_broker %}
+                                    <i class="fas fa-star ms-1"></i>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Restriction Notice -->
+                {% if not can_update %}
+                <div class="restriction-notice">
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>Profile Update Restricted</h4>
+                    <p>You cannot update your profile for another <span class="countdown-timer">{{ days_remaining }} day{{ days_remaining|pluralize }}</span>.</p>
+                    {% if last_update %}
+                        <small class="text-muted">Last updated: {{ last_update|date:"M d, Y \a\t g:i A" }}</small>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Messages -->
+                {% if messages %}
+                    <div class="form-section">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Profile Update Form -->
+                <div class="form-section {% if not can_update %}form-disabled{% endif %}">
+                    <form method="post" id="profileForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        {{ form.email.label }}
+                                        <i class="fas fa-lock ms-1 text-muted" title="This field cannot be changed"></i>
+                                    </label>
+                                    {{ form.email }}
+                                    <div class="help-text">Email address cannot be changed for security reasons</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.date_joined.id_for_label }}" class="form-label">
+                                        {{ form.date_joined.label }}
+                                        <i class="fas fa-lock ms-1 text-muted" title="This field cannot be changed"></i>
+                                    </label>
+                                    {{ form.date_joined }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                        {{ form.first_name.label }}
+                                        {% if can_update %}
+                                            <i class="fas fa-edit ms-1 text-success" title="This field can be edited"></i>
+                                        {% else %}
+                                            <i class="fas fa-lock ms-1 text-muted" title="Update restricted"></i>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                        {{ form.last_name.label }}
+                                        {% if can_update %}
+                                            <i class="fas fa-edit ms-1 text-success" title="This field can be edited"></i>
+                                        {% else %}
+                                            <i class="fas fa-lock ms-1 text-muted" title="Update restricted"></i>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.contact_number.id_for_label }}" class="form-label">
+                                {{ form.contact_number.label }}
+                                {% if can_update %}
+                                    <i class="fas fa-edit ms-1 text-success" title="This field can be edited"></i>
+                                {% else %}
+                                    <i class="fas fa-lock ms-1 text-muted" title="Update restricted"></i>
+                                {% endif %}
+                            </label>
+                            {{ form.contact_number }}
+                            <div class="help-text">Enter your contact number (10-15 digits)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.user_type.id_for_label }}" class="form-label">
+                                        {{ form.user_type.label }} <span class="required">*</span>
+                                        {% if can_update %}
+                                            <i class="fas fa-edit ms-1 text-success" title="This field can be edited"></i>
+                                        {% else %}
+                                            <i class="fas fa-lock ms-1 text-muted" title="Update restricted"></i>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.user_type }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.firm_type.id_for_label }}" class="form-label">
+                                        {{ form.firm_type.label }}
+                                        {% if can_update %}
+                                            <i class="fas fa-edit ms-1 text-success" title="This field can be edited"></i>
+                                        {% else %}
+                                            <i class="fas fa-lock ms-1 text-muted" title="Update restricted"></i>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.firm_type }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="firmNameGroup">
+                            <label for="{{ form.firm_name.id_for_label }}" class="form-label">
+                                {{ form.firm_name.label }}
+                                <span class="required" id="firmNameRequired" style="display: none;">*</span>
+                                {% if can_update %}
+                                    <i class="fas fa-edit ms-1 text-success" title="This field can be edited"></i>
+                                {% else %}
+                                    <i class="fas fa-lock ms-1 text-muted" title="Update restricted"></i>
+                                {% endif %}
+                            </label>
+                            {{ form.firm_name }}
+                            <div class="help-text">Required when user type is 'Broker'</div>
+                        </div>
+
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary" id="submitBtn" {% if not can_update %}disabled{% endif %}>
+                                <i class="fas fa-save me-2"></i>
+                                {% if can_update %}Update Profile{% else %}Update Restricted{% endif %}
+                            </button>
+                            <a href="{% url 'profile_view' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="navigation-links">
+                    <a href="{% url 'profile_view' %}">
+                        <i class="fas fa-user me-1"></i>View Profile
+                    </a>
+                    
+                    <a href="{% url 'home' %}">
+                        <i class="fas fa-home me-1"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data for JavaScript -->
+<script type="application/json" id="profile-data">
+{
+    "can_update": {{ can_update|yesno:"true,false" }},
+    "days_remaining": {{ days_remaining|default:0 }},
+    "form_user_type_id": "{{ form.user_type.id_for_label }}",
+    "form_firm_name_id": "{{ form.firm_name.id_for_label }}",
+    {% if last_update %}
+    "last_update_timestamp": "{{ last_update|date:'c' }}"
+    {% else %}
+    "last_update_timestamp": null
+    {% endif %}
+}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Your custom profile script -->
+<script src="{% static 'js/update-profile.js' %}"></script>
+
+<!-- REMOVED: Duplicate Bootstrap JS and conflicting dropdown script -->
+{% endblock %}

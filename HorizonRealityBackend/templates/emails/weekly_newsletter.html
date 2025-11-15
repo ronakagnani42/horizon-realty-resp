@@ -1,0 +1,160 @@
+<!-- templates/emails/weekly_newsletter.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Property Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+        }
+        .property-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .property-title {
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .property-details {
+            color: #666;
+            margin: 5px 0;
+        }
+        .property-price {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .property-badge {
+            background-color: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 12px;
+        }
+        .unsubscribe-link {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Weekly Property Update</h1>
+        <p>{{ week_start }} - {{ week_end }}</p>
+    </div>
+    
+    <div class="content">
+        <h2>Hello {{ subscriber_name }},</h2>
+        
+        <p>Here are the <strong>{{ property_count }}</strong> new properties that were listed this week:</p>
+        
+        {% for property in properties %}
+        <div class="property-card">
+            <div class="property-title">
+                {{ property.project_name|default:"Property" }}
+                <span class="property-badge">{{ property.get_property_type_display }}</span>
+            </div>
+            
+            <div class="property-details">
+                <strong>Configuration:</strong> {{ property.get_configuration_display|default:property.get_commercial_type_display }}
+            </div>
+            
+            <div class="property-details">
+                <strong>Area:</strong> {{ property.area }} sqft ({{ property.area_in_sqyards }} sq yards)
+            </div>
+            
+            <div class="property-details">
+                <strong>Location:</strong> {{ property.locations.name|default:"Not specified" }}
+            </div>
+            
+            {% if property.min_budget and property.max_budget %}
+            <div class="property-price">
+                ₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }} - ₹{{ property.max_budget }} {{ property.get_max_budget_unit_display }}
+            </div>
+            {% endif %}
+            
+            <div class="property-details">
+                <strong>Status:</strong> {{ property.get_status_display }}
+                {% if property.furnishing %}
+                | <strong>Furnishing:</strong> {{ property.get_furnishing_display }}
+                {% endif %}
+            </div>
+            
+            {% if property.possession_date %}
+            <div class="property-details">
+                <strong>Possession Date:</strong> {{ property.possession_date }}
+            </div>
+            {% endif %}
+            
+            {% if property.salient_features %}
+            <div class="property-details">
+                <strong>Features:</strong> {{ property.salient_features|truncatewords:15 }}
+            </div>
+            {% endif %}
+            
+            <a href="{{ base_url }}{{ property.get_absolute_url }}" class="btn">View Details</a>
+        </div>
+        {% endfor %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ base_url }}/properties/" class="btn">View All Properties</a>
+        </div>
+        
+        <p style="margin-top: 30px;">
+            Thank you for subscribing to our weekly property updates. We'll continue to keep you informed about the latest properties in your area.
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>
+            You received this email because you subscribed to our newsletter.<br>
+            If you no longer wish to receive these emails, you can 
+            <a href="{{ base_url }}/unsubscribe/{{ unsubscribe_token }}/" class="unsubscribe-link">unsubscribe here</a>.
+        </p>
+        <p>© 2024 Horizon Reality. All rights reserved.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Horizon Reality Newsletter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        .email-container {
+            background-color: white;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .header {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 40px 30px;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(212,175,55,0.1)" stroke-width="1"/><circle cx="50" cy="50" r="30" fill="none" stroke="rgba(212,175,55,0.1)" stroke-width="1"/><circle cx="50" cy="50" r="20" fill="none" stroke="rgba(212,175,55,0.1)" stroke-width="1"/></svg>') center/cover;
+            opacity: 0.3;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #D4AF37;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .logo::before {
+            content: '🏡';
+            margin-right: 10px;
+            font-size: 28px;
+        }
+        .header-subtitle {
+            font-size: 16px;
+            color: #ecf0f1;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+        .content {
+            padding: 30px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .welcome-message h2 {
+            color: #D4AF37;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .benefits {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 4px solid #D4AF37;
+            position: relative;
+        }
+        .benefits::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #D4AF37 0%, transparent 70%);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+        .benefits h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #D4AF37;
+            padding-bottom: 10px;
+        }
+        .benefits ul {
+            padding-left: 0;
+            list-style: none;
+        }
+        .benefits li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 15px;
+        }
+        .benefits li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #D4AF37;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .cta-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+            border-radius: 10px;
+            color: white;
+        }
+        .cta-button {
+            display: inline-block;
+            background:#333;
+            color: white !important;
+            padding: 15px 35px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            border-color: #D4AF37;
+        }
+        .social-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .social-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: #D4AF37;
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+            line-height: 1;
+        }
+        .social-link:hover {
+            background: #333;
+            transform: scale(1.1);
+        }
+        .footer {
+            background: #333;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .footer strong {
+            color: #D4AF37;
+            font-size: 16px;
+        }
+        .unsubscribe {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(212,175,55,0.3);
+        }
+        .unsubscribe a {
+            color: #D4AF37;
+            text-decoration: none;
+        }
+        .unsubscribe a:hover {
+            text-decoration: underline;
+        }
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #D4AF37, transparent);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">Horizon Reality</div>
+            <p class="header-subtitle">Your Gateway to Perfect Properties</p>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-message">
+                <h2>Welcome to Our Newsletter,{{user.first_name}} {{user.last_name}}! 🎉</h2>
+                <p>Thank you for subscribing to <strong>Horizon Reality</strong> newsletter. We're excited to have you join our community of property enthusiasts and help you find your dream home!</p>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="benefits">
+                <h3>What You'll Receive:</h3>
+                <ul>
+                    <li><strong>Latest Property Listings</strong> - Be the first to know about new premium properties</li>
+                    <li><strong>Market Insights</strong> - Stay updated with real estate trends and analysis</li>
+                    <li><strong>Weekly Summaries</strong> - Curated property updates delivered every week</li>
+                </ul>
+            </div>
+            
+            <div class="cta-section">
+                <h3 style="margin-top: 0; color: white;">Ready to Find Your Dream Home?</h3>
+                <p style="margin-bottom: 20px; color: rgba(255,255,255,0.9);">Explore our extensive collection of premium properties</p>
+                <a href="http://127.0.0.1:8000/" class="cta-button">Explore Properties Now</a>
+            </div>
+            
+            <!-- <div class="social-section">
+                <h3>Stay Connected With Us</h3>
+                <p>Follow us on social media for daily updates, property tours, and behind-the-scenes content:</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/share/15YFGzJwgM/" class="social-link" title="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.instagram.com/_horizonreality?igsh=bXF5cXlsdDc3NW5v" class="social-link" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="https://www.linkedin.com/company/team-horizon-reality/" class="social-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div> -->
+        </div>
+        
+        <div class="footer">
+            <p><strong>Horizon Reality</strong></p>
+            <p><em>Making your dream home a reality</em></p>
+            <p>Professional Real Estate Services | Premium Properties | Expert Guidance</p>
+            <!-- <div class="unsubscribe">
+                <p>You're receiving this email because you subscribed to our newsletter.</p>
+                <p><a href="#">Unsubscribe</a> if you no longer wish to receive these emails.</p>
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

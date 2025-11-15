@@ -1,0 +1,103 @@
+// main: ../main.scss
+/*--------------------------------------------------------------
+# Hero Section
+--------------------------------------------------------------*/
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  padding: 120px 0 80px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  &:before {
+    content: "";
+    background: color-mix(in srgb, var(--background-color), transparent 30%);
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .container {
+    position: relative;
+    z-index: 3;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 56px;
+    font-weight: 700;
+    font-family: var(--nav-font);
+
+    span {
+      color: var(--accent-color);
+    }
+  }
+
+  p {
+    margin: 10px 0 0 0;
+    font-size: 24px;
+    color: color-mix(in srgb, var(--default-color), transparent 30%);
+  }
+
+  .icon-box {
+    padding: 30px 20px;
+    transition: ease-in-out 0.3s;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 70%);
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 32px;
+      line-height: 1;
+      color: var(--accent-color);
+    }
+
+    h3 {
+      font-weight: 700;
+      margin: 10px 0 0 0;
+      padding: 0;
+      line-height: 1;
+      font-size: 20px;
+      line-height: 26px;
+
+      a {
+        color: color-mix(in srgb, var(--default-color), transparent 20%);
+        transition: ease-in-out 0.3s;
+      }
+    }
+
+    &:hover {
+      border-color: var(--accent-color);
+
+      h3 a {
+        color: var(--accent-color);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+  }
+}

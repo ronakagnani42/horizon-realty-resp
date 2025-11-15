@@ -1,0 +1,75 @@
+<!-- templates/verification_sent.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Email Sent - Horizon Reality</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% load static %}
+    <link href="{% static 'css/register.css' %}" rel="stylesheet">
+    <style>
+        .verification-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        * {
+            font-family: 'Times New Roman', Times, serif;
+        }
+                
+        .verification-icon {
+            font-size: 64px;
+            color: #3a86ff;
+            margin-bottom: 20px;
+        }
+        
+        .verification-message {
+            margin-bottom: 30px;
+        }
+        
+        .verification-message h2 {
+            color: #ff9e00;
+            margin-bottom: 20px;
+        }
+        
+        .verification-message p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .back-button {
+            display: inline-block;
+            background-color: #3a86ff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <div class="verification-container">
+                <div class="verification-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="verification-message">
+                    <h2>Verification Email Sent</h2>
+                    <p>A verification email has been sent to <strong>{{ email }}</strong>.</p>
+                    <p>Please check your inbox and click on the verification link to complete your registration.</p>
+                    <p>If you don't see the email, please check your spam folder.</p>
+                </div>
+                <a href="{% url 'login' %}" class="back-button">Back to Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

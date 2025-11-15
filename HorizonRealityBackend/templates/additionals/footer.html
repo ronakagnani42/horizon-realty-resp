@@ -1,0 +1,79 @@
+<footer id="footer" class="footer dark-background">
+  <div class="footer-top">
+    <div class="container">
+      <div class="row gy-4">
+        <!-- About Section (Left Side) -->
+        <div class="col-lg-4 col-md-6 footer-about">
+          <div class="logo mb-2">
+            <a href="index.html" class="d-inline-block text-decoration-none">
+              <span class="sitename h4 m-0">Horizon Reality</span>
+            </a>
+          </div>
+          <div class="footer-contact" style="color: white;">
+            <!-- <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p> -->
+           <p class="mt-3" style="color: white;">Contact Number: <span style="color: white;">+91 9104828680</span></p>
+           <p class="mt-3" style="color: white;">
+                Property Inquiries: <span style="color: white;">connect@horizonreality.in</span>
+            </p>
+            <p class="mt-3" style="color: white;">
+                Interior Design Inquiries: <span style="color: white;">huescale@horizonreality.in</span>
+            </p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href="https://www.facebook.com/share/15YFGzJwgM/"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/_horizonreality?igsh=bXF5cXlsdDc3NW5v"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/team-horizon-reality/"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <!-- Right Side: Useful Links + Services -->
+        <div class="col-lg-4 ms-auto d-flex flex-column flex-md-row justify-content-between">
+          <div class="footer-links me-md-4">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'home' %}"> Home</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'about-us' %}"> About us</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'services' %}"> Services</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'blogs:blog_list' %}">Blogs</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'contact-us' %}"> Contact Us </a></li>
+
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'terms-of-services' %}"> Terms of Service</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h4>Our Services</h4>
+            <ul>
+              {% for service in footer_services %}
+                <li><i class="bi bi-chevron-right"></i> <a href="{{ service.get_absolute_url }}"> {{ service.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Optional Newsletter (still commented) -->
+        <!--
+        <div class="col-lg-4 col-md-12 footer-newsletter">
+          <h4>Our Newsletter</h4>
+          <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
+          <form action="forms/newsletter.php" method="post" class="php-email-form">
+            <div class="newsletter-form">
+              <input type="email" name="email"><input type="submit" value="Subscribe">
+            </div>
+            <div class="loading">Loading</div>
+            <div class="error-message"></div>
+            <div class="sent-message">Your subscription request has been sent. Thank you!</div>
+          </form>
+        </div>
+        -->
+      </div>
+    </div>
+  </div>
+
+  <div class="copyright">
+    <div class="container text-center">
+      <p>© 2025 <strong class="px-1 sitename">Horizon Reality</strong> All Rights Reserved</p>
+    </div>
+  </div>
+</footer>

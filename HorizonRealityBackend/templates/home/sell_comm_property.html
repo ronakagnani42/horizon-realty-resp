@@ -1,0 +1,2005 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sell Commercial Property - Horizon Reality{% endblock %}
+
+{% block meta_description %}
+Find your dream property with our comprehensive property search service. Filter by property type, budget, location and more.
+{% endblock %}
+
+{% block meta_keywords %}
+property search, real estate, buy property, sell property, rent property, commercial property, interior design
+{% endblock %}
+
+{% block nav_services_active %}active{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/services.css' %}" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        min-height: 100vh;
+        color: #333;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: white;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Toast Notification Styles */
+    .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+        z-index: 10000;
+        min-width: 350px;
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    .toast.success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
+    }
+
+    .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .toast-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .toast-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .toast-text {
+        flex: 1;
+    }
+
+    .toast-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .toast-message {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        line-height: 1.4;
+    }
+
+    .toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 0 0 15px 15px;
+        animation: progressBar 10s linear forwards;
+    }
+
+    @keyframes progressBar {
+        0% { width: 100%; }
+        100% { width: 0%; }
+    }
+
+    /* Success Message Styles */
+    .success-message {
+        background: linear-gradient(135deg, #ffc107, #ffb347);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: slideInFromTop 0.6s ease-out;
+    }
+
+    .success-message h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .success-message p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .success-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    @keyframes slideInFromTop {
+        0% {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .filter-container {
+        margin-top: clamp(0.5rem, 2vw, 1rem);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .filter-tabs {
+        padding: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .filter-tab {
+        background: transparent;
+        border: none;
+        color: white;
+        padding: 1.5rem 3rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-tab.active {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .filter-tab:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .filter-content {
+        padding: 3rem;
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border: 2px solid #e1e8ed;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #333;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #ffc107;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        transform: translateY(-2px);
+    }
+
+    /* Radio Button Styles */
+    .radio-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .radio-item {
+        position: relative;
+    }
+
+    .radio-item input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .radio-item label {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: #f8f9fa;
+        border: 2px solid #e1e8ed;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .radio-item label:before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        background: #fff;
+        margin-right: 12px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        border-radius: 50%;
+    }
+
+    .radio-item input:checked + label {
+        background: #ffc107;
+        color: white;
+        border-color: #ffc107;
+        transform: translateY(-2px);
+    }
+
+    .radio-item input:checked + label:before {
+        background: white;
+        border-color: white;
+        background-image: radial-gradient(circle, #ffc107 40%, transparent 50%);
+    }
+
+    .radio-item label:hover {
+        border-color: #ffc107;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Keep checkbox styles for furnishing (if you want to keep it as checkboxes) */
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .checkbox-item {
+        position: relative;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .checkbox-item label {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: #f8f9fa;
+        border: 2px solid #e1e8ed;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .checkbox-item label:before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        background: #fff;
+        margin-right: 12px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        border-radius: 4px;
+    }
+
+    .checkbox-item input:checked + label {
+        background: #ffc107;
+        color: white;
+        border-color: #ffc107;
+        transform: translateY(-2px);
+    }
+
+    .checkbox-item input:checked + label:before {
+        background: white;
+        border-color: white;
+        background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%233498db' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
+    }
+
+    .checkbox-item label:hover {
+        border-color: #ffc107;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .search-btn {
+        background: #ffc107;
+        color: white;
+        border: none;
+        padding: 1.2rem 3rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100%;
+        margin-top: 2rem;
+    }
+
+    .search-btn:hover {
+        transform: translateY(-3px);
+    }
+
+    .search-btn:active {
+        transform: translateY(-1px);
+    }
+
+    .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        font-weight: 500;
+    }
+
+    .alert-danger {
+        background: #fee;
+        color: #c53030;
+        border: 1px solid #feb2b2;
+    }
+
+    .alert-success {
+        background: #f0fff4;
+        color: #22543d;
+        border: 1px solid #9ae6b4;
+    }
+
+    .messages {
+        margin-bottom: 2rem;
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        border-left: 4px solid #ffc107;
+    }
+
+    .form-section h3 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .file-upload-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .file-upload-wrapper input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .file-upload-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        border: 2px dashed #bdc3c7;
+        border-radius: 12px;
+        background: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        color: #7f8c8d;
+    }
+
+    .file-upload-label:hover {
+        border-color: #3498db;
+        background: #ecf0f1;
+        color: #3498db;
+    }
+
+    /* Conditional field styles */
+    .conditional-field {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        transform: translateY(-10px);
+    }
+
+    .conditional-field.show {
+        opacity: 1;
+        max-height: 200px;
+        transform: translateY(0);
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .filter-content {
+            padding: 2rem 1.5rem;
+        }
+
+        .radio-group {
+            grid-template-columns: 1fr;
+        }
+
+        .checkbox-group {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        .success-message {
+            padding: 1.5rem;
+        }
+
+        .success-icon {
+            font-size: 2.5rem;
+        }
+
+        .toast {
+            right: 10px;
+            left: 10px;
+            min-width: auto;
+            transform: translateY(-100px);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+    }
+            
+.chat-bubble {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background-color: #f4b400;
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+    font-size: 24px;
+    animation: bounceBubble 1.2s ease-in-out infinite;
+}
+
+.chat-bubble::before {
+    content: 'Chat with us!';
+    position: absolute;
+    bottom: 70px; /* Adjusted to start closer to bubble center */
+    right: 0px; /* Centered relative to bubble */
+    transform-origin: center bottom; /* Origin at bubble's top center */
+    background-color: #333;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: scale(0.5); /* Start small, as if from inside */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1001;
+    animation: fadeInOutTooltip 4s ease-in-out 1s infinite;
+}
+
+.chat-bubble:hover::before {
+    animation: none; /* Disable tooltip animation on hover */
+    opacity: 1;
+    transform: scale(1) translateY(-10px); /* Slight upward shift on hover */
+}
+
+.chat-bubble.typing::before {
+    content: 'Typing...';
+    animation: none; /* Disable tooltip animation during typing */
+    opacity: 1;
+    transform: scale(1) translateY(-10px);
+}
+
+.chat-bubble:hover {
+    transform: scale(1.1); /* Override bounce animation on hover */
+    background-color: #f4b400;
+    animation: none; /* Disable bounce animation on hover */
+}
+
+.chat-bubble.typing {
+    animation: pulse 1.5s infinite; /* Use existing pulse for typing */
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bounceBubble {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px); /* Increased upward bounce */
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInOutTooltip {
+    0% {
+        opacity: 0;
+        transform: scale(0.5); /* Start small, from bubble center */
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1) translateY(-10px); /* Move up and full size */
+    }
+    80% {
+        opacity: 1;
+        transform: scale(1) translateY(-10px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5); /* Shrink back to center */
+    }
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Chat Overlay - Positioned from Right Bottom */
+.chat-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: flex-end;
+    justify-content: flex-end;
+    transition: opacity 0.3s ease;
+}
+
+.chat-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* Chat Container - Made Much Wider */
+.chat-container {
+    width: 100%;
+    max-width: 600px; /* Increased from 400px to 600px */
+    height: 80vh;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.chat-overlay.show .chat-container {
+    transform: translateY(0);
+}
+
+/* Chat Header */
+.chat-header {
+    background: #f4b400;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.chat-header small {
+    opacity: 0.9;
+    font-size: 0.8em;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    /* color: white; */
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.chat-close:hover {
+    background: white;
+}
+
+/* Chat Messages Area */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px; /* Increased padding for wider container */
+}
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Message Styling */
+.message {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.message.bot {
+    flex-direction: row;
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    font-size: 20px;
+}
+.message .content {
+    max-width: 80%; /* Increased from 70% to 80% for wider messages */
+    padding: 10px 15px;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+.message.bot .content {
+    background: #f1f0f0;
+}
+
+.message.user .content {
+    background: #f4b400;
+    color: #fff;
+}
+
+.message.user::before {
+    display: none !important;
+}
+
+.message.user .user-label {
+    display: none !important;
+}
+
+.message.user .avatar {
+    /* background: #f4b400; */
+    color: white;
+}
+
+.message.bot .avatar {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+.message .content {
+    max-width: 80%; /* Increased from 75% to 80% */
+    padding: 12px 16px;
+    border-radius: 18px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message.user .content {
+    background: #f4b400;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.message.bot .content {
+    background: #f8f9fa;
+    color: #333;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+/* BLACK LINKS STYLING */
+.chat-messages .content a {
+    color: #000000 !important; /* Black color for all links */
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid #000000;
+    transition: all 0.3s ease;
+}
+
+.chat-messages .content a:hover {
+    color: #333333 !important; /* Slightly lighter black on hover */
+    border-bottom-color: #333333;
+    text-decoration: none;
+}
+
+.chat-messages .content .property-link {
+    background: #000000 !important; /* Black background */
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: none;
+    display: inline-block;
+    margin-left: 8px;
+    font-weight: 500;
+    border-bottom: none;
+}
+
+.chat-messages .content .property-link:hover {
+    background: #333333 !important; /* Dark gray on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.chat-messages .content .contact-link {
+    background: #000000 !important; /* Black background */
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: none;
+    display: inline-block;
+    margin-left: 8px;
+    font-weight: 500;
+    border-bottom: none;
+}
+
+.chat-messages .content .contact-link:hover {
+    background: #333333 !important; /* Dark gray on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+}
+
+.typing-indicator.show {
+    display: flex;
+    opacity: 1;
+}
+
+.typing-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.typing-content {
+    display: flex;
+    align-items: center;
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background: #888;
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: typing 1s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}
+
+.chat-input {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input-group {
+    display: flex;
+    align-items: center;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-send-btn {
+    background: #f4b400;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.chat-send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+@keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; }
+    30% { opacity: 1; }
+}
+
+/* Chat Input */
+.chat-input {
+    padding: 15px 20px;
+    border-top: 1px solid #e9ecef;
+    border-radius: 0 0 12px 12px;
+    background: white;
+}
+
+.chat-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.chat-input input:focus {
+    border-color: #f4b400;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.chat-send-btn {
+    width: 45px;
+    height: 45px;
+    border: none;
+    background: #f4b400;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+    background: #f4b400;
+    transform: scale(1.05);
+}
+
+.chat-send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Mobile Responsiveness - Updated for wider chatbox */
+@media (max-width: 768px) {
+    .chat-container {
+        width: 98vw; /* Increased from 95vw */
+        height: 80vh;
+        margin: 10px;
+        margin-bottom: 80px;
+        max-width: 500px; /* Set max-width for tablets */
+    }
+    
+    .chat-bubble {
+        bottom: 15px;
+        right: 15px;
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
+    }
+    
+    .chat-overlay {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-container {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+        max-width: none; /* Remove max-width restriction on small screens */
+    }
+    
+    .chat-header {
+        border-radius: 0;
+    }
+    
+    .chat-input {
+        border-radius: 0;
+    }
+    
+    .message .content {
+        max-width: 85%; /* Even wider on mobile for better use of space */
+    }
+}
+
+.quick-options {
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.quick-options-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quick-options-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quick-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.quick-option-btn:hover {
+    background: #f4b400;
+    color: white;
+    border-color: #f4b400;
+    transform: translateY(-1px);
+    /* box-shadow: 0 4px 12px rgba(0,123,255,0.3); */
+}
+
+.quick-option-btn:active {
+    transform: translateY(0);
+    /* box-shadow: 0 2px 4px rgba(0,123,255,0.2); */
+}
+
+.quick-option-btn i {
+    font-size: 14px;
+    color: #f4b400;
+    transition: color 0.3s ease;
+}
+
+.quick-option-btn:hover i {
+    color: white;
+}
+
+/* Animation for quick options appearance */
+.quick-options {
+    animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .quick-options {
+        padding: 12px 15px;
+        margin-bottom: 12px;
+    }
+    
+    .quick-option-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+        border-radius: 16px;
+    }
+    
+    .quick-options-buttons {
+        gap: 6px;
+    }
+}
+        .breadcrumb-section {
+          background-color: #ffffff;
+          padding: 50px 0;
+          border-bottom: 1px solid #e9ecef;
+          margin-top: 80px; /* Space below the fixed header */
+          box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .breadcrumb {
+          margin-bottom: 0;
+          padding: 0;
+          background: transparent;
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+          font-size: 14px;
+          font-weight: 500;
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .breadcrumb-item + .breadcrumb-item {
+          padding-left: 1.5rem;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+          content: "\F285"; /* Bootstrap icon chevron-right */
+          font-family: "bootstrap-icons";
+          color: #ccc;
+          font-size: 12px;
+          padding-right: 1.5rem;
+        }
+
+        .breadcrumb-item a {
+          color: #666;
+          text-decoration: none;
+          transition: color 0.3s ease;
+          display: flex;
+          align-items: center;
+        }
+
+        .breadcrumb-item a:hover {
+          color: #ff9d1f;
+        }
+
+        .breadcrumb-item.active {
+          color: #ff9d1f;
+          font-weight: 600;
+        }
+
+        /* Home icon styling */
+        .breadcrumb-home-icon {
+          margin-right: 6px;
+          font-size: 16px;
+        }
+
+        /* Animation for hover state */
+        .breadcrumb-item a::after {
+          content: "";
+          display: block;
+          width: 0;
+          height: 2px;
+          background: #ff9d1f;
+          transition: width 0.3s;
+          position: absolute;
+          bottom: -3px;
+          left: 0;
+        }
+
+        .breadcrumb-item a:hover::after {
+          width: 100%;
+        }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumb-section">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">
+              <i class="bi bi-house-door-fill breadcrumb-home-icon"></i>Home
+            </a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Sell Commercial Properties
+          </li>
+        </ol>
+      </nav>
+    </div>
+</div>
+<div class="container">
+    <!-- Success Message Display -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        {% if message.tags != 'success' %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="filter-container">
+        <div class="filter-tabs">
+            <button class="filter-tab active" id="sell-tab">List Your Commercial Property</button>
+        </div>
+
+        <div id="sell" class="filter-content">
+            <form method="POST" enctype="multipart/form-data" id="property-form">
+                {% csrf_token %}
+                
+                <!-- Hidden field for property type since it's always commercial -->
+                <input type="hidden" name="property_type" value="commercial">
+
+                <!-- Property Status Section -->
+                <div class="form-section">
+                    <h3>Property Status</h3>
+                    <div class="form-group">
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="is_for_sale" name="property_status" value="sale" checked>
+                                <label for="is_for_sale">Sell</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="is_for_rent" name="property_status" value="rent">
+                                <label for="is_for_rent">Rent Out</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="is_for_lease" name="property_status" value="lease">
+                                <label for="is_for_lease">Lease Out</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commercial Configuration Section -->
+                <div class="form-section">
+                    <h3>Commercial Configuration</h3>
+                    <div class="form-group">
+                        <label class="form-label">Commercial Type</label>
+                        <div class="radio-group">
+                            {% for value, label in commercial_choices %}
+                            <div class="radio-item">
+                                <input type="radio" id="commercial-{{ value }}" name="commercial_type" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+                                <label for="commercial-{{ value }}">{{ label }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Conditional Property Subtype Field -->
+                    <div class="form-group conditional-field" id="property-subtype-field">
+                        <label class="form-label">Please Specify Property Type</label>
+                        <input type="text" name="property_subtype" class="form-control" placeholder="Please specify the property type (e.g., Warehouse, Co-working Space, etc.)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Furnishing Type</label>
+                        <div class="radio-group">
+                            {% for value, label in furnishing_choices %}
+                            <div class="radio-item">
+                                <input type="radio" id="furnishing-{{ value }}" name="furnishing" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+                                <label for="furnishing-{{ value }}">{{ label }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Details Section -->
+                <div class="form-section">
+                    <h3>Property Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Project Name</label>
+                        <input type="text" name="project_name" class="form-control" placeholder="Project Name">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Area (sq ft)</label>
+                            <input type="number" name="area" class="form-control" required placeholder="Enter area in square feet">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Expected Price/Rent (INR)</label>
+                            <input type="number" name="budget" class="form-control" required placeholder="Expected amount in INR">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Floor Number</label>
+                            <input type="number" name="floor_num" class="form-control" placeholder="Floor Number (e.g., 5)">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Unit Number</label>
+                            <input type="text" name="unit_num" class="form-control" placeholder="Unit Number (e.g., A-101, B-205)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <select name="locations" class="form-control" required>
+                            <option value="">Select Location</option>
+                            {% for location in locations %}
+                            <option value="{{ location.id }}">{{ location.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Property Image</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" name="image" class="form-control" accept="image/*">
+                            <div class="file-upload-label">
+                                <span>📷 Click to upload property image</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Property Video (Optional)</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" name="video" class="form-control" accept="video/*">
+                            <div class="file-upload-label">
+                                <span>🎥 Click to upload property video (max 50MB)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Additional Details</label>
+                        <input type="text" name="additional_details" class="form-control" placeholder="Additional details about the property">
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="form-section">
+                    <h3>Contact Information</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Your Name</label>
+                            {{ form.contact_name }}  
+                    </div>
+
+                    <div class="form-row">
+                       <div class="form-group">
+                            {{ form.contact_number }}
+                        </div>
+
+                      <div class="form-group">
+                            {{ form.contact_email }}
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="search-btn">Submit Commercial Property</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Form Errors -->
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Toast Notification Container -->
+<div id="toast-container"></div>
+
+<button class="chat-bubble" id="chatBubble">
+  <i class="bi bi-chat-dots"></i>
+</button>
+
+<!-- Chat Overlay -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h5>AskHorizon</h5>
+        <small>Property Assistant</small>
+      </div>
+      <button class="chat-close" id="chatClose">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="avatar">👩</div>
+        <div class="content">
+        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
+        </div>
+      </div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar">👩</div>
+      <div class="typing-content">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <div class="quick-options" id="quickOptions">
+      <div class="quick-options-title">Quick Options:</div>
+      <div class="quick-options-buttons">
+        <button class="quick-option-btn" data-option="about">
+          <i class="bi bi-info-circle"></i>
+          What is Horizon Reality?
+        </button>
+        <button class="quick-option-btn" data-option="services">
+          <i class="bi bi-gear"></i>
+          Our Services
+        </button>
+        <button class="quick-option-btn" data-option="properties">
+          <i class="bi bi-house"></i>
+          Show Properties
+        </button>
+      </div>
+    </div>
+
+    <!-- FIXED Typing Indicator -->
+    
+
+    <div class="chat-input">
+      <div class="chat-input-group">
+        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+        <button class="chat-send-btn" id="chatSend">
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Toast notification function
+function showToast(title, message, type = 'error') {
+    const toastContainer = document.getElementById('toast-container');
+    
+    if (!toastContainer) {
+        console.error('Toast container not found!');
+        return;
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'error' ? '🚫' : '✅';
+    
+    toast.innerHTML = `
+        <div class="toast-content">
+            <div class="toast-icon">${icon}</div>
+            <div class="toast-text">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Show toast with animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Auto remove after 10 seconds
+    setTimeout(() => {
+        toast.style.transform = window.innerWidth <= 768 ? 'translateY(-100px)' : 'translateX(400px)';
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 400);
+    }, 10000);
+    
+    return toast;
+}
+
+// Function to toggle property subtype field
+function togglePropertySubtypeField() {
+    const commercialTypeRadios = document.querySelectorAll('input[name="commercial_type"]');
+    const propertySubtypeField = document.getElementById('property-subtype-field');
+    const propertySubtypeInput = document.querySelector('input[name="property_subtype"]');
+    
+    commercialTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'other') {
+                propertySubtypeField.classList.add('show');
+                propertySubtypeInput.setAttribute('required', 'required');
+            } else {
+                propertySubtypeField.classList.remove('show');
+                propertySubtypeInput.removeAttribute('required');
+                propertySubtypeInput.value = ''; // Clear the value when hidden
+            }
+        });
+    });
+    
+    // Initialize on page load
+    const checkedRadio = document.querySelector('input[name="commercial_type"]:checked');
+    if (checkedRadio && checkedRadio.value === 'other') {
+        propertySubtypeField.classList.add('show');
+        propertySubtypeInput.setAttribute('required', 'required');
+    }
+}
+
+// Check if user is authenticated
+const isUserAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+
+// Check for success message
+let hasSuccessMessage = false;
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            hasSuccessMessage = true;
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the conditional field functionality
+    togglePropertySubtypeField();
+    
+    // Show success toast if there's a success message
+    if (hasSuccessMessage) {
+        setTimeout(() => {
+            showToast(
+                'Property Submitted Successfully!',
+                'Your property has been submitted. We will let you know via email once your property gets listed.',
+                'success'
+            );
+        }, 500);
+    }
+});
+
+document.getElementById('property-form').addEventListener('submit', function (e) {
+    // First check if user is authenticated
+    if (!isUserAuthenticated) {
+        e.preventDefault();
+        
+        // Show toast notification
+        showToast(
+            'Registration Required',
+            'You need to register first to submit a property. Redirecting to registration page...'
+        );
+        
+        // Redirect to register page after 3 seconds
+        setTimeout(() => {
+            window.location.href = '{% url "register" %}';
+        }, 3000);
+        
+        return;
+    }
+    
+    // Enhanced validation including property subtype when "other" is selected
+    const propertyStatus = document.querySelector('input[name="property_status"]:checked');
+    const commercialType = document.querySelector('input[name="commercial_type"]:checked');
+    const furnishingType = document.querySelector('input[name="furnishing"]:checked');
+    const propertySubtypeInput = document.querySelector('input[name="property_subtype"]');
+
+    if (!propertyStatus) {
+        showToast(
+            'Validation Error',
+            'Please select a property status.',
+            'error'
+        );
+        e.preventDefault();
+        return;
+    }
+
+    if (!commercialType) {
+        showToast(
+            'Validation Error',
+            'Please select a commercial type.',
+            'error'
+        );
+        e.preventDefault();
+        return;
+    }
+
+    // Check if "Other" is selected and property subtype is required but empty
+    if (commercialType.value === 'other' && (!propertySubtypeInput.value || propertySubtypeInput.value.trim() === '')) {
+        showToast(
+            'Validation Error',
+            'Please specify the property type when "Other" is selected.',
+            'error'
+        );
+        e.preventDefault();
+        return;
+    }
+
+    if (!furnishingType) {
+        showToast(
+            'Validation Error',
+            'Please select a furnishing type.',
+            'error'
+        );
+        e.preventDefault();
+        return;
+    }
+});
+
+// Test function
+function testToast() {
+    showToast('Test Toast', 'This is a test message', 'success');
+}
+document.addEventListener('DOMContentLoaded', function() {
+     const chatBubble = document.getElementById('chatBubble');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickOptions = document.getElementById('quickOptions');
+
+    // Ensure all elements are found
+    if (!chatBubble || !chatOverlay || !chatClose || !chatInput || !chatSend || !chatMessages || !typingIndicator) {
+        console.error('One or more chat elements not found');
+        return;
+    }
+
+    // Initialize typing indicator
+    typingIndicator.style.display = 'none';
+
+    // Quick options responses
+    const quickOptionsResponses = {
+        about: `🏠 **About Horizon Reality**
+
+👋 Welcome to Horizon Reality : Your Gateway to Real Estate Excellence!
+
+I'm your virtual guide here to make your real estate journey easy, informed, and personalized.
+✨ Whether you're buying, selling, investing, or designing your space, we've got you covered.
+
+• Get expert help with managing your investment portfolio, financing, legal advice, and interiors.
+• Access premium properties through our trusted developer network.
+• Explore trending listings and unlock the best market deals.
+• Receive tailored support backed by real insights.
+
+Personal Consultation: Book time with our team for personalized guidance.
+Let's turn your dream space into a reality with trust, transparency, and complete support.
+
+How can I assist you today? 💬`,
+
+        services: `🛠️ **Our Services**
+
+**Property Services:**
+🛠 Our Services
+
+Property Services:
+🏠 Residential Properties
+🏢 Commercial Properties
+🔄 Resale & Leasing 
+💰 Property Investment Consultation
+
+Additional Services:
+🎨 Interior Design consultancy & Turnkey Solutions
+📋 Legal Documentation & Financing
+📊 Market Analysis & Insights
+🤝 Developer Partnerships
+
+Why Choose Us:
+✨ Client-centric approach with personalized solutions
+✨ Transparent and reliable processes
+✨ One-stop solution for all property needs
+✨ Strong network with trusted developers
+
+Want to know more about any specific service? Just ask! 😊`,
+
+        properties: `🏘️ **Our Property Portfolio**
+
+**Residential Properties:**
+🏠 1BHK, 2BHK, 3BHK, 4BHK, 5BHK Apartments
+🏡 Villas & Bungalows
+🏘 Duplex & Penthouse Options
+🏠 Tenements & Row Houses
+
+Commercial Properties:
+🏢 Office Spaces
+🏪 Retail Showrooms
+🏬 Shop Spaces
+🏢 Corporate Floors
+
+Property Categories:
+🆕 New Launch Projects
+🔄 Resale Properties
+🏠 Rental/Leasing Options
+💼 Investment Properties
+
+Some of the Popular Locations in Ahmedabad:
+📍Thaltej , South Bopal, Shela
+📍 Gota , Vaishnodevi, Science Park 
+📍 Prahlad Nagar, Satellite, SG Highway
+📍  Iscon, Ambli, Bodakdev, Vastrapur 
+
+Want to search for specific properties? Try asking:
+• "2BHK in Bopal under 50 lakhs"
+• "Commercial office space in SG Highway"
+• "Villas in Shela"`
+    };
+
+    // Handle quick option clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quick-option-btn')) {
+            const option = e.target.getAttribute('data-option');
+            const optionText = e.target.textContent.trim();
+            
+            // Add user message
+            addMessage(optionText, 'user');
+            
+            // KEEP QUICK OPTIONS VISIBLE - Remove this line
+            // if (quickOptions) {
+            //     quickOptions.style.display = 'none';
+            // }
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate delay and show response
+            setTimeout(() => {
+                hideTyping();
+                const response = quickOptionsResponses[option] || "Thanks for your question! How can I help you with your property needs?";
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+    });
+
+    chatBubble.addEventListener('click', () => {
+        console.log('Chat bubble clicked');
+        chatOverlay.classList.add('show');
+        
+        // Quick options are always visible, no need to show/hide
+        
+        setTimeout(() => {
+            chatInput.focus();
+        }, 300);
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatOverlay.classList.remove('show');
+        
+        // Quick options remain visible, no reset needed
+    });
+
+    chatOverlay.addEventListener('click', function (e) {
+        if (e.target === chatOverlay) {
+            chatOverlay.classList.remove('show');
+            
+            // Quick options remain visible, no reset needed
+        }
+    });
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    console.log('Sending message:', message);
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Ensure quick options remain visible (no hiding)
+    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
+    
+    chatSend.disabled = true;
+    chatInput.disabled = true;
+    chatBubble.classList.add('typing');
+
+    showTyping();
+
+    setTimeout(() => {
+        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
+                addMessage(formattedResponse, 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            })
+            .catch(error => {
+                console.error('Chat error:', error);
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            });
+    }, 1500);
+}
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+
+        if (sender === 'user') {
+            // Remove the "You" label by just showing the content
+            div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
+        } else {
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/🔗\s*<a\s+href="([^"]+)"\s+target="_blank"\s+class="property-link">([^<]+)<\/a>/g,
+                    '🔗 <a href="$1" target="_blank" class="property-link">$2</a>')
+                .replace(/📞\s*<a\s+href="([^"]+)"\s+class="contact-link">([^<]+)<\/a>/g,
+                    '📞 <a href="$1" class="contact-link">$2</a>');
+
+            div.innerHTML = `<div class="avatar">👩</div><div class="content">${formattedText}</div>`;
+        }
+
+        chatMessages.appendChild(div);
+
+        // Handle property links
+        div.querySelectorAll('.property-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                window.open(url, '_blank');
+                console.log('Opening property link:', url);
+            });
+        });
+
+        // Handle contact links
+        div.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                console.log('Calling:', this.getAttribute('href'));
+            });
+        });
+
+        // Smooth scroll to bottom
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function formatBotResponse(response) {
+        let formatted = response
+            .replace(/\*\*[^*]+\*\*/g, match => match)
+            .replace(/🏠|🏡|🔑|💰|📍|🏢|🔗|✅|📊|🛠️|🏘️|🆕|🔄|💼|📋|🎨|🏗️|🤝|✨|🌟|😊|😄|👋|💙|🤗|🌟|💫/g, match => match)
+            .replace(/Location:\s*/g, '\n📍 Location: ')
+            .replace(/Type:\s*/g, '\n🏗️ Type: ')
+            .replace(/Area:\s*/g, '\n📐 Area: ')
+            .replace(/Budget:\s*/g, '\n💰 Budget: ')
+            .replace(/Status:\s*/g, '\n📅 Status: ')
+            .replace(/View Details:/g, '\n🔗 View Details: ')
+            .replace(/\s+/g, ' ')
+            .replace(/\n+/g, '\n')
+            .trim();
+
+        if (formatted.includes('Found') && formatted.includes('properties')) {
+            formatted = formatted.replace(/Found \d+ properties for you:/, 'I found some properties for you:\n\n');
+            formatted = formatted.replace(/\n\n+/g, '\n\n');
+        }
+
+        return formatted;
+    }
+
+    function showTyping() {
+        console.log('Showing typing indicator');
+        typingIndicator.style.display = 'flex';
+        typingIndicator.classList.add('show');
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function hideTyping() {
+        console.log('Hiding typing indicator');
+        typingIndicator.classList.remove('show');
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+        }, 300);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Optional: Keyboard shortcut Ctrl + Space to open chat
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.code === 'Space') {
+            e.preventDefault();
+            if (!chatOverlay.classList.contains('show')) {
+                chatBubble.click();
+            }
+        }
+    });
+
+    // Make makeCall function globally available
+    window.makeCall = makeCall;
+});
+</script>
+{% endblock %}

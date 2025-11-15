@@ -1,0 +1,34 @@
+{{ company_name }} - New Property Alert! 🏡
+
+Hello {{ subscriber_name|default:"Valued Customer" }},
+
+We're excited to share a fantastic new property opportunity!
+
+PROPERTY DETAILS:
+================
+Property: {{ property.project_name }}
+Type: {{ property.get_property_type_display }}
+{% if property.configuration %}Configuration: {{ property.get_configuration_display }}{% endif %}
+{% if property.commercial_type %}Commercial Type: {{ property.get_commercial_type_display }}{% endif %}
+Area: {{ property.area }} sqft ({{ property.area_in_sqyards }} sq yards)
+Budget: {{ min_budget_display }} to {{ max_budget_display }}
+{% if property.locations %}Location: {{ property.locations.name }}{% endif %}
+{% if property.status %}Status: {{ property.get_status_display }}{% endif %}
+{% if property.possession_date %}Possession: {{ property.possession_date|date:"F Y" }}{% endif %}
+
+{% if property.salient_features %}
+KEY FEATURES:
+{{ property.salient_features }}
+{% endif %}
+
+🔗 View full details: {{ property_url }}
+
+Don't wait! Great properties get snapped up quickly.
+
+Contact us today for more information or to schedule a viewing.
+
+Best regards,
+The {{ company_name }} Team
+
+---
+You received this email because you subscribed to our newsletter.

@@ -1,0 +1,873 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us - Horizon Reality{% endblock %}
+{% block meta_description %}Get in touch with Horizon Reality for all your real estate needs. Visit our office, call us, or send us a message today.{% endblock %}
+{% block meta_keywords %}contact, real estate, inquiry, office hours, Horizon Reality{% endblock %}
+
+{% block nav_contact_active %}active{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/contact_us.css' %}" rel="stylesheet">
+<style>
+  /* Hero Section - Corporate Solid Background - Specific targeting */
+.hero-section {
+    position: relative;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f4b400;
+    background: linear-gradient(135deg, #f4b400 0%, #e6a300 25%, #f4b400 75%, #d89200 100%);
+    z-index: 1;
+}
+.index-page .header {
+  --background-color: rgba(0, 0, 0, 0.8)  !important;
+}
+
+/* Background layers for depth and corporate feel - Scoped to hero section */
+.hero-section .background-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.12) 0%, transparent 40%),
+        linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%);
+    background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+    z-index: 1;
+}
+
+/* Parallax layer - Scoped to hero section */
+.hero-section .parallax-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    z-index: 2;
+}
+
+/* Corporate geometric overlay for professional look - Scoped to hero section */
+.hero-section .geometric-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(45deg, rgba(255,255,255,0.08) 0%, transparent 60%),
+        linear-gradient(-45deg, rgba(0,0,0,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at center, rgba(255,255,255,0.06) 0%, transparent 70%);
+    z-index: 3;
+}
+
+/* Corporate grid pattern for structure - Scoped to hero section */
+.hero-section .corporate-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.7;
+    z-index: 4;
+}
+
+/* Refined gradient orbs - Scoped to hero section */
+.hero-section .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    z-index: 5;
+}
+
+.hero-section .orb-1 {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: 10%;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+}
+
+.hero-section .orb-2 {
+    width: 200px;
+    height: 200px;
+    bottom: 10%;
+    right: 10%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+/* Floating corporate elements - Scoped to hero section */
+.hero-section .floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 6;
+}
+
+.hero-section .floating-element {
+    position: absolute;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+}
+
+.hero-section .square-1 {
+    width: 60px;
+    height: 60px;
+    top: 20%;
+    left: 80%;
+    transform: rotate(45deg);
+    animation: gentleFloat 4s ease-in-out infinite;
+}
+
+.hero-section .square-2 {
+    width: 40px;
+    height: 40px;
+    top: 60%;
+    left: 15%;
+    transform: rotate(15deg);
+    animation: gentleFloat 6s ease-in-out infinite reverse;
+}
+
+.hero-section .square-3 {
+    width: 30px;
+    height: 30px;
+    top: 80%;
+    left: 75%;
+    transform: rotate(-30deg);
+    animation: gentleFloat 5s ease-in-out infinite;
+}
+
+.hero-section .square-4 {
+    width: 50px;
+    height: 50px;
+    top: 30%;
+    left: 5%;
+    transform: rotate(60deg);
+    animation: gentleFloat 7s ease-in-out infinite reverse;
+}
+
+/* Content styling - Scoped to hero section */
+.hero-section .content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section .content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #ffffff 0%, #f0f0f0 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-section .professional-line {
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, white 50%, transparent 100%);
+    margin: 2rem auto;
+    border-radius: 2px;
+}
+
+.hero-section .subtitle {
+    font-size: 1.3rem;
+    font-weight: 300;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+    letter-spacing: 1px;
+}
+
+/* Contact icons - Scoped to hero section */
+.hero-section .contact-icons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.hero-section .icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hero-section .icon-wrapper:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.hero-section .icon-wrapper i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); }
+    50% { transform: translateY(-15px) rotate(var(--rotation, 0deg)); }
+}
+
+/* Responsive design - Scoped to hero section */
+@media (max-width: 768px) {
+    .hero-section .content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section .subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-section .contact-icons {
+        gap: 1rem;
+    }
+    
+    .hero-section .icon-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .hero-section .floating-element {
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section .content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-section .subtitle {
+        font-size: 1rem;
+    }
+    
+    .hero-section .contact-icons {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body_class %}index-page{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+
+
+<!-- Contact Section -->
+<section id="contact" class="contact section">
+  <!-- Section Title -->
+  <div class="container section-title text-center" data-aos="fade-up">
+    <h2>Get in Touch</h2>
+    <p>Contact Us</p>
+  </div><!-- End Section Title -->
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    
+    <!-- Map Section -->
+    <!-- <div class="map-container" data-aos="fade-up" data-aos-delay="200"> -->
+      <!-- Updated to show India map -->
+      <!-- <iframe style="border:0; width: 100%; height: 350px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15126.28620995241!2d73.92422475!3d18.59334505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c147b8b3a3bf%3A0x6f7fdcc8e4d6c77e!2sPhoenix%20Marketcity%20Pune!5e0!3m2!1sen!2sin!4v1681870224564!5m2!1sen!2sin" frameborder="0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+    <!-- </div>End Google Maps -->
+
+    <div class="row gy-4 mt-4">
+      <div class="col-lg-4">
+        <div class="info-wrap" data-aos="fade-up" data-aos-delay="300">
+          {% if contact_info %}
+          <div class="info-item">
+            <i class="bi bi-geo-alt"></i>
+            <div>
+              <h3>{{ contact_info.office_name }}</h3>
+              <p>{{ contact_info.get_full_address }}</p>
+            </div>
+          </div><!-- End Info Item -->
+
+          <div class="info-item" data-aos="fade-up" data-aos-delay="400">
+            <i class="bi bi-telephone"></i>
+            <div>
+              <h3>Call Us</h3>
+              <p>{{ contact_info.primary_phone }}</p>
+              {% if contact_info.secondary_phone %}
+              <p>{{ contact_info.secondary_phone }}</p>
+              {% endif %}
+            </div>
+          </div><!-- End Info Item -->
+
+          <div class="info-item" data-aos="fade-up" data-aos-delay="500">
+            <i class="bi bi-envelope"></i>
+            <div>
+              <h3>Email Us</h3>
+              <p>{{ contact_info.primary_email }}</p>
+              {% if contact_info.secondary_email %}
+              <p>{{ contact_info.secondary_email }}</p>
+              {% endif %}
+            </div>
+          </div><!-- End Info Item -->
+          
+          <!-- Office Hours -->
+          <div class="office-hours" data-aos="fade-up" data-aos-delay="600">
+            <h3><i class="bi bi-clock"></i> Office Hours</h3>
+            <ul>
+              <li><span>Monday - Friday:</span> <span>{{ contact_info.weekday_hours_start|time:"g:i A" }} - {{ contact_info.weekday_hours_end|time:"g:i A" }}</span></li>
+              {% if contact_info.saturday_hours_start and contact_info.saturday_hours_end %}
+              <li><span>Saturday:</span> <span>{{ contact_info.saturday_hours_start|time:"g:i A" }} - {{ contact_info.saturday_hours_end|time:"g:i A" }}</span></li>
+              {% else %}
+              <li><span>Saturday:</span> <span>Closed</span></li>
+              {% endif %}
+              {% if contact_info.sunday_hours_start and contact_info.sunday_hours_end %}
+              <li><span>Sunday:</span> <span>{{ contact_info.sunday_hours_start|time:"g:i A" }} - {{ contact_info.sunday_hours_end|time:"g:i A" }}</span></li>
+              {% else %}
+              <li><span>Sunday:</span> <span>Closed</span></li>
+              {% endif %}
+            </ul>
+          </div>
+          {% else %}
+          <!-- Fallback if no contact info is available -->
+          <div class="info-item">
+            <i class="bi bi-exclamation-circle"></i>
+            <div>
+              <h3>Contact Information</h3>
+              <p>Contact information is being updated. Please use the form to get in touch with us.</p>
+            </div>
+          </div>
+          {% endif %}
+          
+          <!-- Social Links -->
+          <div class="social-linkss" data-aos="fade-up" data-aos-delay="700">
+            <a href="https://www.facebook.com/share/15YFGzJwgM/" class="facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/_horizonreality?igsh=bXF5cXlsdDc3NW5v" class="instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/team-horizon-reality/" class="linkedin"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="col-lg-8">
+        <div class="email-form" data-aos="fade-up" data-aos-delay="400">
+          <h3 class="mb-4 text-center">Send us a message</h3>
+          {% if messages %}
+            <div class="messages mb-3">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} d-flex align-items-center justify-content-between" role="alert">
+                  <div><i class="bi bi-check-circle-fill me-2"></i>{{ message }}</div>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <form action="{% url 'contact-us' %}" method="post">
+            {% csrf_token %}
+            <div class="row gy-4">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                </div>
+              </div>
+              
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                </div>
+              </div>
+              
+              <div class="col-md-12">
+                <div class="form-group">
+                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
+                </div>
+              </div>
+              
+              <div class="col-md-12 text-center">
+                <button type="submit" class="submit-button">
+                  <i class="bi bi-send me-2"></i> Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+          
+        </div>
+        
+        <!-- Section divider -->
+        <div class="section-divider" data-aos="fade-up"></div>
+        
+        <!-- FAQ or Additional info -->
+        <div class="row mt-4" data-aos="fade-up" data-aos-delay="600">
+          <div class="col-md-6 mb-4">
+            <div class="info-item">
+              <i class="bi bi-headset"></i>
+              <div>
+                <h3>Customer Support</h3>
+                <p>Our dedicated team is available to assist you with any inquiries or issues.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="info-item">
+              <i class="bi bi-building"></i>
+              <div>
+                <h3>Corporate Inquiries</h3>
+                <p>For business partnerships and corporate opportunities, please contact our business development team.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- /Contact Section -->
+<button class="chat-bubble" id="chatBubble">
+  <i class="bi bi-chat-dots"></i>
+</button>
+
+<!-- Chat Overlay -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h5>AskHorizon</h5>
+        <small>Property Assistant</small>
+      </div>
+      <button class="chat-close" id="chatClose">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="avatar">👩</div>
+        <div class="content">
+        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
+        </div>
+      </div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar">👩</div>
+      <div class="typing-content">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <div class="quick-options" id="quickOptions">
+      <div class="quick-options-title">Quick Options:</div>
+      <div class="quick-options-buttons">
+        <button class="quick-option-btn" data-option="about">
+          <i class="bi bi-info-circle"></i>
+          What is Horizon Reality?
+        </button>
+        <button class="quick-option-btn" data-option="services">
+          <i class="bi bi-gear"></i>
+          Our Services
+        </button>
+        <button class="quick-option-btn" data-option="properties">
+          <i class="bi bi-house"></i>
+          Show Properties
+        </button>
+      </div>
+    </div>
+
+    <!-- FIXED Typing Indicator -->
+   
+
+    <div class="chat-input">
+      <div class="chat-input-group">
+        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+        <button class="chat-send-btn" id="chatSend">
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // JavaScript to make the messages fade out after 5 seconds
+  window.onload = function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+      setTimeout(function() {
+        alert.style.transition = 'opacity 1s';
+        alert.style.opacity = 0;
+      }, 5000); // 5 seconds before fading out
+    });
+  };
+  document.addEventListener('mousemove', (e) => {
+            const cursor = { x: e.clientX, y: e.clientY };
+            const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+            
+            const moveX = (cursor.x - center.x) / center.x;
+            const moveY = (cursor.y - center.y) / center.y;
+            
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach((element, index) => {
+                const speed = (index + 1) * 0.5;
+                element.style.transform += ` translate(${moveX * speed}px, ${moveY * speed}px)`;
+            });
+        });
+
+        // Add scroll-based animations
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.parallax-layer');
+            if (parallax) {
+                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    document.addEventListener('DOMContentLoaded', function() {
+     const chatBubble = document.getElementById('chatBubble');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickOptions = document.getElementById('quickOptions');
+
+    // Ensure all elements are found
+    if (!chatBubble || !chatOverlay || !chatClose || !chatInput || !chatSend || !chatMessages || !typingIndicator) {
+        console.error('One or more chat elements not found');
+        return;
+    }
+
+    // Initialize typing indicator
+    typingIndicator.style.display = 'none';
+
+    // Quick options responses
+    const quickOptionsResponses = {
+        about: `🏠 **About Horizon Reality**
+
+👋 Welcome to Horizon Reality : Your Gateway to Real Estate Excellence!
+
+I'm your virtual guide here to make your real estate journey easy, informed, and personalized.
+✨ Whether you're buying, selling, investing, or designing your space, we've got you covered.
+
+• Get expert help with managing your investment portfolio, financing, legal advice, and interiors.
+• Access premium properties through our trusted developer network.
+• Explore trending listings and unlock the best market deals.
+• Receive tailored support backed by real insights.
+
+Personal Consultation: Book time with our team for personalized guidance.
+Let's turn your dream space into a reality with trust, transparency, and complete support.
+
+How can I assist you today? 💬`,
+
+        services: `🛠️ **Our Services**
+
+**Property Services:**
+🛠 Our Services
+
+Property Services:
+🏠 Residential Properties
+🏢 Commercial Properties
+🔄 Resale & Leasing 
+💰 Property Investment Consultation
+
+Additional Services:
+🎨 Interior Design consultancy & Turnkey Solutions
+📋 Legal Documentation & Financing
+📊 Market Analysis & Insights
+🤝 Developer Partnerships
+
+Why Choose Us:
+✨ Client-centric approach with personalized solutions
+✨ Transparent and reliable processes
+✨ One-stop solution for all property needs
+✨ Strong network with trusted developers
+
+Want to know more about any specific service? Just ask! 😊`,
+
+        properties: `🏘️ **Our Property Portfolio**
+
+**Residential Properties:**
+🏠 1BHK, 2BHK, 3BHK, 4BHK, 5BHK Apartments
+🏡 Villas & Bungalows
+🏘 Duplex & Penthouse Options
+🏠 Tenements & Row Houses
+
+Commercial Properties:
+🏢 Office Spaces
+🏪 Retail Showrooms
+🏬 Shop Spaces
+🏢 Corporate Floors
+
+Property Categories:
+🆕 New Launch Projects
+🔄 Resale Properties
+🏠 Rental/Leasing Options
+💼 Investment Properties
+
+Some of the Popular Locations in Ahmedabad:
+📍Thaltej , South Bopal, Shela
+📍 Gota , Vaishnodevi, Science Park 
+📍 Prahlad Nagar, Satellite, SG Highway
+📍  Iscon, Ambli, Bodakdev, Vastrapur 
+
+Want to search for specific properties? Try asking:
+• "2BHK in Bopal under 50 lakhs"
+• "Commercial office space in SG Highway"
+• "Villas in Shela"`
+    };
+
+    // Handle quick option clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quick-option-btn')) {
+            const option = e.target.getAttribute('data-option');
+            const optionText = e.target.textContent.trim();
+            
+            // Add user message
+            addMessage(optionText, 'user');
+            
+            // KEEP QUICK OPTIONS VISIBLE - Remove this line
+            // if (quickOptions) {
+            //     quickOptions.style.display = 'none';
+            // }
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate delay and show response
+            setTimeout(() => {
+                hideTyping();
+                const response = quickOptionsResponses[option] || "Thanks for your question! How can I help you with your property needs?";
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+    });
+
+    chatBubble.addEventListener('click', () => {
+        console.log('Chat bubble clicked');
+        chatOverlay.classList.add('show');
+        
+        // Quick options are always visible, no need to show/hide
+        
+        setTimeout(() => {
+            chatInput.focus();
+        }, 300);
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatOverlay.classList.remove('show');
+        
+        // Quick options remain visible, no reset needed
+    });
+
+    chatOverlay.addEventListener('click', function (e) {
+        if (e.target === chatOverlay) {
+            chatOverlay.classList.remove('show');
+            
+            // Quick options remain visible, no reset needed
+        }
+    });
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    console.log('Sending message:', message);
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Ensure quick options remain visible (no hiding)
+    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
+    
+    chatSend.disabled = true;
+    chatInput.disabled = true;
+    chatBubble.classList.add('typing');
+
+    showTyping();
+
+    setTimeout(() => {
+        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
+                addMessage(formattedResponse, 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            })
+            .catch(error => {
+                console.error('Chat error:', error);
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            });
+    }, 1500);
+}
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+
+        if (sender === 'user') {
+            // Remove the "You" label by just showing the content
+            div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
+        } else {
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/🔗\s*<a\s+href="([^"]+)"\s+target="_blank"\s+class="property-link">([^<]+)<\/a>/g,
+                    '🔗 <a href="$1" target="_blank" class="property-link">$2</a>')
+                .replace(/📞\s*<a\s+href="([^"]+)"\s+class="contact-link">([^<]+)<\/a>/g,
+                    '📞 <a href="$1" class="contact-link">$2</a>');
+
+            div.innerHTML = `<div class="avatar">👩</div><div class="content">${formattedText}</div>`;
+        }
+
+        chatMessages.appendChild(div);
+
+        // Handle property links
+        div.querySelectorAll('.property-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                window.open(url, '_blank');
+                console.log('Opening property link:', url);
+            });
+        });
+
+        // Handle contact links
+        div.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                console.log('Calling:', this.getAttribute('href'));
+            });
+        });
+
+        // Smooth scroll to bottom
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function formatBotResponse(response) {
+        let formatted = response
+            .replace(/\*\*[^*]+\*\*/g, match => match)
+            .replace(/🏠|🏡|🔑|💰|📍|🏢|🔗|✅|📊|🛠️|🏘️|🆕|🔄|💼|📋|🎨|🏗️|🤝|✨|🌟|😊|😄|👋|💙|🤗|🌟|💫/g, match => match)
+            .replace(/Location:\s*/g, '\n📍 Location: ')
+            .replace(/Type:\s*/g, '\n🏗️ Type: ')
+            .replace(/Area:\s*/g, '\n📐 Area: ')
+            .replace(/Budget:\s*/g, '\n💰 Budget: ')
+            .replace(/Status:\s*/g, '\n📅 Status: ')
+            .replace(/View Details:/g, '\n🔗 View Details: ')
+            .replace(/\s+/g, ' ')
+            .replace(/\n+/g, '\n')
+            .trim();
+
+        if (formatted.includes('Found') && formatted.includes('properties')) {
+            formatted = formatted.replace(/Found \d+ properties for you:/, 'I found some properties for you:\n\n');
+            formatted = formatted.replace(/\n\n+/g, '\n\n');
+        }
+
+        return formatted;
+    }
+
+    function showTyping() {
+        console.log('Showing typing indicator');
+        typingIndicator.style.display = 'flex';
+        typingIndicator.classList.add('show');
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function hideTyping() {
+        console.log('Hiding typing indicator');
+        typingIndicator.classList.remove('show');
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+        }, 300);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Optional: Keyboard shortcut Ctrl + Space to open chat
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.code === 'Space') {
+            e.preventDefault();
+            if (!chatOverlay.classList.contains('show')) {
+                chatBubble.click();
+            }
+        }
+    });
+
+    // Make makeCall function globally available
+    window.makeCall = makeCall;
+});
+</script>
+{% endblock %}

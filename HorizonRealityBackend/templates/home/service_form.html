@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Services - Horizon Reality{% endblock %}
+
+{% block meta_description %}Find your dream property with our comprehensive property search service. Filter by property type, budget, location and more.{% endblock %}
+
+{% block meta_keywords %}property search, real estate, buy property, sell property, rent property, commercial property, residential property, interior design{% endblock %}
+
+{% block nav_services_active %}active{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/services.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="filter-container">
+  <!-- Main Service Tabs -->
+<div class="filter-tabs">
+  <button class="filter-tab" id="buy-tab" onclick="openFilterTab('buy')">Buy Property</button>
+
+</div>
+  
+  <!-- Buy Tab Content -->
+  <div id="buy" class="filter-content">
+  </div>    
+    <!-- Commercial Form -->
+    <div id="commercial-form" class="filter-form">
+      <div class="form-group">
+        <label class="form-label">Property Type</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="showroom" checked>
+            <label for="showroom">Showroom</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="office" checked>
+            <label for="office">Office</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="corporate">
+            <label for="corporate">Corporate Floors</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Property Status</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="new-com" checked>
+            <label for="new-com">New</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="resale-com">
+            <label for="resale-com">Resale</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="rent-com">
+            <label for="rent-com">Rent</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="lease-com">
+            <label for="lease-com">Lease</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Furnishing</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="furnished" checked>
+            <label for="furnished">Furnished</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="naked">
+            <label for="naked">Naked</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Area Requirement (sq ft)</label>
+        <input type="range" class="range-slider" min="300" max="50000" value="2000" id="area-com-slider">
+        <div class="range-values">
+          <span>300 sq ft</span>
+          <span id="area-com-value">2000 sq ft</span>
+          <span>50000+ sq ft</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Budget</label>
+        <input type="range" class="range-slider" min="20000" max="100000000" value="10000000" id="budget-com-slider">
+        <div class="range-values">
+          <span>₹20,000</span>
+          <span id="budget-com-value">₹1,00,00,000</span>
+          <span>₹10 Cr+</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <div class="location-filter checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="sg-highway-com" checked>
+            <label for="sg-highway-com">SG Highway</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="bodakdev-com">
+            <label for="bodakdev-com">Bodakdev</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="bopal-com">
+            <label for="bopal-com">Bopal</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="ambli-com">
+            <label for="ambli-com">Ambli Road</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="south-bopal-com">
+            <label for="south-bopal-com">South Bopal</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="shela-com">
+            <label for="shela-com">Shela</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="linkin-com">
+            <label for="linkin-com">Linkin Road</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="billionaire-com">
+            <label for="billionaire-com">Billionaire Street</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="vip-com">
+            <label for="vip-com">VIP Road</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="wapa-com">
+            <label for="wapa-com">Wapa</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="prahladnagar-com" checked>
+            <label for="prahladnagar-com">Prahladnagar</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="satellite-com">
+            <label for="satellite-com">Satellite</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="gurukul-com">
+            <label for="gurukul-com">Gurukul</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="memnagar-com">
+            <label for="memnagar-com">Memnagar</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="thaltej-com">
+            <label for="thaltej-com">Thaltej</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sheelaj-com">
+            <label for="sheelaj-com">Sheelaj</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="vastrapur-com">
+            <label for="vastrapur-com">Vastrapur</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="shyamal-com">
+            <label for="shyamal-com">Shyamal</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="science-city-com">
+            <label for="science-city-com">Science City</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="bhadaj-com">
+            <label for="bhadaj-com">Bhadaj</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sindhu-bhavan-com">
+            <label for="sindhu-bhavan-com">Sindhu Bhavan Road</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="navrangpura-com">
+            <label for="navrangpura-com">Navrangpura</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="ashram-road-com">
+            <label for="ashram-road-com">Ashram Road</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sola-com">
+            <label for="sola-com">Sola</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="gota-com">
+            <label for="gota-com">Gota</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="jagatpur-com">
+            <label for="jagatpur-com">Jagatpur</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="cg-road-com" checked>
+            <label for="cg-road-com">CG Road</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="nehrunagar-com">
+            <label for="nehrunagar-com">Nehrunagar</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="ambawadi-com">
+            <label for="ambawadi-com">Ambawadi</label>
+          </div>
+        </div>
+      </div>
+      
+      <button class="search-btn">Search Properties</button>
+    </div>
+  </div>
+   
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Open filter tabs
+  function openFilterTab(tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("filter-content");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].classList.remove("active");
+    }
+    tablinks = document.getElementsByClassName("filter-tab");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].classList.remove("active");
+    }
+    document.getElementById(tabName).classList.add("active");
+    event.currentTarget.classList.add("active");
+  }
+  
+  // Open property type tabs
+  function openPropertyType(formName, element) {
+    var i, formcontent, formlinks;
+    formcontent = document.getElementsByClassName("filter-form");
+    for (i = 0; i < formcontent.length; i++) {
+      formcontent[i].classList.remove("active");
+    }
+    formlinks = document.getElementsByClassName("property-type-tab");
+    for (i = 0; i < formlinks.length; i++) {
+      formlinks[i].classList.remove("active");
+    }
+    document.getElementById(formName + "-form").classList.add("active");
+    element.classList.add("active");
+  }
+  
+  // Slider functionality for residential buy
+  const areaResSlider = document.getElementById("area-res-slider");
+  const areaResValue = document.getElementById("area-res-value");
+  areaResSlider.oninput = function() {
+    areaResValue.textContent = this.value + " sq ft";
+  }
+  
+  const budgetResSlider = document.getElementById("budget-res-slider");
+  const budgetResValue = document.getElementById("budget-res-value");
+  budgetResSlider.oninput = function() {
+    budgetResValue.textContent = "₹" + formatPrice(this.value);
+  }
+  
+  // Slider functionality for commercial buy
+  const areaComSlider = document.getElementById("area-com-slider");
+  const areaComValue = document.getElementById("area-com-value");
+  areaComSlider.oninput = function() {
+    areaComValue.textContent = this.value + " sq ft";
+  }
+  
+  const budgetComSlider = document.getElementById("budget-com-slider");
+  const budgetComValue = document.getElementById("budget-com-value");
+  budgetComSlider.oninput = function() {
+    budgetComValue.textContent = "₹" + formatPrice(this.value);
+  }
+  
+  // Format price with commas for Indian numbering system
+  function formatPrice(price) {
+    price = parseInt(price);
+    if (price >= 10000000) {
+      return (price / 10000000).toFixed(2) + " Cr";
+    } else if (price >= 100000) {
+      return (price / 100000).toFixed(2) + " Lakh";
+    } else {
+      return price.toLocaleString('en-IN');
+    }
+  }
+    // Pass Django context to JavaScript
+  const djangoActiveTab = '{{ active_tab|default:"" }}';
+  
+  function initializePage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTab = urlParams.get('tab');
+    
+    // Priority: Django context > URL parameter > default
+    let activeTab = 'buy'; // default
+    
+    if (djangoActiveTab) {
+      // Django passed an active tab (usually after form submission with errors)
+      activeTab = djangoActiveTab;
+    } else if (urlTab) {
+      // URL has tab parameter (usually after successful submission redirect)
+      activeTab = urlTab;
+    }
+    
+    openFilterTab(activeTab);
+  }
+
+  // Call initialization when page loads
+  document.addEventListener('DOMContentLoaded', initializePage);
+
+  // Open filter tabs
+  function openFilterTab(tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("filter-content");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].classList.remove("active");
+    }
+    tablinks = document.getElementsByClassName("filter-tab");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].classList.remove("active");
+    }
+    document.getElementById(tabName).classList.add("active");
+    document.getElementById(tabName + "-tab").classList.add("active");
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,2048 @@
+  {% extends "base.html" %}
+  {% load static %}
+
+  {% block title %}Properties - Horizon Reality{% endblock %}
+{% block nav_properties_active %}active{% endblock %}
+
+  {% block extra_css %}
+  <link href="{% static 'css/property-list.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  {% endblock %}
+
+  {% block content %}
+  <!-- Breadcrumb Section -->
+  <div class="breadcrumb-section">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">
+              <i class="bi bi-house-door-fill breadcrumb-home-icon"></i>Home
+            </a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Properties
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="toast-container">
+          <!-- Warning Toast -->
+          <div id="warningToast" class="toast custom-toast toast-warning" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header">
+                  <i class="fas fa-exclamation-triangle toast-icon text-warning"></i>
+                  <strong class="me-auto">Comparison Limit</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                  <strong>Maximum 3 properties allowed!</strong><br>
+                  You can compare up to 3 properties at a time for the best comparison experience.
+              </div>
+          </div>
+          
+          <!-- Success Toast -->
+          <div id="successToast" class="toast custom-toast toast-success" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header">
+                  <i class="fas fa-check-circle toast-icon text-success"></i>
+                  <strong class="me-auto">Property Added</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                  Property added to comparison list successfully!
+              </div>
+          </div>
+      </div>
+
+
+  <!-- Property Comparison Modal -->
+  <div class="modal fade comparison-modal" id="comparisonModal" tabindex="-1" aria-labelledby="comparisonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="comparisonModalLabel">
+            <i class="fas fa-balance-scale me-2"></i>Property Comparison
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table comparison-table" id="comparisonTable">
+              <!-- Table content will be dynamically generated -->
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn" style="background-color: #f4b400; color: white; border: none;" onclick="clearAllCompare(); bootstrap.Modal.getInstance(document.getElementById('comparisonModal')).hide();">
+            <i class="fas fa-times me-2"></i>Clear Selection
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Results Info -->
+  <!-- Integrated Search and Filters Section -->
+  <section class="filters-section" id="filters">
+    <div class="container">
+      <div class="filters-container" data-aos="fade-up">
+        <div class="filters-header">
+          <div class="header-left">
+            <h3><i class="fas fa-filter"></i> Find Your Perfect Property</h3>
+          </div>
+          
+          <div class="header-center">
+            <!-- Integrated Search Bar -->
+            <form method="get" action="{% url 'property_list' %}" class="search-form-inline">
+              <!-- Preserve existing filters -->
+              {% if current_filters.property_type %}
+                <input type="hidden" name="property_type" value="{{ current_filters.property_type }}">
+              {% endif %}
+              {% if current_filters.category %}
+                <input type="hidden" name="category" value="{{ current_filters.category }}">
+              {% endif %}
+              {% if current_filters.configuration %}
+                <input type="hidden" name="configuration" value="{{ current_filters.configuration }}">
+              {% endif %}
+              {% if current_filters.location %}
+                <input type="hidden" name="location" value="{{ current_filters.location }}">
+              {% endif %}
+              {% if current_filters.status %}
+                <input type="hidden" name="status" value="{{ current_filters.status }}">
+              {% endif %}
+              {% if current_filters.min_budget %}
+                <input type="hidden" name="min_budget" value="{{ current_filters.min_budget }}">
+              {% endif %}
+              {% if current_filters.max_budget %}
+                <input type="hidden" name="max_budget" value="{{ current_filters.max_budget }}">
+              {% endif %}
+              
+              <div class="search-box-compact">
+                <i class="fas fa-search search-icon-compact"></i>
+                <input type="text" 
+                      name="search" 
+                      class="search-input-compact" 
+                      placeholder="Search by project name, BHK, location..." 
+                      value="{{ current_filters.search }}"
+                      autocomplete="off">
+                <button type="submit" class="btn-search-compact">
+                  <i class="fas fa-search"></i>
+                </button>
+                {% if current_filters.search %}
+                  <a href="{% url 'property_list' %}" class="btn-clear-compact">
+                    <i class="fas fa-times"></i>
+                  </a>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+          
+          <div class="header-right">
+          <button class="btn toggle-filters-btn-compact" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+              <i class="fas fa-sliders-h"></i> Toggle Filters
+            </button>
+          </div>
+        </div>
+        
+        <!-- Search Suggestions and Tags -->
+        <div class="search-meta-row">
+          <div class="search-suggestions-compact">
+            Try searching: "2BHK", "Gachibowli", "Whitefield", "3BHK Apartments"
+          </div>
+          
+          <div class="search-tags-compact">
+            <span class="search-tag-compact" onclick="searchByTag('1BHK')">1BHK</span>
+            <span class="search-tag-compact" onclick="searchByTag('2BHK')">2BHK</span>
+            <span class="search-tag-compact" onclick="searchByTag('3BHK')">3BHK</span>
+            <span class="search-tag-compact" onclick="searchByTag('Penthouse')">Penthouse</span>
+            <span class="search-tag-compact" onclick="searchByTag('Duplex')">Duplex</span>
+          </div>
+        </div>
+        
+        <div class="collapse show" id="filterCollapse">
+          <form method="get" action="{% url 'property_list' %}" class="filter-form">
+            <!-- Preserve search query in filters -->
+            {% if current_filters.search %}
+              <input type="hidden" name="search" value="{{ current_filters.search }}">
+            {% endif %}
+            
+            <div class="row g-3">
+              <!-- Property Type Filter -->
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="property_type"><i class="fas fa-home"></i> Property Type</label>
+                  <select name="property_type" id="property_type" class="form-select">
+                    <option value="">All Types</option>
+                    {% for value, display in property_types %}
+                    <option value="{{ value }}" {% if current_filters.property_type == value %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Category Filter -->
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="category"><i class="fas fa-tag"></i> Category</label>
+                  <select name="category" id="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for value, display in categories %}
+                    <option value="{{ value }}" {% if current_filters.category == value %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Configuration Filter -->
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="configuration"><i class="fas fa-building"></i> Configuration</label>
+                  <select name="configuration" id="configuration" class="form-select">
+                    <option value="">Any Configuration</option>
+                    
+                    <!-- Residential Configurations -->
+                    {% for value, display in residential_configurations %}
+                    <option value="{{ value }}" 
+                            class="configuration-option residential-config" 
+                            {% if current_filters.configuration == value %}selected{% endif %}>
+                      {{ display }}
+                    </option>
+                    {% endfor %}
+                    
+                    <!-- Commercial Configurations -->
+                    {% for value, display in commercial_configurations %}
+                    <option value="{{ value }}" 
+                            class="configuration-option commercial-config" 
+                            {% if current_filters.configuration == value %}selected{% endif %}>
+                      {{ display }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Location Filter -->
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="location"><i class="fas fa-map-marker-alt"></i> Location</label>
+                  <select name="location" id="location" class="form-select">
+                    <option value="">All Locations</option>
+                    {% for location in locations %}
+                    <option value="{{ location.id }}" {% if current_filters.location == location.id|stringformat:"i" %}selected{% endif %}>{{ location.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Status Filter -->
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="status"><i class="fas fa-info-circle"></i> Status</label>
+                  <select name="status" id="status" class="form-select">
+                    <option value="">Any Status</option>
+                    {% for value, display in statuses %}
+                    <option value="{{ value }}" {% if current_filters.status == value %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Budget Range -->
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="min_budget"><i class="fas fa-rupee-sign"></i> Min Budget</label>
+                  <input type="number" name="min_budget" id="min_budget" class="form-control" placeholder="Min Budget" value="{{ current_filters.min_budget }}">
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-3">
+                <div class="form-group">
+                  <label for="max_budget"><i class="fas fa-rupee-sign"></i> Max Budget</label>
+                  <input type="number" name="max_budget" id="max_budget" class="form-control" placeholder="Max Budget" value="{{ current_filters.max_budget }}">
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="col-md-6 col-lg-3 d-flex align-items-end">
+                <div class="action-buttons">
+                  <button type="submit" class="btn btn-primary filter-btn">
+                    <i class="fas fa-search"></i> Apply Filters
+                  </button>
+                  <a href="{% url 'property_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Clear All
+                  </a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties List Section -->
+  <section class="properties-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <h2>
+          {% if current_filters.search %}
+            Search Results
+          {% else %}
+            Available Properties
+          {% endif %}
+        </h2>
+        <p>
+          {% if current_filters.search %}
+            Properties matching "{{ current_filters.search }}"
+          {% else %}
+            Find your perfect match from our exclusive collection
+          {% endif %}
+        </p>
+      </div>
+      
+      <div class="row">
+        <div class="col-12">
+          <div class="properties-found">
+            <p><span class="count">{{ total_properties.count }}</span></p>
+            <div class="view-options">
+              <button class="btn view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+              <button class="btn view-btn" data-view="list"><i class="fas fa-list"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if properties %}
+      <div class="row gy-4 property-grid" data-aos="fade-up" data-aos-delay="100">
+        {% for property in properties %}
+        <div class="col-md-6 col-lg-4">
+          <div class="property-card" data-property-id="{{ property.id }}">
+            <div class="property-image">
+              {% if property.image %}
+              <img src="{{ property.image.url }}" alt="{{ property }}" class="img-fluid">
+              {% else %}
+              <img src="{% static 'img/default-property.jpg' %}" alt="{{ property }}" class="img-fluid">
+              {% endif %}
+              <div class="property-tags">
+                <span class="property-tag type-tag">{{ property.get_property_type_display }}</span>
+                {% if property.status %}
+                  <span class="property-tag status-tag">{{ property.get_status_display }}</span>
+                {% endif %}
+
+              </div>
+              <div class="property-favorite">
+                <button class="favorite-btn" data-property-id="{{ property.id }}">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+            </div>
+            <div class="property-details">
+              <h3>
+                {% if property.project_name %}{{ property.project_name }} - {% endif %}
+                {% if property.locations %}{{ property.locations.name }} - {% endif %}
+                {% if property.configuration %}{{ property.get_configuration_display }}{% endif %}
+                {% if property.commercial_type %}{{ property.get_commercial_type_display }}{% endif %}
+              </h3>
+              <div class="property-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{% if property.locations %}{{ property.locations.name }}{% else %}Location N/A{% endif %}</span>
+              </div>
+              <div class="property-specs">
+                <div class="spec">
+                  <i class="fas fa-vector-square"></i>
+                  <span>{{ property.area }} sqft</span>
+                </div>
+                {% if property.furnishing %}
+                <div class="spec">
+                  <i class="fas fa-couch"></i>
+                  <span>{{ property.get_furnishing_display }}</span>
+                </div>
+                {% endif %}
+                {% if property.bathrooms %}
+                <div class="spec">
+                  <i class="fas fa-bath"></i>
+                  <span>{{ property.bathrooms }} Bath</span>
+                </div>
+                {% endif %}
+              </div>
+              <div class="property-price">
+                {% if property.min_budget == property.max_budget and property.min_budget_unit == property.max_budget_unit %}
+                  ₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }}
+                {% else %}
+                  ₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }} - 
+                  ₹{{ property.max_budget }} {{ property.get_max_budget_unit_display }}
+                {% endif %}
+              </div>
+              <div class="property-actions">
+                <a href="{% url 'property:property_detail' property.slug %}" class="btn btn-view">
+                  <i class="fas fa-info-circle"></i> View Details
+                </a>
+                <a href="#" class="btn btn-quick-call" data-bs-toggle="modal" data-bs-target="#quickCallModal" data-property-id="{{ property.id }}">
+                  <i class="fas fa-phone"></i> Call Now
+                </a>
+              </div>
+              
+              <!-- Compare Section -->
+              <div class="compare-section">
+                <div class="compare-checkbox-wrapper">
+                  <input type="checkbox" 
+                        class="compare-checkbox" 
+                        id="compare-{{ property.id }}" 
+                        data-property-id="{{ property.id }}"
+                        data-property-name="{% if property.project_name %}{{ property.project_name }}{% else %}{{ property.get_configuration_display }} - {{ property.locations.name }}{% endif %}"
+                        data-property-price="{% if property.min_budget == property.max_budget %}₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }}{% else %}₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }} - ₹{{ property.max_budget }} {{ property.get_max_budget_unit_display }}{% endif %}"
+                        data-property-location="{% if property.locations %}{{ property.locations.name }}{% else %}Location N/A{% endif %}"
+                        data-property-type="{% if property.configuration %}{{ property.get_configuration_display }}{% endif %}{% if property.commercial_type %}{{ property.get_commercial_type_display }}{% endif %}"
+                        data-property-category="{% if property.property_type == 'commercial' %}commercial{% else %}residential{% endif %}"
+                        data-property-area="{{ property.area }}"
+                        data-property-furnishing="{% if property.furnishing %}{{ property.get_furnishing_display }}{% else %}Not Specified{% endif %}"
+                        onchange="handleCompareChange(this)">
+                  <label for="compare-{{ property.id }}" class="compare-label">
+                    <i class="fas fa-columns me-1"></i> Compare
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+
+<!-- Enhanced Pagination Section -->
+{% if properties.has_other_pages %}
+<div class="row mt-5">
+  <div class="col-12">
+    <!-- Pagination Info -->
+    <div class="pagination-info text-center mb-3">
+      <p class="mb-0">
+        Showing {{ properties.start_index }} to {{ properties.end_index }} of {{ total_properties }} properties
+        {% if current_filters.search %}
+          matching "{{ current_filters.search }}"
+        {% endif %}
+      </p>
+    </div>
+    
+    <!-- Pagination Navigation -->
+    <nav aria-label="Property pagination" class="pagination-nav">
+      <ul class="pagination justify-content-center">
+        
+        <!-- First Page Link -->
+        {% if properties.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1{% for key, value in current_filters.items %}{% if value and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="First">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+        {% endif %}
+        
+        <!-- Previous Page Link -->
+        {% if properties.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ properties.previous_page_number }}{% for key, value in current_filters.items %}{% if value and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="d-none d-sm-inline"> Previous</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">
+              &laquo;<span class="d-none d-sm-inline"> Previous</span>
+            </span>
+          </li>
+        {% endif %}
+        
+        <!-- Page Numbers with Smart Range -->
+        {% with ''|center:properties.paginator.num_pages as range %}
+        {% for i in properties.paginator.page_range %}
+          {% if properties.number == i %}
+            <!-- Current Page -->
+            <li class="page-item active" aria-current="page">
+              <span class="page-link">
+                {{ i }}
+                <span class="sr-only">(current)</span>
+              </span>
+            </li>
+          {% elif i <= 3 or i > properties.paginator.num_pages|add:'-3' or i >= properties.number|add:'-2' and i <= properties.number|add:'2' %}
+            <!-- Show first 3, last 3, and current +/- 2 pages -->
+            <li class="page-item">
+              <a class="page-link" href="?page={{ i }}{% for key, value in current_filters.items %}{% if value and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
+            </li>
+          {% elif i == 4 and properties.number > 6 %}
+            <!-- Show ellipsis after first 3 pages if current page is far enough -->
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          {% elif i == properties.paginator.num_pages|add:'-3' and properties.number < properties.paginator.num_pages|add:'-5' %}
+            <!-- Show ellipsis before last 3 pages if current page is far enough -->
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% endwith %}
+        
+        <!-- Next Page Link -->
+        {% if properties.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ properties.next_page_number }}{% for key, value in current_filters.items %}{% if value and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+              <span class="d-none d-sm-inline">Next </span>
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">
+              <span class="d-none d-sm-inline">Next </span>&raquo;
+            </span>
+          </li>
+        {% endif %}
+        
+        <!-- Last Page Link -->
+        {% if properties.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ properties.paginator.num_pages }}{% for key, value in current_filters.items %}{% if value and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Last">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+        {% endif %}
+        
+      </ul>
+    </nav>
+    
+    <!-- Quick Page Jump (Optional - for large datasets) -->
+    {% if properties.paginator.num_pages > 10 %}
+    <div class="quick-page-jump text-center mt-3">
+      <form method="get" class="d-inline-block" onsubmit="return validatePageJump()">
+        <!-- Preserve all current filters -->
+        {% for key, value in current_filters.items %}
+          {% if value and key != 'page' %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+          {% endif %}
+        {% endfor %}
+        
+        <div class="input-group input-group-sm" style="width: 200px; margin: 0 auto;">
+          <span class="input-group-text">Go to page:</span>
+          <input type="number" 
+                 name="page" 
+                 class="form-control" 
+                 min="1" 
+                 max="{{ properties.paginator.num_pages }}" 
+                 placeholder="Page"
+                 value="{{ properties.number }}"
+                 id="pageJumpInput">
+          <button class="btn btn-outline-secondary" type="submit">Go</button>
+        </div>
+      </form>
+    </div>
+    {% endif %}
+    
+  </div>
+</div>
+{% endif %}
+      
+      {% else %}
+      <div class="row">
+        <div class="col-12">
+          <div class="no-properties text-center py-5">
+            <i class="fas fa-house-damage"></i>
+            <h3>No properties found</h3>
+            <p>
+              {% if current_filters.search %}
+                No properties match your search "{{ current_filters.search }}". Try different keywords or adjust your filters.
+              {% else %}
+                Try adjusting your filters or check back later for new listings.
+              {% endif %}
+            </p>
+            <a href="{% url 'property_list' %}" class="btn btn-primary mt-3">
+              <i class="fas fa-sync"></i> Reset All Filters
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Compare Floating Bar -->
+  <div class="compare-floating-bar" id="compareFloatingBar">
+    <div class="compare-count-badge" id="compareCount">0</div>
+    <span>Properties Selected</span>
+    <button class="compare-btn" onclick="goToCompare()">
+      <i class="fas fa-balance-scale"></i> Compare Now
+    </button>
+    <button class="clear-compare-btn" onclick="clearAllCompare()">
+      <i class="fas fa-trash"></i> Clear
+    </button>
+  </div>
+
+  <!-- Property Inquiry Modal -->
+  <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Property Inquiry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="inquiryForm">
+            <input type="hidden" id="inquiryPropertyId" name="property_id">
+            <div class="mb-3">
+              <label for="inquiryName" class="form-label">Your Name</label>
+              <input type="text" class="form-control" id="inquiryName" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="inquiryEmail" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="inquiryEmail" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="inquiryPhone" class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="inquiryPhone" name="phone" required>
+            </div>
+            <div class="mb-3">
+              <label for="inquiryMessage" class="form-label">Message</label>
+              <textarea class="form-control" id="inquiryMessage" name="message" rows="4" required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="submitInquiry">Submit Inquiry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade quick-call-modal" id="quickCallModal" tabindex="-1" aria-labelledby="quickCallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="quickCallModalLabel">
+              <i class="fas fa-phone"></i>
+                Call Now - Property Inquiry
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="call-info-card">
+            <h5>Connect with Our Property Expert</h5>
+            <p class="mb-2">Speak directly with our consultant for instant assistance</p>
+            <div class="phone-number">+91 9104828680</div>
+            <div class="availability-status">
+              <i class="fas fa-circle"></i>
+              Available Now - Mon to Sat, 9 AM to 8 PM
+            </div>
+          </div>
+          <div class="call-actions">
+            <button class="btn btn-call-now" onclick="makeCall()">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </button>
+            <button class="btn btn-whatsapp" onclick="openWhatsAppDetailed()">
+              <i class="fab fa-whatsapp"></i>
+              WhatsApp
+            </button>
+          </div>
+          <div class="call-features">
+            <div class="feature-item">
+              <i class="fas fa-clock"></i>
+                <span>Instant Response</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-user-tie"></i>
+              <span>Expert Consultant</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Site Visit</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-calculator"></i>
+                <span>EMI Calculator</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<button class="chat-bubble" id="chatBubble">
+  <i class="bi bi-chat-dots"></i>
+</button>
+
+<!-- Chat Overlay -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h5>AskHorizon</h5>
+        <small>Property Assistant</small>
+      </div>
+      <button class="chat-close" id="chatClose">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="avatar">👩</div>
+        <div class="content">
+        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
+        </div>
+      </div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar">👩</div>
+      <div class="typing-content">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <div class="quick-options" id="quickOptions">
+      <div class="quick-options-title">Quick Options:</div>
+      <div class="quick-options-buttons">
+        <button class="quick-option-btn" data-option="about">
+          <i class="bi bi-info-circle"></i>
+          What is Horizon Reality?
+        </button>
+        <button class="quick-option-btn" data-option="services">
+          <i class="bi bi-gear"></i>
+          Our Services
+        </button>
+        <button class="quick-option-btn" data-option="properties">
+          <i class="bi bi-house"></i>
+          Show Properties
+        </button>
+      </div>
+    </div>
+
+    <!-- FIXED Typing Indicator -->
+    
+
+    <div class="chat-input">
+      <div class="chat-input-group">
+        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+        <button class="chat-send-btn" id="chatSend">
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+  // Store selected properties for comparison
+  // Store selected properties for comparison
+// Store selected properties for comparison
+let selectedProperties = [];
+
+// Toast notification functions
+function showToast(toastId, autoHide = true, delay = 4000) {
+    const toastElement = document.getElementById(toastId);
+    if (toastElement) {
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: autoHide,
+            delay: delay
+        });
+        toast.show();
+    }
+}
+
+function showWarningToast(message) {
+    const toastBody = document.querySelector('#warningToast .toast-body');
+    if (toastBody && message) {
+        toastBody.innerHTML = `<strong>Comparison Restriction!</strong><br>${message}`;
+    }
+    showToast('warningToast');
+}
+
+function showSuccessToast(message) {
+    const toastBody = document.querySelector('#successToast .toast-body');
+    if (toastBody && message) {
+        toastBody.textContent = message;
+    }
+    showToast('successToast');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll to top when pagination is clicked
+    const paginationLinks = document.querySelectorAll('.pagination .page-link');
+    
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Add loading state
+            this.classList.add('loading');
+            
+            // Smooth scroll to properties section
+            const propertiesSection = document.querySelector('.properties-section');
+            if (propertiesSection) {
+                propertiesSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Enhanced page jump validation
+    const pageJumpForm = document.querySelector('.quick-page-jump form');
+    if (pageJumpForm) {
+        pageJumpForm.addEventListener('submit', function(e) {
+            const input = this.querySelector('input[name="page"]');
+            const pageNum = parseInt(input.value);
+            const maxPages = parseInt(input.getAttribute('max'));
+            
+            if (isNaN(pageNum) || pageNum < 1 || pageNum > maxPages) {
+                e.preventDefault();
+                showPaginationError(`Please enter a valid page number between 1 and ${maxPages}`);
+                input.focus();
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Going...';
+                submitBtn.disabled = true;
+            }
+        });
+    }
+    
+    // Keyboard navigation for pagination
+    document.addEventListener('keydown', function(e) {
+        // Only if not in an input field
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            return;
+        }
+        
+        const currentPage = parseInt(document.querySelector('.pagination .page-item.active .page-link')?.textContent || '1');
+        const prevLink = document.querySelector('.pagination .page-link[aria-label="Previous"]');
+        const nextLink = document.querySelector('.pagination .page-link[aria-label="Next"]');
+        
+        // Left arrow or 'p' key for previous page
+        if ((e.key === 'ArrowLeft' || e.key === 'p') && prevLink && !prevLink.closest('.page-item').classList.contains('disabled')) {
+            e.preventDefault();
+            prevLink.click();
+        }
+        
+        // Right arrow or 'n' key for next page
+        if ((e.key === 'ArrowRight' || e.key === 'n') && nextLink && !nextLink.closest('.page-item').classList.contains('disabled')) {
+            e.preventDefault();
+            nextLink.click();
+        }
+        
+        // Home key for first page
+        if (e.key === 'Home') {
+            e.preventDefault();
+            const firstLink = document.querySelector('.pagination .page-link[aria-label="First"]');
+            if (firstLink) {
+                firstLink.click();
+            }
+        }
+        
+        // End key for last page
+        if (e.key === 'End') {
+            e.preventDefault();
+            const lastLink = document.querySelector('.pagination .page-link[aria-label="Last"]');
+            if (lastLink) {
+                lastLink.click();
+            }
+        }
+    });
+    
+    // Update URL without page reload for better UX (optional)
+    function updateURLWithoutReload(url) {
+        if (history.pushState) {
+            history.pushState(null, null, url);
+        }
+    }
+    
+    // Show pagination error message
+    function showPaginationError(message) {
+        // Create or update error message
+        let errorDiv = document.querySelector('.pagination-error');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.className = 'pagination-error alert alert-warning alert-dismissible fade show mt-2';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span class="error-message">${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const quickJump = document.querySelector('.quick-page-jump');
+            if (quickJump) {
+                quickJump.appendChild(errorDiv);
+            }
+        } else {
+            errorDiv.querySelector('.error-message').textContent = message;
+            errorDiv.classList.add('show');
+        }
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            if (errorDiv) {
+                errorDiv.classList.remove('show');
+            }
+        }, 3000);
+    }
+    
+    // Preload next page for better UX (optional)
+    function preloadNextPage() {
+        const nextLink = document.querySelector('.pagination .page-link[aria-label="Next"]');
+        if (nextLink && !nextLink.closest('.page-item').classList.contains('disabled')) {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = nextLink.href;
+            document.head.appendChild(link);
+        }
+    }
+    
+    // Initialize preloading
+    preloadNextPage();
+    
+    // Add pagination info to browser history
+    const currentPage = document.querySelector('.pagination .page-item.active .page-link')?.textContent;
+    if (currentPage && currentPage !== '1') {
+        document.title = `Properties - Page ${currentPage} | Horizon Reality`;
+    }
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function(e) {
+        location.reload();
+    });
+    
+    // Add loading overlay for better UX
+    function showPageLoadingOverlay() {
+        const overlay = document.createElement('div');
+        overlay.id = 'page-loading-overlay';
+        overlay.innerHTML = `
+            <div class="loading-content">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading properties...</p>
+            </div>
+        `;
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        `;
+        
+        overlay.querySelector('.loading-content').style.cssText = `
+            text-align: center;
+            color: #495057;
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        // Remove overlay after page loads
+        window.addEventListener('load', () => {
+            overlay.remove();
+        });
+    }
+    
+    // Show loading overlay when navigating
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!this.closest('.page-item').classList.contains('active') && 
+                !this.closest('.page-item').classList.contains('disabled')) {
+                setTimeout(showPageLoadingOverlay, 100);
+            }
+        });
+    });
+    
+    console.log('Enhanced pagination JavaScript initialized');
+});
+
+// Helper function to get URL parameters
+function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// Helper function to build URL with parameters
+function buildURLWithParams(baseUrl, params) {
+    const url = new URL(baseUrl, window.location.origin);
+    Object.keys(params).forEach(key => {
+        if (params[key]) {
+            url.searchParams.set(key, params[key]);
+        }
+    });
+    return url.toString();
+}
+
+// Dynamic property configuration filter
+document.addEventListener('DOMContentLoaded', function() {
+    const propertyTypeSelect = document.getElementById('property_type');
+    const configurationSelect = document.getElementById('configuration');
+    
+    if (!propertyTypeSelect || !configurationSelect) {
+        console.warn('Property type or configuration select not found');
+        return;
+    }
+    
+    // Function to handle property type changes
+    function handlePropertyTypeChange(selectedType) {
+        console.log('Property type changed to:', selectedType);
+        
+        // Get all configuration options
+        const residentialOptions = configurationSelect.querySelectorAll('.residential-config');
+        const commercialOptions = configurationSelect.querySelectorAll('.commercial-config');
+        
+        // Store current selection to preserve it if valid
+        const currentSelection = configurationSelect.value;
+        
+        // Show/hide options based on property type
+        if (selectedType === 'residential') {
+            showOptions(residentialOptions);
+            hideOptions(commercialOptions);
+            
+            // Check if current selection is still valid for residential
+            const isCurrentSelectionValid = Array.from(residentialOptions)
+                .some(option => option.value === currentSelection && option.style.display !== 'none');
+            
+            if (!isCurrentSelectionValid) {
+                configurationSelect.value = '';
+            }
+            
+        } else if (selectedType === 'commercial') {
+            showOptions(commercialOptions);
+            hideOptions(residentialOptions);
+            
+            // Check if current selection is still valid for commercial
+            const isCurrentSelectionValid = Array.from(commercialOptions)
+                .some(option => option.value === currentSelection && option.style.display !== 'none');
+            
+            if (!isCurrentSelectionValid) {
+                configurationSelect.value = '';
+            }
+            
+        } else {
+            // Show all options when no specific type is selected
+            showOptions(residentialOptions);
+            showOptions(commercialOptions);
+        }
+    }
+    
+    // Function to show options
+    function showOptions(options) {
+        options.forEach(option => {
+            option.style.display = 'block';
+            option.disabled = false;
+        });
+    }
+    
+    // Function to hide options
+    function hideOptions(options) {
+        options.forEach(option => {
+            option.style.display = 'none';
+            option.disabled = true;
+        });
+    }
+    
+    // Event listener for property type change
+    propertyTypeSelect.addEventListener('change', function(e) {
+        handlePropertyTypeChange(e.target.value);
+    });
+    
+    // Initialize on page load
+    handlePropertyTypeChange(propertyTypeSelect.value);
+    
+    // Additional: Handle form reset
+    const filterForm = propertyTypeSelect.closest('form');
+    if (filterForm) {
+        filterForm.addEventListener('reset', function() {
+            setTimeout(() => {
+                handlePropertyTypeChange('');
+            }, 100);
+        });
+    }
+    
+    console.log('Dynamic property configuration filter initialized');
+});
+
+// Search functionality
+function searchByTag(query) {
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        const form = searchInput.closest('form');
+        searchInput.value = query;
+        if (form) form.submit();
+    }
+}
+
+// Auto-submit search on Enter key
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.closest('form').submit();
+            }
+        });
+    }
+});
+
+// Property comparison functions
+function getPropertyCategory(propertyType, propertyCategory = null) {
+    // If category is explicitly provided in data attribute, use it
+    if (propertyCategory) {
+        return propertyCategory.toLowerCase();
+    }
+    
+    // If no property type, default to residential
+    if (!propertyType) {
+        return 'residential';
+    }
+    
+    const type = propertyType.toLowerCase();
+    
+    // Residential keywords
+    const residentialKeywords = [
+        'bhk', '1bhk', '2bhk', '3bhk', '4bhk', '5bhk', 
+        'apartment', 'flat', 'duplex', 'penthouse', 
+        'villa', 'studio', 'residential', 'bungalow', 'bunglow',
+        'tenement', 'tenament'
+    ];
+    
+    // Commercial keywords
+    const commercialKeywords = [
+        'office', 'shop', 'warehouse', 'showroom', 
+        'restaurant', 'retail', 'commercial', 
+        'store', 'plaza', 'mall', 'business'
+    ];
+    
+    // Check for residential
+    for (let keyword of residentialKeywords) {
+        if (type.includes(keyword)) {
+            return 'residential';
+        }
+    }
+    
+    // Check for commercial
+    for (let keyword of commercialKeywords) {
+        if (type.includes(keyword)) {
+            return 'commercial';
+        }
+    }
+    
+    return 'residential';
+}
+
+function getPropertyConfiguration(propertyType) {
+    if (!propertyType) {
+        return 'unknown';
+    }
+    
+    const type = propertyType.toLowerCase();
+    
+    // Residential configurations
+    const residentialConfigs = {
+        // BHK types
+        'bhk': ['1bhk', '2bhk', '3bhk', '4bhk', '5bhk', 'bhk'],
+        // Apartment types  
+        'apartment': ['apartment', 'flat'],
+        // Villa types
+        'villa': ['villa', 'bungalow', 'bunglow'],
+        // Special residential types
+        'duplex': ['duplex'],
+        'penthouse': ['penthouse'],
+        'studio': ['studio'],
+        'tenement': ['tenement', 'tenament']
+    };
+    
+    // Commercial configurations
+    const commercialConfigs = {
+        'office': ['office', 'workspace', 'coworking'],
+        'shop': ['shop', 'store', 'retail'],
+        'showroom': ['showroom', 'display'],
+        'warehouse': ['warehouse', 'godown', 'storage'],
+        'restaurant': ['restaurant', 'cafe', 'food'],
+        'mall': ['mall', 'plaza', 'complex']
+    };
+    
+    // Check residential configurations
+    for (const [configKey, keywords] of Object.entries(residentialConfigs)) {
+        for (const keyword of keywords) {
+            if (type.includes(keyword)) {
+                return `residential_${configKey}`;
+            }
+        }
+    }
+    
+    // Check commercial configurations
+    for (const [configKey, keywords] of Object.entries(commercialConfigs)) {
+        for (const keyword of keywords) {
+            if (type.includes(keyword)) {
+                return `commercial_${configKey}`;
+            }
+        }
+    }
+    
+    // Default fallback based on category
+    const category = getPropertyCategory(propertyType);
+    return category === 'commercial' ? 'commercial_general' : 'residential_general';
+}
+
+function getConfigurationDisplayName(configuration) {
+    const configMap = {
+        // Residential
+        'residential_bhk': 'Apartments',
+        'residential_apartment': 'Apartments',
+        'residential_villa': 'Villas/Bungalows',
+        'residential_duplex': 'Duplex',
+        'residential_penthouse': 'Penthouses',
+        'residential_tenament': 'Tenaments',
+        'residential_general': 'Residential Properties',
+        
+        // Commercial
+        'commercial_office': 'Office Spaces',
+        'commercial_shop': 'Shops/Retail',
+        'commercial_showroom': 'Showrooms',
+        'commercial_restaurant': 'Restaurant Spaces',
+        'commercial_general': 'Commercial Properties'
+    };
+    
+    return configMap[configuration] || 'Properties';
+}
+
+// Enhanced Compare functionality with category and configuration validation
+function handleCompareChange(checkbox) {
+    console.log('Compare checkbox changed:', checkbox.checked);
+    
+    const propertyId = checkbox.dataset.propertyId;
+    const propertyName = checkbox.dataset.propertyName;
+    const propertyPrice = checkbox.dataset.propertyPrice;
+    const propertyLocation = checkbox.dataset.propertyLocation;
+    const propertyType = checkbox.dataset.propertyType;
+    const propertyArea = checkbox.dataset.propertyArea;
+    const propertyFurnishing = checkbox.dataset.propertyFurnishing;
+    const explicitCategory = checkbox.dataset.propertyCategory;
+    const propertyCard = checkbox.closest('.property-card');
+    
+    console.log('Property data:', {
+        id: propertyId,
+        name: propertyName,
+        type: propertyType,
+        furnishing: propertyFurnishing,
+        explicitCategory: explicitCategory
+    });
+    
+    if (checkbox.checked) {
+        // Check if we already have 3 properties selected
+        if (selectedProperties.length >= 3) {
+            checkbox.checked = false;
+            showWarningToast('You can compare up to 3 properties at a time for the best comparison experience.');
+            return;
+        }
+        
+        // Get the category and configuration of the current property
+        const currentCategory = getPropertyCategory(propertyType, explicitCategory);
+        const currentConfiguration = getPropertyConfiguration(propertyType);
+        
+        console.log('Current property category:', currentCategory);
+        console.log('Current property configuration:', currentConfiguration);
+        
+        // Check if there are already selected properties and validate compatibility
+        if (selectedProperties.length > 0) {
+            const existingProperty = selectedProperties[0];
+            const existingCategory = existingProperty.category;
+            const existingConfiguration = existingProperty.configuration;
+            
+            console.log('Existing category:', existingCategory, 'Current category:', currentCategory);
+            console.log('Existing configuration:', existingConfiguration, 'Current configuration:', currentConfiguration);
+            
+            // First check category compatibility
+            if (currentCategory !== existingCategory) {
+                checkbox.checked = false;
+                const categoryName = currentCategory === 'residential' ? 'Residential' : 'Commercial';
+                const existingCategoryName = existingCategory === 'residential' ? 'Residential' : 'Commercial';
+                
+                showWarningToast(`You can only compare properties of the same category.<br><br>Selected properties: <strong>${existingCategoryName}</strong><br>This property: <strong>${categoryName}</strong><br><br>Please select properties of the same type for comparison.`);
+                return;
+            }
+            
+            // Then check configuration compatibility within the same category
+            if (currentConfiguration !== existingConfiguration) {
+                checkbox.checked = false;
+                const configDisplayName = getConfigurationDisplayName(currentConfiguration);
+                const existingConfigDisplayName = getConfigurationDisplayName(existingConfiguration);
+                
+                showWarningToast(`You can only compare properties with the same configuration.<br><br>Selected properties: <strong>${existingConfigDisplayName}</strong><br>This property: <strong>${configDisplayName}</strong><br><br>Please select properties of the same configuration type for accurate comparison.`);
+                return;
+            }
+        }
+        
+        // Add to selected properties
+        const newProperty = {
+            id: propertyId,
+            name: propertyName,
+            price: propertyPrice,
+            location: propertyLocation,
+            type: propertyType,
+            area: propertyArea,
+            category: currentCategory,
+            configuration: currentConfiguration,
+            furnishing: propertyFurnishing,
+        };
+        
+        selectedProperties.push(newProperty);
+        console.log('Added property to comparison:', newProperty);
+        console.log('Total selected properties:', selectedProperties.length);
+        
+        // Add visual feedback
+        if (propertyCard) {
+            propertyCard.classList.add('selected-for-compare');
+        }
+        showSuccessToast(`${propertyName} added to comparison list!`);
+    } else {
+        // Remove from selected properties
+        const initialLength = selectedProperties.length;
+        selectedProperties = selectedProperties.filter(prop => prop.id !== propertyId);
+        console.log('Removed property from comparison. Before:', initialLength, 'After:', selectedProperties.length);
+        
+        // Remove visual feedback
+        if (propertyCard) {
+            propertyCard.classList.remove('selected-for-compare');
+        }
+    }
+    
+    updateCompareBar();
+}
+
+// Enhanced function to validate compatibility before opening comparison
+function goToCompare() {
+    console.log('Going to compare. Selected properties:', selectedProperties.length);
+    
+    if (selectedProperties.length < 2) {
+        showWarningToast('Please select at least 2 properties to compare for a meaningful comparison.');
+        return;
+    }
+    
+    // Additional validation before opening modal
+    if (selectedProperties.length > 0) {
+        const firstProperty = selectedProperties[0];
+        const firstCategory = firstProperty.category;
+        const firstConfiguration = firstProperty.configuration;
+        
+        // Check category consistency
+        const allSameCategory = selectedProperties.every(prop => prop.category === firstCategory);
+        if (!allSameCategory) {
+            showWarningToast('All selected properties must be of the same category (Residential or Commercial) for comparison.');
+            return;
+        }
+        
+        // Check configuration consistency
+        const allSameConfiguration = selectedProperties.every(prop => prop.configuration === firstConfiguration);
+        if (!allSameConfiguration) {
+            const configDisplayName = getConfigurationDisplayName(firstConfiguration);
+            showWarningToast(`All selected properties must have the same configuration type.<br><br>Expected: <strong>${configDisplayName}</strong><br><br>Please select properties of the same configuration for accurate comparison.`);
+            return;
+        }
+    }
+    
+    // Open comparison modal
+    openComparisonModal();
+}
+
+// Open comparison modal function
+function openComparisonModal() {
+    console.log('Opening comparison modal with', selectedProperties.length, 'properties');
+    
+    // Generate the comparison table
+    generateComparisonTable();
+    
+    // Show the modal
+    const modalElement = document.getElementById('comparisonModal');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        console.log('Comparison modal opened successfully');
+    } else {
+        console.error('Comparison modal element not found');
+    }
+}
+
+// Enhanced comparison table generation
+function generateComparisonTable() {
+    console.log('Generating comparison table for', selectedProperties.length, 'properties');
+    
+    const table = document.getElementById('comparisonTable');
+    
+    if (!table) {
+        console.error('Comparison table element not found');
+        return;
+    }
+    
+    if (selectedProperties.length < 2) {
+        table.innerHTML = '<tr><td colspan="4" class="text-center py-4">Please select at least 2 properties to compare.</td></tr>';
+        return;
+    }
+    
+    // Create table header
+    let headerRow = '<thead><tr><th class="feature-label">Features</th>';
+    selectedProperties.forEach((property, index) => {
+        const categoryBadge = property.category === 'commercial' ? 'Commercial' : 'Residential';
+        const configBadge = getConfigurationDisplayName(property.configuration);
+        headerRow += `
+            <th class="property-header">
+                <div class="property-title">${property.name}</div>
+                <div class="property-subtitle">${property.location}</div>
+                <div class="property-category-badge ${property.category}">${categoryBadge}</div>
+                <div class="property-config-badge">${configBadge}</div>
+                <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeFromComparison('${property.id}')">
+                    <i class="fas fa-times"></i> Remove
+                </button>
+            </th>
+        `;
+    });
+    headerRow += '</tr></thead>';
+    
+    // Create table body with comparison data
+    let bodyRows = '<tbody>';
+    
+    // Price row
+    bodyRows += '<tr><td class="feature-label"><i class="fas fa-rupee-sign me-2"></i>Price</td>';
+    selectedProperties.forEach(property => {
+        bodyRows += `<td class="price-highlight">${property.price}</td>`;
+    });
+    bodyRows += '</tr>';
+    
+    // Location row
+    bodyRows += '<tr><td class="feature-label"><i class="fas fa-map-marker-alt me-2"></i>Location</td>';
+    selectedProperties.forEach(property => {
+        bodyRows += `<td class="location-text">${property.location}</td>`;
+    });
+    bodyRows += '</tr>';
+    
+    // Configuration row
+    bodyRows += '<tr><td class="feature-label"><i class="fas fa-building me-2"></i>Configuration</td>';
+    selectedProperties.forEach(property => {
+        const configDisplay = getConfigurationDisplayName(property.configuration);
+        bodyRows += `<td><span class="config-badge">${configDisplay}</span></td>`;
+    });
+    bodyRows += '</tr>';
+    
+    // Type row
+    bodyRows += '<tr><td class="feature-label"><i class="fas fa-home me-2"></i>Specific Type</td>';
+    selectedProperties.forEach(property => {
+        bodyRows += `<td><span class="type-badge">${property.type}</span></td>`;
+    });
+    bodyRows += '</tr>';
+    
+    // Area row
+    bodyRows += '<tr><td class="feature-label"><i class="fas fa-vector-square me-2"></i>Area</td>';
+    selectedProperties.forEach(property => {
+        bodyRows += `<td class="area-text">${property.area} sqft</td>`;
+    });
+    bodyRows += '</tr>';
+    
+    // NEW: Furnishing row
+    bodyRows += '<tr><td class="feature-label"><i class="fas fa-couch me-2"></i>Furnishing</td>';
+    selectedProperties.forEach(property => {
+        const furnishingClass = getFurnishingClass(property.furnishing);
+        bodyRows += `<td><span class="furnishing-badge ${furnishingClass}">${property.furnishing}</span></td>`;
+    });
+    bodyRows += '</tr>';
+  
+    
+    bodyRows += '</tbody>';
+    
+    table.innerHTML = headerRow + bodyRows;
+    console.log('Comparison table generated successfully');
+}
+function getFurnishingClass(furnishing) {
+    if (!furnishing || furnishing === 'Not Specified') {
+        return 'furnishing-not-specified';
+    }
+    
+    const furnishingLower = furnishing.toLowerCase();
+    
+    if (furnishingLower.includes('fully furnished') || furnishingLower.includes('furnished')) {
+        return 'furnishing-furnished';
+    } else if (furnishingLower.includes('semi') || furnishingLower.includes('partial')) {
+        return 'furnishing-semi';
+    } else if (furnishingLower.includes('unfurnished') || furnishingLower.includes('bare')) {
+        return 'furnishing-unfurnished';
+    }
+    
+    return 'furnishing-default';
+}
+
+// Function to remove a property from comparison
+function removeFromComparison(propertyId) {
+    console.log('Removing property from comparison:', propertyId);
+    
+    // Remove from selectedProperties array
+    selectedProperties = selectedProperties.filter(prop => prop.id !== propertyId);
+    
+    // Uncheck the corresponding checkbox
+    const checkbox = document.querySelector(`.compare-checkbox[data-property-id="${propertyId}"]`);
+    if (checkbox) {
+        checkbox.checked = false;
+        const propertyCard = checkbox.closest('.property-card');
+        if (propertyCard) {
+            propertyCard.classList.remove('selected-for-compare');
+        }
+    }
+    
+    // Update the comparison table
+    generateComparisonTable();
+    
+    // Update the compare bar
+    updateCompareBar();
+    
+    // If no properties left, close the modal
+    if (selectedProperties.length < 2) {
+        const modalElement = document.getElementById('comparisonModal');
+        if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+                showWarningToast('Comparison closed as minimum 2 properties are required.');
+            }
+        }
+    }
+    
+    showSuccessToast('Property removed from comparison!');
+}
+
+// Enhanced compare bar update
+function updateCompareBar() {
+    const compareBar = document.getElementById('compareFloatingBar');
+    const compareCount = document.getElementById('compareCount');
+    
+    if (!compareBar || !compareCount) return;
+    
+    if (selectedProperties.length > 0) {
+        compareBar.classList.add('show');
+        compareCount.textContent = selectedProperties.length;
+        
+        // Update the compare bar text to show category and configuration
+        const firstProperty = selectedProperties[0];
+        const category = firstProperty.category;
+        const configuration = firstProperty.configuration;
+        
+        const categoryText = category.charAt(0).toUpperCase() + category.slice(1);
+        const configText = getConfigurationDisplayName(configuration);
+        
+        const spanElement = compareBar.querySelector('span');
+        if (spanElement) {
+            spanElement.textContent = `${configText} Selected`;
+        }
+    } else {
+        compareBar.classList.remove('show');
+        const spanElement = compareBar.querySelector('span');
+        if (spanElement) {
+            spanElement.textContent = 'Properties Selected';
+        }
+    }
+}
+
+// Clear all comparisons function
+function clearAllCompare() {
+    console.log('Clearing all comparisons');
+    
+    // Uncheck all compare checkboxes
+    const checkboxes = document.querySelectorAll('.compare-checkbox:checked');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+        const propertyCard = checkbox.closest('.property-card');
+        if (propertyCard) {
+            propertyCard.classList.remove('selected-for-compare');
+        }
+    });
+    
+    // Clear selected properties array
+    selectedProperties = [];
+    
+    // Update compare bar
+    updateCompareBar();
+    showSuccessToast('All properties cleared from comparison list!');
+}
+
+// Call functionality
+function makeCall() {
+    const phoneNumber = "+919104828680";
+    window.location.href = `tel:${phoneNumber}`;
+    console.log('Call initiated for property inquiry');
+    const modalElement = document.getElementById('quickCallModal');
+    if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+    }
+}
+// Store current property details for inquiry
+let currentPropertyDetails = {};
+
+// Enhanced Quick Call button click handler
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize quick call buttons with property details capture
+    const quickCallButtons = document.querySelectorAll('.btn-quick-call');
+    quickCallButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const propertyId = this.getAttribute('data-property-id');
+            
+            // Find the property card containing this button
+            const propertyCard = this.closest('.property-card');
+            
+            if (propertyCard) {
+                // Extract property details from the card
+                const propertyTitle = propertyCard.querySelector('.property-details h3');
+                const propertyLocation = propertyCard.querySelector('.property-location span');
+                const propertyPrice = propertyCard.querySelector('.property-price');
+                const propertyArea = propertyCard.querySelector('.spec span');
+                
+                // Store property details globally
+                currentPropertyDetails = {
+                    id: propertyId,
+                    name: propertyTitle ? propertyTitle.textContent.trim() : 'Property',
+                    location: propertyLocation ? propertyLocation.textContent.trim() : 'Location not specified',
+                    price: propertyPrice ? propertyPrice.textContent.trim() : 'Price on request',
+                    area: propertyArea ? propertyArea.textContent.trim() : 'Area not specified'
+                };
+                
+                console.log('Property details captured:', currentPropertyDetails);
+            }
+        });
+    });
+});
+
+// Enhanced WhatsApp function with project details
+function openWhatsAppDetailed() {
+    const phoneNumber = "919104828680";
+    
+    // Use captured property details
+    const propertyName = currentPropertyDetails.name || 'Property';
+    
+    const message = `Hi! I'm interested in a property listing on your website.
+*Property Details:*
+*Project:* ${propertyName}
+
+I would like to know more about:
+Complete price details and payment plans,
+Available units and floor plans,
+Site visit arrangement,
+Amenities and facilities,
+Documentation and legal clearances,
+Possession timeline,
+Loan assistance.
+Please get back to me at your earliest convenience.
+
+Thank you!`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    console.log('Enhanced WhatsApp URL with project details:', whatsappUrl);
+    console.log('Property details sent:', currentPropertyDetails);
+    
+    window.open(whatsappUrl, '_blank');
+    
+    const modalElement = document.getElementById('quickCallModal');
+    if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+    }
+}
+
+// Debug function
+function debugComparison() {
+    console.log('=== COMPARISON DEBUG ===');
+    console.log('Selected properties count:', selectedProperties.length);
+    console.log('Selected properties:', selectedProperties);
+    
+    selectedProperties.forEach((prop, index) => {
+        console.log(`Property ${index + 1}:`, {
+            id: prop.id,
+            name: prop.name,
+            category: prop.category,
+            configuration: prop.configuration,
+            type: prop.type
+        });
+    });
+    
+    const modalElement = document.getElementById('comparisonModal');
+    console.log('Modal element found:', !!modalElement);
+    
+    const tableElement = document.getElementById('comparisonTable');
+    console.log('Table element found:', !!tableElement);
+    
+    console.log('=== END DEBUG ===');
+}
+
+// Test modal function
+function testModal() {
+    const modalElement = document.getElementById('comparisonModal');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        console.log('Test modal opened');
+    } else {
+        console.error('Modal element not found');
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Enhanced property comparison script loaded');
+    
+    // Test the configuration detection
+    console.log('Testing configuration detection:');
+    console.log('2BHK:', getPropertyConfiguration('2BHK'));
+    console.log('Villa:', getPropertyConfiguration('Villa'));
+    console.log('Bungalow:', getPropertyConfiguration('Bungalow'));
+    console.log('Tenement:', getPropertyConfiguration('Tenement'));
+    console.log('Office:', getPropertyConfiguration('Office'));
+    console.log('Shop:', getPropertyConfiguration('Shop'));
+    console.log('Showroom:', getPropertyConfiguration('Showroom'));
+    console.log('Warehouse:', getPropertyConfiguration('Warehouse'));
+    
+    // Initialize quick call buttons
+    const quickCallButtons = document.querySelectorAll('.btn-quick-call');
+    quickCallButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const propertyId = this.getAttribute('data-property-id');
+            console.log('Quick call requested for property ID:', propertyId);
+        });
+    });
+    
+    // Initialize compare bar
+    updateCompareBar();
+    
+    // Test the comparison functionality
+    console.log('Testing category detection:');
+    console.log('2BHK:', getPropertyCategory('2BHK'));
+    console.log('Office:', getPropertyCategory('Office'));
+    console.log('3BHK Apartment:', getPropertyCategory('3BHK Apartment'));
+    console.log('Commercial Shop:', getPropertyCategory('Commercial Shop'));
+    console.log('Bungalow:', getPropertyCategory('Bungalow'));
+});
+document.addEventListener('DOMContentLoaded', function() {
+     const chatBubble = document.getElementById('chatBubble');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickOptions = document.getElementById('quickOptions');
+
+    // Ensure all elements are found
+    if (!chatBubble || !chatOverlay || !chatClose || !chatInput || !chatSend || !chatMessages || !typingIndicator) {
+        console.error('One or more chat elements not found');
+        return;
+    }
+
+    // Initialize typing indicator
+    typingIndicator.style.display = 'none';
+
+    // Quick options responses
+    const quickOptionsResponses = {
+        about: `🏠 **About Horizon Reality**
+
+👋 Welcome to Horizon Reality : Your Gateway to Real Estate Excellence!
+
+I'm your virtual guide here to make your real estate journey easy, informed, and personalized.
+✨ Whether you're buying, selling, investing, or designing your space, we've got you covered.
+
+• Get expert help with managing your investment portfolio, financing, legal advice, and interiors.
+• Access premium properties through our trusted developer network.
+• Explore trending listings and unlock the best market deals.
+• Receive tailored support backed by real insights.
+
+Personal Consultation: Book time with our team for personalized guidance.
+Let's turn your dream space into a reality with trust, transparency, and complete support.
+
+How can I assist you today? 💬`,
+
+        services: `🛠️ **Our Services**
+
+**Property Services:**
+🛠 Our Services
+
+Property Services:
+🏠 Residential Properties
+🏢 Commercial Properties
+🔄 Resale & Leasing 
+💰 Property Investment Consultation
+
+Additional Services:
+🎨 Interior Design consultancy & Turnkey Solutions
+📋 Legal Documentation & Financing
+📊 Market Analysis & Insights
+🤝 Developer Partnerships
+
+Why Choose Us:
+✨ Client-centric approach with personalized solutions
+✨ Transparent and reliable processes
+✨ One-stop solution for all property needs
+✨ Strong network with trusted developers
+
+Want to know more about any specific service? Just ask! 😊`,
+
+        properties: `🏘️ **Our Property Portfolio**
+
+**Residential Properties:**
+🏠 1BHK, 2BHK, 3BHK, 4BHK, 5BHK Apartments
+🏡 Villas & Bungalows
+🏘 Duplex & Penthouse Options
+🏠 Tenements & Row Houses
+
+Commercial Properties:
+🏢 Office Spaces
+🏪 Retail Showrooms
+🏬 Shop Spaces
+🏢 Corporate Floors
+
+Property Categories:
+🆕 New Launch Projects
+🔄 Resale Properties
+🏠 Rental/Leasing Options
+💼 Investment Properties
+
+Some of the Popular Locations in Ahmedabad:
+📍Thaltej , South Bopal, Shela
+📍 Gota , Vaishnodevi, Science Park 
+📍 Prahlad Nagar, Satellite, SG Highway
+📍  Iscon, Ambli, Bodakdev, Vastrapur 
+
+Want to search for specific properties? Try asking:
+• "2BHK in Bopal under 50 lakhs"
+• "Commercial office space in SG Highway"
+• "Villas in Shela"`
+    };
+
+    // Handle quick option clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quick-option-btn')) {
+            const option = e.target.getAttribute('data-option');
+            const optionText = e.target.textContent.trim();
+            
+            // Add user message
+            addMessage(optionText, 'user');
+            
+            // KEEP QUICK OPTIONS VISIBLE - Remove this line
+            // if (quickOptions) {
+            //     quickOptions.style.display = 'none';
+            // }
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate delay and show response
+            setTimeout(() => {
+                hideTyping();
+                const response = quickOptionsResponses[option] || "Thanks for your question! How can I help you with your property needs?";
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+    });
+
+    chatBubble.addEventListener('click', () => {
+        console.log('Chat bubble clicked');
+        chatOverlay.classList.add('show');
+        
+        // Quick options are always visible, no need to show/hide
+        
+        setTimeout(() => {
+            chatInput.focus();
+        }, 300);
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatOverlay.classList.remove('show');
+        
+        // Quick options remain visible, no reset needed
+    });
+
+    chatOverlay.addEventListener('click', function (e) {
+        if (e.target === chatOverlay) {
+            chatOverlay.classList.remove('show');
+            
+            // Quick options remain visible, no reset needed
+        }
+    });
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    console.log('Sending message:', message);
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Ensure quick options remain visible (no hiding)
+    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
+    
+    chatSend.disabled = true;
+    chatInput.disabled = true;
+    chatBubble.classList.add('typing');
+
+    showTyping();
+
+    setTimeout(() => {
+        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
+                addMessage(formattedResponse, 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            })
+            .catch(error => {
+                console.error('Chat error:', error);
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            });
+    }, 1500);
+}
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+
+        if (sender === 'user') {
+            // Remove the "You" label by just showing the content
+            div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
+        } else {
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/🔗\s*<a\s+href="([^"]+)"\s+target="_blank"\s+class="property-link">([^<]+)<\/a>/g,
+                    '🔗 <a href="$1" target="_blank" class="property-link">$2</a>')
+                .replace(/📞\s*<a\s+href="([^"]+)"\s+class="contact-link">([^<]+)<\/a>/g,
+                    '📞 <a href="$1" class="contact-link">$2</a>');
+
+            div.innerHTML = `<div class="avatar">👩</div><div class="content">${formattedText}</div>`;
+        }
+
+        chatMessages.appendChild(div);
+
+        // Handle property links
+        div.querySelectorAll('.property-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                window.open(url, '_blank');
+                console.log('Opening property link:', url);
+            });
+        });
+
+        // Handle contact links
+        div.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                console.log('Calling:', this.getAttribute('href'));
+            });
+        });
+
+        // Smooth scroll to bottom
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function formatBotResponse(response) {
+        let formatted = response
+            .replace(/\*\*[^*]+\*\*/g, match => match)
+            .replace(/🏠|🏡|🔑|💰|📍|🏢|🔗|✅|📊|🛠️|🏘️|🆕|🔄|💼|📋|🎨|🏗️|🤝|✨|🌟|😊|😄|👋|💙|🤗|🌟|💫/g, match => match)
+            .replace(/Location:\s*/g, '\n📍 Location: ')
+            .replace(/Type:\s*/g, '\n🏗️ Type: ')
+            .replace(/Area:\s*/g, '\n📐 Area: ')
+            .replace(/Budget:\s*/g, '\n💰 Budget: ')
+            .replace(/Status:\s*/g, '\n📅 Status: ')
+            .replace(/View Details:/g, '\n🔗 View Details: ')
+            .replace(/\s+/g, ' ')
+            .replace(/\n+/g, '\n')
+            .trim();
+
+        if (formatted.includes('Found') && formatted.includes('properties')) {
+            formatted = formatted.replace(/Found \d+ properties for you:/, 'I found some properties for you:\n\n');
+            formatted = formatted.replace(/\n\n+/g, '\n\n');
+        }
+
+        return formatted;
+    }
+
+    function showTyping() {
+        console.log('Showing typing indicator');
+        typingIndicator.style.display = 'flex';
+        typingIndicator.classList.add('show');
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function hideTyping() {
+        console.log('Hiding typing indicator');
+        typingIndicator.classList.remove('show');
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+        }, 300);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Optional: Keyboard shortcut Ctrl + Space to open chat
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.code === 'Space') {
+            e.preventDefault();
+            if (!chatOverlay.classList.contains('show')) {
+                chatBubble.click();
+            }
+        }
+    });
+
+    // Make makeCall function globally available
+    window.makeCall = makeCall;
+});
+</script>
+  {% endblock %}
+
+  {% block extra_js %}
+  <script src="{% static 'js/property-list.js' %}"></script>
+  {% endblock %}

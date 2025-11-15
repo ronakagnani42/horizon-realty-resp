@@ -1,0 +1,790 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Horizon Reality{% endblock %}
+{% block nav_home_active %}active{% endblock %}
+
+
+{% block extra_css %}
+<link href="{% static 'css/index.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body_class %}index-page{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="hero" class="hero section dark-background">
+  <video autoplay loop muted class="hero-video">
+    <source src="{% static 'videos/new_logo.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</section><!-- /Hero Section -->
+
+<!-- About Section -->
+<section id="about" class="about section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4 align-items-center">
+      <div class="col-lg-6 order-1 order-lg-2" data-aos="zoom-in" data-aos-delay="200">
+        <img src="{% static 'img/firstt.jpg' %}" class="img-fluid" alt="">
+      </div>
+      <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="300">
+        <h3>Welcome to Horizon Reality: Your Gateway to Real Estate Excellence</h3>
+        <p class="fst-italic">
+          At Horizon Reality, we blend expertise with personalized service to make your property journey seamless. 
+        </p>
+        <ul>
+          <li><i class="bi bi-check2-all"></i> <span>From financing and legal guidance to Vastu advice and interior design, we offer end-to-end support tailored to your needs.</span></li>
+          <li><i class="bi bi-check2-all"></i> <span>Our extensive network with top developers ensures access to premium properties at competitive rates.</span></li>
+          <li><i class="bi bi-check2-all"></i> <span> Whether buying, selling, or designing your dream space, we provide valuable market insights and unmatched support.</span></li>
+        </ul>
+        <p>
+          Explore trending properties, secure the best deals, and create spaces that reflect your vision—all with a trusted partner by your side. With Horizon Reality, turn possibilities into realities!
+        </p>
+      </div>
+    </div>
+  </div>
+</section><!-- /About Section -->
+
+<!-- Features Section -->
+<section id="features" class="features section">
+  <div class="container">
+    <div class="row gy-4 align-items-center">
+      <div class="features-image col-lg-6" data-aos="fade-right" data-aos-delay="100">
+        <img src="{% static 'img/market.jpg' %}" alt="" class="img-fluid">
+      </div>
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+        <div class="features-item d-flex ps-0 ps-lg-3 pt-4 pt-lg-0">
+          <i class="bi bi-bar-chart-line"></i>
+          <div>
+            <h4>Market Insights</h4>
+            <p>Stay ahead with expert knowledge and valuable real estate trends.</p>
+          </div>
+        </div><!-- End Features Item-->
+
+        <div class="features-item d-flex mt-5 ps-0 ps-lg-3">
+          <i class="bi bi-link"></i>
+          <div>
+            <h4>Network</h4>
+            <p>Leverage our strong ties with top developers for exclusive opportunities.</p>
+          </div>
+        </div><!-- End Features Item-->
+
+        <div class="features-item d-flex mt-5 ps-0 ps-lg-3">
+          <i class="bi bi-person-circle"></i>
+          <div>
+            <h4>Client-Centric Approach</h4>
+            <p>Your needs are our priority, ensuring tailored solutions.</p>
+          </div>
+        </div><!-- End Features Item-->
+
+        <div class="features-item d-flex mt-5 ps-0 ps-lg-3">
+          <i class="bi bi-shield-lock"></i>
+          <div>
+            <h4>Transparency</h4>
+            <p>Building trust with honest, clear, and reliable processes.</p>
+          </div>
+        </div><!-- End Features Item-->
+        
+        <div class="features-item d-flex mt-5 ps-0 ps-lg-3">
+          <i class="bi bi-house-door"></i>
+          <div>
+            <h4>One-Stop Solution</h4>
+            <p>From financing to interiors we handle every step of your property journey.</p>
+          </div>
+        </div><!-- End Features Item-->
+      </div>
+    </div>
+  </div>
+</section><!-- /Features Section -->
+
+<!-- Services Section -->
+<!-- Services Section -->
+<!-- Services Section -->
+<section id="services" class="services section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Services</h2>
+    <p>Check our Services</p>
+  </div><!-- End Section Title -->
+  
+  <div class="container">
+    {% if services %}
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        {% for service in services %}
+        <div class="swiper-slide">
+          <div class="service-item position-relative">
+            <div class="icon">
+              {% if service.static_icon %}
+              <img src="{{ service.static_icon.url }}" alt="{{ service.title }} icon" class="img-fluid">
+              {% else %}
+              <p>No Icon Available</p>
+              {% endif %}
+            </div>
+            <a href="{{ service.get_absolute_url }}" class="stretched-link">
+              <h3>{{ service.title }}</h3>
+            </a>
+            <p>{{ service.description }}</p>
+          </div>
+        </div><!-- End swiper-slide -->
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+    {% else %}
+    <div class="row">
+      <div class="col-12">
+        <p class="text-center">No services available at the moment. Please check back later.</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section><!-- /Services Section -->
+  <div class="modal fade quick-call-modal" id="quickCallModal" tabindex="-1" aria-labelledby="quickCallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="quickCallModalLabel">
+              <i class="fas fa-phone"></i>
+                Contact Us
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="call-info-card">
+            <h5>Connect with Our Property Expert</h5>
+            <p class="mb-2">Speak directly with our consultant for instant assistance</p>
+            <div class="phone-number">+91 9104828680</div>
+            <div class="availability-status">
+              <i class="fas fa-circle"></i>
+              Available Now - Mon to Sat, 9 AM to 8 PM
+            </div>
+          </div>
+          <div class="call-actions">
+            <button class="btn btn-call-now" onclick="makeCall()">
+              <i class="fas fa-phone"></i>
+              Call Now
+            </button>
+            
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Call To Action Section -->
+<section id="call-to-action" class="call-to-action section dark-background">
+  <img src="{% static 'img/cta2.jpg' %}" alt="">
+  <div class="container">
+    <div class="row justify-content-center" data-aos="zoom-in" data-aos-delay="100">
+      <div class="col-xl-10">
+        <div class="text-center">
+          <h3>Find Your Dream Property</h3>
+          <p>Discover your dream property with Horizon Reality – where expertise meets excellence! Click now to explore tailored solutions and take the first step toward your perfect space.</p>
+          <a href="#" class="btn btn-quick-call" data-bs-toggle="modal" data-bs-target="#quickCallModal">Contact Us Today</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- /Call To Action Section -->
+
+<!-- Portfolio Section -->
+<!-- Portfolio Section -->
+<!-- Portfolio Section -->
+<!-- Portfolio Section -->
+<!-- Portfolio Section -->
+<!-- Portfolio Section - FIXED VERSION -->
+<section id="portfolio" class="portfolio section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Properties</h2>
+    <p>Prime Real Estate Picks</p>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+      <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+        <li data-filter="*" class="filter-active">All</li>
+        <li data-filter=".filter-leasing">Leasing</li>
+        <li data-filter=".filter-investment">Investment</li>
+        <li data-filter=".filter-resale">Resale</li>
+      </ul><!-- End Portfolio Filters -->
+
+      <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+        
+        <!-- All Properties -->
+        {% for property in all_properties %}
+        <div class="col-lg-4 col-md-6 portfolio-item isotope-item 
+                    {% if property.category == 'leasing' %}filter-leasing{% elif property.category == 'investment' %}filter-investment{% elif property.category == 'resale_residential' %}filter-resale{% endif %}">
+          
+          <!-- Only the image is clickable -->
+          <a href="{% url 'property:property_detail' property.slug %}" class="image-link">
+            {% if property.image %}
+            <img src="{{ property.image.url }}" class="img-fluid" alt="{{ property }}">
+            {% else %}
+            <img src="{% static 'img/default-property.jpg' %}" class="img-fluid" alt="{{ property }}">
+            {% endif %}
+          </a>
+          
+          <!-- Property Info - Not clickable -->
+          <div class="portfolio-info">
+            <h4>{{ property.project_name|default:"No project name" }}</h4>
+            <p class="property-details">
+              {% if property.configuration %}{{ property.get_configuration_display }}{% endif %}
+              {% if property.commercial_type %}{{ property.get_commercial_type_display }}{% endif %}
+              - {{ property.area }} sqft
+            </p>
+            <p class="property-price">
+              ₹{{ property.min_budget }} {{ property.get_min_budget_unit_display }} - 
+              ₹{{ property.max_budget }} {{ property.get_max_budget_unit_display }} - 
+              {% if property.locations %}{{ property.locations.name }}{% endif %}
+            </p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+          <p>No properties available at the moment. Please check back later.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- View More Button -->
+      <div class="container text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+        <a href="{% url 'property_list' %}" class="cta-btn properties-btn">View More Properties</a>
+      </div><!-- End Portfolio Container -->
+    </div>
+  </div>
+</section>
+<!-- Stats Section -->
+<section id="stats" class="stats section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4 align-items-center justify-content-between">
+      <div class="col-lg-5" data-aos="fade-right" data-aos-delay="200">
+        <img src="{% static 'img/Testimonial_Stories.png' %}" alt="" class="img-fluid">
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
+        <h3 class="fw-bold fs-2 mb-4">Our Success Story</h3>
+        <p class="mb-4">
+          We pride ourselves on building long-term relationships with our clients, providing exceptional service that has made us a trusted name in the real estate industry.
+        </p>
+
+        <div class="row gy-4">
+          {% for stat in statistics %}
+          <div class="col-lg-6">
+            <div class="stats-item d-flex">
+              <i class="bi bi-emoji-smile flex-shrink-0"></i>
+              <div>
+                <span data-purecounter-start="0" data-purecounter-end="{{ stat.happy_clients }}" data-purecounter-duration="1" class="purecounter"></span>
+                <p><strong>National & international satisfactory clients</strong></p>
+              </div>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-6">
+            <div class="stats-item d-flex">
+              <i class="bi bi-house-door flex-shrink-0"></i>
+              <div>
+                <span data-purecounter-start="0" data-purecounter-end="{{ stat.projects }}" data-purecounter-duration="1" class="purecounter"></span>
+                <p><strong>Residential & commercial properties of Ahmedabad</strong></p>
+              </div>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-6">
+            <div class="stats-item d-flex">
+              <i class="bi bi-building flex-shrink-0"></i>
+              <div>
+                <span data-purecounter-start="0" data-purecounter-end="{{ stat.hours_of_support }}" data-purecounter-duration="1" class="purecounter"></span>
+                <p><strong>Successful and trustworthy builders.</strong></p>
+              </div>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-6">
+            <div class="stats-item d-flex">
+              <i class="bi bi-people flex-shrink-0"></i>
+              <div>
+                <span data-purecounter-start="0" data-purecounter-end="{{ stat.hard_workers }}" data-purecounter-duration="1" class="purecounter"></span>
+                <p><strong>Hard Workers</strong></p>
+              </div>
+            </div>
+          </div><!-- End Stats Item -->
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section><!-- /Stats Section -->
+
+<!-- Testimonials Section HTML with Dynamic Data -->
+<section id="testimonials" class="testimonials section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Testimonials</h2>
+    <p>What Our Clients Say</p>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="swiper testimonialsSwiper">
+      <div class="swiper-wrapper">
+        {% for testimonial in testimonials %}
+        <div class="swiper-slide">
+          <div class="testimonial-item">
+            <div class="testimonial-icon">
+              {% if testimonial.photo %}
+              <img src="{{ testimonial.photo.url }}" class="testimonial-img" alt="{{ testimonial.name }}">
+              {% else %}
+              <img src="{% static 'img/user_logo.png' %}" class="testimonial-img" alt="{{ testimonial.name }}">
+              {% endif %}
+            </div>
+            <h3>{{ testimonial.name }}</h3>
+            {% if testimonial.designation %}
+            <h4>{{ testimonial.designation }}</h4>
+            {% endif %}
+            
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              {{ testimonial.text|truncatewords:10 }}
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div><!-- End testimonial item -->
+        {% endfor %}
+        
+        <!-- Default testimonials in case none are provided from the database -->
+       
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section><!-- End Testimonials Section -->
+<button class="chat-bubble" id="chatBubble">
+  <i class="bi bi-chat-dots"></i>
+</button>
+
+<!-- Chat Overlay -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div>
+        <h5>AskHorizon</h5>
+        <small>Property Assistant</small>
+      </div>
+      <button class="chat-close" id="chatClose">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="avatar">👩</div>
+        <div class="content">
+        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
+        </div>
+      </div>
+    </div>
+    <div class="quick-options" id="quickOptions">
+      <div class="quick-options-title">Quick Options:</div>
+      <div class="quick-options-buttons">
+        <button class="quick-option-btn" data-option="about">
+          <i class="bi bi-info-circle"></i>
+          What is Horizon Reality?
+        </button>
+        <button class="quick-option-btn" data-option="services">
+          <i class="bi bi-gear"></i>
+          Our Services
+        </button>
+        <button class="quick-option-btn" data-option="properties">
+          <i class="bi bi-house"></i>
+          Show Properties
+        </button>
+      </div>
+    </div>
+
+    <!-- FIXED Typing Indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar">🏠</div>
+      <div class="typing-content">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <div class="chat-input-group">
+        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
+        <button class="chat-send-btn" id="chatSend">
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Team Section -->
+<section id="team" class="team section">
+  <!-- Empty section kept as in original -->
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/index.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --------- MAKE CALL ---------
+    function makeCall() {
+        const phoneNumber = "+919104828680";
+        window.location.href = `tel:${phoneNumber}`;
+        console.log('Call initiated for property inquiry');
+        const modalElement = document.getElementById('quickCallModal');
+        if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) modal.hide();
+        }
+    }
+
+    // --------- ISOTOPE FILTER LIMIT ---------
+    const container = document.querySelector('.isotope-container');
+    const filterButtons = document.querySelectorAll('.isotope-filters li');
+
+    function limitItems(filter, limit = 6) {
+        const items = container.querySelectorAll('.portfolio-item');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const shouldShow = filter === '*' || item.classList.contains(filter.replace('.', ''));
+            if (shouldShow && visibleCount < limit) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            filterButtons.forEach(btn => btn.classList.remove('filter-active'));
+            this.classList.add('filter-active');
+            limitItems(filter, 6);
+        });
+    });
+
+    limitItems('*', 6);
+
+      // --------- CHATBOT FUNCTIONALITY ---------
+    const chatBubble = document.getElementById('chatBubble');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickOptions = document.getElementById('quickOptions');
+
+    // Ensure all elements are found
+    if (!chatBubble || !chatOverlay || !chatClose || !chatInput || !chatSend || !chatMessages || !typingIndicator) {
+        console.error('One or more chat elements not found');
+        return;
+    }
+
+    // Initialize typing indicator
+    typingIndicator.style.display = 'none';
+
+    // Quick options responses
+    const quickOptionsResponses = {
+        about: `🏠 **About Horizon Reality**
+
+👋 Welcome to Horizon Reality : Your Gateway to Real Estate Excellence!
+
+I'm your virtual guide here to make your real estate journey easy, informed, and personalized.
+✨ Whether you're buying, selling, investing, or designing your space, we've got you covered.
+
+• Get expert help with managing your investment portfolio, financing, legal advice, and interiors.
+• Access premium properties through our trusted developer network.
+• Explore trending listings and unlock the best market deals.
+• Receive tailored support backed by real insights.
+
+Personal Consultation: Book time with our team for personalized guidance.
+Let's turn your dream space into a reality with trust, transparency, and complete support.
+
+How can I assist you today? 💬`,
+
+        services: `🛠️ **Our Services**
+
+**Property Services:**
+🛠 Our Services
+
+Property Services:
+🏠 Residential Properties
+🏢 Commercial Properties
+🔄 Resale & Leasing 
+💰 Property Investment Consultation
+
+Additional Services:
+🎨 Interior Design consultancy & Turnkey Solutions
+📋 Legal Documentation & Financing
+📊 Market Analysis & Insights
+🤝 Developer Partnerships
+
+Why Choose Us:
+✨ Client-centric approach with personalized solutions
+✨ Transparent and reliable processes
+✨ One-stop solution for all property needs
+✨ Strong network with trusted developers
+
+Want to know more about any specific service? Just ask! 😊`,
+
+        properties: `🏘️ **Our Property Portfolio**
+
+**Residential Properties:**
+🏠 1BHK, 2BHK, 3BHK, 4BHK, 5BHK Apartments
+🏡 Villas & Bungalows
+🏘 Duplex & Penthouse Options
+🏠 Tenements & Row Houses
+
+Commercial Properties:
+🏢 Office Spaces
+🏪 Retail Showrooms
+🏬 Shop Spaces
+🏢 Corporate Floors
+
+Property Categories:
+🆕 New Launch Projects
+🔄 Resale Properties
+🏠 Rental/Leasing Options
+💼 Investment Properties
+
+Some of the Popular Locations in Ahmedabad:
+📍Thaltej , South Bopal, Shela
+📍 Gota , Vaishnodevi, Science Park 
+📍 Prahlad Nagar, Satellite, SG Highway
+📍  Iscon, Ambli, Bodakdev, Vastrapur 
+
+Want to search for specific properties? Try asking:
+• "2BHK in Bopal under 50 lakhs"
+• "Commercial office space in SG Highway"
+• "Villas in Shela"`
+    };
+
+    // Handle quick option clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quick-option-btn')) {
+            const option = e.target.getAttribute('data-option');
+            const optionText = e.target.textContent.trim();
+            
+            // Add user message
+            addMessage(optionText, 'user');
+            
+            // KEEP QUICK OPTIONS VISIBLE - Remove this line
+            // if (quickOptions) {
+            //     quickOptions.style.display = 'none';
+            // }
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate delay and show response
+            setTimeout(() => {
+                hideTyping();
+                const response = quickOptionsResponses[option] || "Thanks for your question! How can I help you with your property needs?";
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+    });
+
+    chatBubble.addEventListener('click', () => {
+        console.log('Chat bubble clicked');
+        chatOverlay.classList.add('show');
+        
+        // Quick options are always visible, no need to show/hide
+        
+        setTimeout(() => {
+            chatInput.focus();
+        }, 300);
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatOverlay.classList.remove('show');
+        
+        // Quick options remain visible, no reset needed
+    });
+
+    chatOverlay.addEventListener('click', function (e) {
+        if (e.target === chatOverlay) {
+            chatOverlay.classList.remove('show');
+            
+            // Quick options remain visible, no reset needed
+        }
+    });
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    console.log('Sending message:', message);
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Ensure quick options remain visible (no hiding)
+    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
+    
+    chatSend.disabled = true;
+    chatInput.disabled = true;
+    chatBubble.classList.add('typing');
+
+    showTyping();
+
+    setTimeout(() => {
+        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
+                addMessage(formattedResponse, 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            })
+            .catch(error => {
+                console.error('Chat error:', error);
+                hideTyping();
+                chatBubble.classList.remove('typing');
+                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
+                chatSend.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            });
+    }, 1500);
+}
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+
+        if (sender === 'user') {
+            // Remove the "You" label by just showing the content
+            div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
+        } else {
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/🔗\s*<a\s+href="([^"]+)"\s+target="_blank"\s+class="property-link">([^<]+)<\/a>/g,
+                    '🔗 <a href="$1" target="_blank" class="property-link">$2</a>')
+                .replace(/📞\s*<a\s+href="([^"]+)"\s+class="contact-link">([^<]+)<\/a>/g,
+                    '📞 <a href="$1" class="contact-link">$2</a>');
+
+            div.innerHTML = `<div class="avatar">👩</div><div class="content">${formattedText}</div>`;
+        }
+
+        chatMessages.appendChild(div);
+
+        // Handle property links
+        div.querySelectorAll('.property-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                window.open(url, '_blank');
+                console.log('Opening property link:', url);
+            });
+        });
+
+        // Handle contact links
+        div.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                console.log('Calling:', this.getAttribute('href'));
+            });
+        });
+
+        // Smooth scroll to bottom
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function formatBotResponse(response) {
+        let formatted = response
+            .replace(/\*\*[^*]+\*\*/g, match => match)
+            .replace(/🏠|🏡|🔑|💰|📍|🏢|🔗|✅|📊|🛠️|🏘️|🆕|🔄|💼|📋|🎨|🏗️|🤝|✨|🌟|😊|😄|👋|💙|🤗|🌟|💫/g, match => match)
+            .replace(/Location:\s*/g, '\n📍 Location: ')
+            .replace(/Type:\s*/g, '\n🏗️ Type: ')
+            .replace(/Area:\s*/g, '\n📐 Area: ')
+            .replace(/Budget:\s*/g, '\n💰 Budget: ')
+            .replace(/Status:\s*/g, '\n📅 Status: ')
+            .replace(/View Details:/g, '\n🔗 View Details: ')
+            .replace(/\s+/g, ' ')
+            .replace(/\n+/g, '\n')
+            .trim();
+
+        if (formatted.includes('Found') && formatted.includes('properties')) {
+            formatted = formatted.replace(/Found \d+ properties for you:/, 'I found some properties for you:\n\n');
+            formatted = formatted.replace(/\n\n+/g, '\n\n');
+        }
+
+        return formatted;
+    }
+
+    function showTyping() {
+        console.log('Showing typing indicator');
+        typingIndicator.style.display = 'flex';
+        typingIndicator.classList.add('show');
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+
+    function hideTyping() {
+        console.log('Hiding typing indicator');
+        typingIndicator.classList.remove('show');
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+        }, 300);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Optional: Keyboard shortcut Ctrl + Space to open chat
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.code === 'Space') {
+            e.preventDefault();
+            if (!chatOverlay.classList.contains('show')) {
+                chatBubble.click();
+            }
+        }
+    });
+
+    // Make makeCall function globally available
+    window.makeCall = makeCall;
+});
+</script>
+{% endblock %}

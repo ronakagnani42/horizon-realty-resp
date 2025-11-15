@@ -1,0 +1,21 @@
+Welcome to {{ company_name }} Newsletter!
+
+Dear {{ user_name }},
+
+Thank you for subscribing to our newsletter! We're excited to have you join our community of property enthusiasts.
+
+What You'll Receive:
+• Latest Property Listings - Be the first to know about new properties
+• Exclusive Deals - Access to special offers and discounts  
+• Market Insights - Stay updated with real estate trends
+• Expert Tips - Professional advice for buyers and sellers
+• Weekly Summaries - Curated property updates every week
+
+
+Stay Connected:
+Follow us on social media for daily updates and behind-the-scenes content.
+
+---
+{{ company_name }}
+Making your dream home a reality
+

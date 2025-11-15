@@ -1,0 +1,391 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{% block title %}Horizon Reality{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
+
+    <!-- Favicons -->
+    <!-- <link href="{% static 'img/favicon.png' %}" rel="icon">
+    <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon"> -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Vendor CSS Files -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    
+    {% block extra_css %}
+    <style>
+        :root {
+            --primary-color: #ff9d1f;
+            --primary-rgb: 255, 157, 31;
+            --secondary-color: #2c3e50;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --border-light: #e0e0e0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            /* --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); */
+        }
+
+        #header, #header * {
+            font-family: 'Times New Roman', Times, serif !important;
+        }
+        * {
+            font-family: 'Times New Roman', Times, serif
+        }
+
+        /* Enhanced navigation styles */
+        .navmenu > ul > li > a {
+            position: relative;
+            overflow: hidden;
+            /* transition: var(--transition); */
+        }
+
+        .navmenu > ul > li > a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            /* transition: var(--transition); */
+        }
+
+        .navmenu > ul > li > a:hover::before {
+            left: 100%;
+        }
+
+        .navmenu > ul > li > a:hover {
+            transform: translateY(-2px);
+        }
+
+        
+        .user-profile-link {
+            color: white;
+        }
+        
+        .user-profile-link:hover {
+            color: var(--primary-color);
+            background: rgba(var(--primary-rgb), 0.1);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        
+        
+        .user-profile-link i {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        /* Enhanced login button */
+        .btn-getstarted {
+            background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
+            display: inline-block;
+        }
+
+        .btn-getstarted:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .dropdown-menu {
+                min-width: 200px;
+            }
+            
+            .dropdown-submenu > .dropdown-menu {
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dropdown-menu {
+                position: static;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+                background: transparent;
+                display: block;
+            }
+            
+            .dropdown-submenu > .dropdown-menu {
+                position: static;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                margin-left: 20px;
+                margin-right: 0; /* Reset margin-right for mobile */
+                border: none;
+                box-shadow: none;
+                background: transparent;
+                display: block;
+            }
+            
+            .dropdown-item {
+                padding: 8px 15px;
+            }
+            
+            .dropdown:hover .dropdown-menu {
+                display: block;
+            }
+            
+            .dropdown-submenu:hover > .dropdown-menu {
+                display: block;
+            }
+        }
+    </style>
+    {% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Header -->
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+            <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-lg-0">
+                <img src="{% static 'img/icons/logo.png' %}" alt="Logo" class="logo-img">
+            </a>
+        
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{% url 'home' %}" class="{% block nav_home_active %}{% endblock %}">Home</a></li>
+                    <li><a href="{% url 'about-us' %}" class="{% block nav_about_active %}{% endblock %}">About Us</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="#" role="button" id="servicesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span>Services</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    <i class="bi bi-cart-plus"></i> Buy Properties
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'buy_residential_property' %}">
+                                        <i class="bi bi-house-door"></i> Buy Residential Properties
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'buy_commercial_property' %}">
+                                        <i class="bi bi-building"></i> Buy Commercial Properties
+                                    </a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    <i class="bi bi-tag"></i> Sell Properties
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'residential_property' %}">
+                                        <i class="bi bi-house-door"></i> Sell Residential Properties
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'commercial_property' %}">
+                                        <i class="bi bi-building"></i> Sell Commercial Properties
+                                    </a></li>
+                                </ul>
+                            </li>
+                             <li><a class="dropdown-item" href="{% url 'interior_design_form' %}">
+                                <i class="bi bi-palette"></i> Interior Design
+                            </a></li>
+                           
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'property:property_home' %}" class="{% block nav_properties_active %}{% endblock %}">Properties</a></li>
+                    <li><a href="{% url 'property_calc' %}" class="{% block nav_property_calc_active %}{% endblock %}">Property Calculator</a></li>
+                    <li><a href="{% url 'blogs:blog_list' %}" class="{% block nav_blogs_active %}{% endblock %}">Blogs</a></li>
+                    <li><a href="{% url 'contact-us' %}" class="{% block nav_contact_active %}{% endblock %}">Contact Us</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+        
+            {% if user.is_authenticated %}
+                <div class="user-profile-container dropdown">
+                    <a class="user-profile-link dropdown-toggle" href="#" role="button" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="true">
+                        <i class="bi bi-person-circle"></i> {{ user.first_name }} {{ user.last_name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userProfileDropdown">
+                        <li><a class="dropdown-item" href="{% url 'my_favorites' %}"><i class="bi bi-heart"></i> My Favorites</a></li>
+                        <li><a class="dropdown-item" href="{% url 'update_profile' %}"><i class="bi bi-pencil-square"></i> Update Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a class="btn-getstarted" href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "additionals/footer.html" %}
+
+    <!-- Scroll Top Button -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Enhanced dropdown functionality - FIXED for right-side submenus -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Enhanced dropdown functionality with pure CSS hover
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const toggle = dropdown.querySelector('.dropdown-toggle');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            
+            if (toggle && menu) {
+                let timeoutId;
+                
+                // Show dropdown on hover
+                dropdown.addEventListener('mouseenter', function() {
+                    clearTimeout(timeoutId);
+                    menu.style.display = 'block';
+                    menu.style.opacity = '1';
+                    menu.style.visibility = 'visible';
+                    menu.style.transform = 'translateY(0)';
+                });
+                
+                // Hide dropdown on leave with slight delay
+                dropdown.addEventListener('mouseleave', function() {
+                    timeoutId = setTimeout(() => {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            menu.style.display = 'none';
+                        }, 300);
+                    }, 150);
+                });
+                
+                // Prevent dropdown from closing when clicking on toggle
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            }
+        });
+        
+        // Handle submenu interactions - FIXED for right-side positioning
+        const submenus = document.querySelectorAll('.dropdown-submenu');
+        
+        submenus.forEach(submenu => {
+            const submenuToggle = submenu.querySelector('.dropdown-item');
+            const submenuMenu = submenu.querySelector('.dropdown-menu');
+            
+            if (submenuToggle && submenuMenu) {
+                let submenuTimeoutId;
+                
+                // Prevent default click behavior
+                submenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                
+                // Show submenu on hover
+                submenu.addEventListener('mouseenter', function() {
+                    clearTimeout(submenuTimeoutId);
+                    submenuMenu.style.display = 'block';
+                    submenuMenu.style.opacity = '1';
+                    submenuMenu.style.visibility = 'visible';
+                    submenuMenu.style.transform = 'translateX(0)';
+                });
+                
+                // Hide submenu on leave with slight delay
+                submenu.addEventListener('mouseleave', function() {
+                    submenuTimeoutId = setTimeout(() => {
+                        submenuMenu.style.opacity = '0';
+                        submenuMenu.style.visibility = 'hidden';
+                        submenuMenu.style.transform = 'translateX(10px)'; // FIXED: Changed from translateX(-10px) to translateX(10px)
+                        setTimeout(() => {
+                            submenuMenu.style.display = 'none';
+                        }, 300);
+                    }, 150);
+                });
+            }
+        });
+        
+        // Close all dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                dropdowns.forEach(dropdown => {
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    if (menu) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            menu.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            }
+        });
+        
+        // Handle escape key to close dropdowns
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                dropdowns.forEach(dropdown => {
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    if (menu) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            menu.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            }
+        });
+    });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

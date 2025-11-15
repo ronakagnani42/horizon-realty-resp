@@ -1,0 +1,239 @@
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header with Times New Roman</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        /* Apply Times New Roman font to the entire header */
+        .header {
+            font-family: "Times New Roman", Times, serif !important;
+        }
+        
+        .header * {
+            font-family: "Times New Roman", Times, serif !important;
+        }
+        
+        /* Header styling */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .header.fixed-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        /* Logo styling */
+        .logo {
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+        
+        /* Navigation styling */
+        .navmenu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navmenu ul li {
+            position: relative;
+            margin: 0 15px;
+        }
+        
+        .navmenu ul li a {
+            color: #333;
+            text-decoration: none;
+            padding: 10px 5px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navmenu ul li a:hover {
+            color: #3498db;
+        }
+        
+        /* Dropdown styling */
+        .dropdown > a .toggle-dropdown {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        .dropdown ul {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            flex-direction: column;
+            padding: 10px 0;
+        }
+        
+        .dropdown:hover ul {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown ul li {
+            margin: 0;
+            width: 100%;
+        }
+        
+        .dropdown ul li a {
+            padding: 10px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            width: 100%;
+        }
+        
+        .dropdown ul li:last-child a {
+            border-bottom: none;
+        }
+        
+        /* Nested dropdown */
+        .dropdown .dropdown ul {
+            left: 100%;
+            top: 0;
+        }
+        
+        /* Button styling */
+        .btn-getstarted {
+            background-color: #3498db;
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-getstarted:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile toggle */
+        .mobile-nav-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 1199px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            .navmenu ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #fff;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .navmenu ul li {
+                margin: 10px 0;
+                width: 100%;
+            }
+            
+            .dropdown ul {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background: #f8f9fa;
+                margin-top: 10px;
+            }
+        }
+        
+        /* Body padding to account for fixed header */
+        body {
+            padding-top: 80px;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        
+        /* Demo content */
+        .demo-content {
+            padding: 50px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+            <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-lg-0">
+                <img src="{% static 'img/icons/logo.png' %}" alt="Logo" class="logo-img">
+            </a>
+            
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{% url 'home' %}">Home<br></a></li>
+                    <li><a href="{% url 'about-us' %}">About Us</a></li>
+                    <li><a href="{% url 'property_home' %}">Properties</a></li>
+                    <li class="dropdown">
+                        <a href="#"><span>Services</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                        <ul>
+                            <li></li>
+                            <li class="dropdown">
+                                <a href="#"><span>Buy Properties</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                <ul>
+                                    <li><a href="#">Residential Properties</a></li>
+                                    <li><a href="#">Commercial Properties</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#"><span>Sell Properties</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                <ul>
+                                    <li><a href="#">Residential Properties</a></li>
+                                    <li><a href="#">Commercial Properties</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'blogs:blog_list' %}">Blogs</a></li>
+                    <!-- <li><a href="{% url 'team-members' %}">Our Team</a></li> -->
+                    <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+            
+            {% if user.is_authenticated %}
+                <a class="btn-getstarted" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="btn-getstarted" href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </header>

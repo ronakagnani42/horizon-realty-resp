@@ -1,0 +1,147 @@
+<!-- emails/new_property_notification.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Property Alert - {{ company_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #007cba; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        .property-card { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .property-image { width: 100%; max-width: 400px; height: 200px; object-fit: cover; border-radius: 5px; }
+        .cta-button { display: inline-block; background-color: #007cba; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 15px 0; }
+        .property-details { margin: 15px 0; }
+        .property-details table { width: 100%; border-collapse: collapse; }
+        .property-details td { padding: 8px; border-bottom: 1px solid #eee; }
+        .property-details td:first-child { font-weight: bold; width: 30%; }
+        .footer { background-color: #f0f0f0; padding: 15px; text-align: center; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏡 New Property Alert!</h1>
+            <p>{{ company_name }} - Your Dream Property Awaits</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <p>Hello {{ subscriber_name|default:"Valued Customer" }},</p>
+            
+            <p>We're excited to share a fantastic new property opportunity that just became available!</p>
+            
+            <!-- Property Card -->
+            <div class="property-card">
+                <h2>{{ property.project_name }}</h2>
+                
+                {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.project_name }}" class="property-image">
+                {% endif %}
+                
+                <div class="property-details">
+                    <table>
+                        <tr>
+                            <td>Property Type:</td>
+                            <td>{{ property.get_property_type_display }}</td>
+                        </tr>
+                        {% if property.configuration %}
+                        <tr>
+                            <td>Configuration:</td>
+                            <td>{{ property.get_configuration_display }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if property.commercial_type %}
+                        <tr>
+                            <td>Commercial Type:</td>
+                            <td>{{ property.get_commercial_type_display }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>Area:</td>
+                            <td>{{ property.area }} sqft ({{ property.area_in_sqyards }} sq yards)</td>
+                        </tr>
+                        <tr>
+                            <td>Budget Range:</td>
+                            <td>{{ min_budget_display }} to {{ max_budget_display }}</td>
+                        </tr>
+                        {% if property.locations %}
+                        <tr>
+                            <td>Location:</td>
+                            <td>{{ property.locations.name }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if property.status %}
+                        <tr>
+                            <td>Status:</td>
+                            <td>{{ property.get_status_display }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if property.furnishing %}
+                        <tr>
+                            <td>Furnishing:</td>
+                            <td>{{ property.get_furnishing_display }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if property.possession_date %}
+                        <tr>
+                            <td>Possession Date:</td>
+                            <td>{{ property.possession_date|date:"F Y" }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+                
+                {% if property.salient_features %}
+                <div style="margin: 15px 0;">
+                    <strong>Key Features:</strong>
+                    <p>{{ property.salient_features }}</p>
+                </div>
+                {% endif %}
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <a href="{{ property_url }}" class="cta-button">View Full Details & Photos</a>
+                </div>
+                
+                {% if property.brochure_pdf %}
+                <p style="text-align: center;">
+                    <a href="{{ property.brochure_pdf.url }}" style="color: #007cba;">📄 Download Property Brochure</a>
+                </p>
+                {% endif %}
+            </div>
+            
+            <p><strong>Don't wait!</strong> Great properties like this get snapped up quickly. Contact us today to schedule a viewing or get more information.</p>
+            
+            <div style="background-color: #e8f4f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p><strong>🔥 Why act now?</strong></p>
+                <ul>
+                    <li>Prime location with excellent connectivity</li>
+                    <li>Competitive pricing in today's market</li>
+                    <li>Limited units available</li>
+                    <li>Flexible payment options available</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>{{ company_name }}</strong><br>
+            Your trusted real estate partner</p>
+            
+            <p>📧 Reply to this email or call us for immediate assistance<br>
+            🌐 Visit our website for more properties</p>
+            
+            <hr style="margin: 15px 0;">
+            
+            <p>You received this email because you subscribed to our newsletter.<br>
+            {% if unsubscribe_url %}
+            <a href="{{ unsubscribe_url }}">Unsubscribe</a> | 
+            {% endif %}
+            <a href="{{ property_url }}">View Online</a></p>
+        </div>
+    </div>
+</body>
+</html>

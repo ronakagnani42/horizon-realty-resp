@@ -1,0 +1,78 @@
+<!-- templates/verification_invalid.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Verification - Horizon Reality</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% load static %}
+    <link href="{% static 'css/register.css' %}" rel="stylesheet">
+    <style>
+        .verification-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        * {
+            font-family: 'Times New Roman', Times, serif;
+        }
+                
+        .verification-icon {
+            font-size: 64px;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        
+        .verification-message {
+            margin-bottom: 30px;
+        }
+        
+        .verification-message h2 {
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        
+        .verification-message p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .action-button {
+            display: inline-block;
+            background-color: #ff9e00;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .action-button:hover {
+            background-color: #f08c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <div class="verification-container">
+                <div class="verification-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="verification-message">
+                    <h2>Invalid Verification Link</h2>
+                    <p>The verification link you followed is invalid or has expired.</p>
+                    <p>Please try registering again or contact our support team for assistance.</p>
+                </div>
+                <div>
+                    <a href="{% url 'register' %}" class="action-button">Register Again</a>
+                    <a href="{% url 'login' %}" class="action-button">Go to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

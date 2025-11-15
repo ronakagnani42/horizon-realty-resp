@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Approved - Horizon Reality</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        .email-container {
+            background-color: white;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 30px;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></svg>') center/cover;
+            opacity: 0.3;
+        }
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .logo::before {
+            content: '🏠';
+            margin-right: 10px;
+            font-size: 28px;
+        }
+        .header-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+        .content {
+            padding: 30px;
+        }
+        .main-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .main-message h2 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .main-text {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .property-details {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 4px solid #27ae60;
+            position: relative;
+        }
+        .property-details::before {
+            content: '🏡';
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-size: 32px;
+            opacity: 0.3;
+        }
+        .property-details h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 10px;
+        }
+        .property-details ul {
+            padding-left: 0;
+            list-style: none;
+        }
+        .property-details li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 15px;
+        }
+        .property-details li::before {
+            content: '📍';
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+        }
+        .property-details li:nth-child(1)::before { content: '🏗️'; }
+        .property-details li:nth-child(2)::before { content: '🏠'; }
+        .property-details li:nth-child(3)::before { content: '📐'; }
+        .property-details li:nth-child(4)::before { content: '💰'; }
+        .property-details li:nth-child(5)::before { content: '✅'; }
+        .property-details li:nth-child(6)::before { content: '📍'; }
+        .success-badge {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+        }
+        .success-badge::before {
+            content: '✅';
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .next-steps {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            color: white;
+            text-align: center;
+        }
+        .next-steps h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .next-steps p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 0;
+        }
+        .support-section {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .support-section h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .support-section p {
+            color: #333;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+        .signature {
+            background: rgba(39,174,96,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 3px solid #27ae60;
+        }
+        .signature p {
+            margin: 0;
+            color: #333;
+        }
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .footer strong {
+            color: #D4AF37;
+            font-size: 16px;
+        }
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #27ae60, transparent);
+            margin: 20px 0;
+        }
+        .stats-section {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 5px;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #333;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="success-icon">🎉</div>
+            <div class="logo">Horizon Reality</div>
+            <p class="header-subtitle">Your Gateway to Dream Homes</p>
+        </div>
+        
+        <div class="content">
+            <div class="main-message">
+                <h2>Residential Property Approved!</h2>
+                <div class="success-badge">Your Listing is Now Live</div>
+            </div>
+            
+            <div class="greeting">
+                Hello {{user.first_name}} {{user.last_name}},
+            </div>
+            
+            <div class="main-text">
+                <strong>Wonderful news!</strong> Your residential property listing has been carefully reviewed and approved by our team. It's now live on our platform and visible to thousands of potential buyers and tenants looking for their perfect home.
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="property-details">
+                <h3>Your Approved Property Details:</h3>
+                <ul>
+                    <li><strong>Project Name:</strong> {{ project_name }}</li>
+                    <li><strong>Configuration:</strong> {{ configuration }}</li>
+                    <li><strong>Area:</strong> {{ area }} sqft</li>
+                    <li><strong>Budget:</strong> ₹{{ budget|floatformat:0 }}</li>
+                    <li><strong>Status:</strong> {{ status }}</li>
+                    <li><strong>Location:</strong> {{ location }}</li>
+                </ul>
+            </div>
+            
+            <div class="next-steps">
+                <h3>What Happens Next?</h3>
+                <p>Your property is now actively showcased to our network of verified home buyers and tenants. You can expect to receive qualified inquiries from interested families and individuals soon. We'll notify you immediately when potential clients express interest.</p>
+            </div>
+            
+            <div class="support-section">
+                <h3>Need Assistance?</h3>
+                <p>Our dedicated support team is here to help you maximize your property's visibility and handle any inquiries. Don't hesitate to reach out if you have questions or need guidance with potential buyers/tenants.</p>
+            </div>
+            
+            <div class="signature">
+                <p><strong>Thank you for choosing our platform!</strong></p>
+                <p><strong>Best regards,</strong><br>
+                The Horizon Reality Team</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Horizon Reality</strong></p>
+            <p><em>Making your dream home deals a reality</em></p>
+            <p>&copy; 2024 Horizon Reality. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

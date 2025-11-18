@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Initialize AOS with custom settings
   AOS.init({
     duration: 1000,
@@ -20,24 +20,24 @@ document.addEventListener('DOMContentLoaded', function() {
       disableOnInteraction: false
     },
     breakpoints: {
-      1400: { 
+      1400: {
         slidesPerView: 4,
         spaceBetween: 30
       },
-      1200: { 
-        slidesPerView: 3, 
+      1200: {
+        slidesPerView: 3,
         spaceBetween: 30
       },
-      992: { 
-        slidesPerView: 2, 
+      992: {
+        slidesPerView: 2,
         spaceBetween: 25
       },
-      768: { 
-        slidesPerView: 2, 
+      768: {
+        slidesPerView: 2,
         spaceBetween: 20
       },
-      576: { 
-        slidesPerView: 1, 
+      576: {
+        slidesPerView: 1,
         spaceBetween: 15
       }
     },
@@ -101,20 +101,20 @@ document.addEventListener('DOMContentLoaded', function() {
     slidesOffsetBefore: 0,
     slidesOffsetAfter: 0
   });
-  
+
   // Force start the autoplay immediately
   testimonialsSwiper.autoplay.start();
-  
+
   // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
-      
+
       const targetId = this.getAttribute('href');
-      if(targetId === '#') return;
-      
+      if (targetId === '#') return;
+
       const targetElement = document.querySelector(targetId);
-      if(targetElement) {
+      if (targetElement) {
         window.scrollTo({
           top: targetElement.offsetTop - 80,
           behavior: 'smooth'
@@ -122,23 +122,23 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-  
+
   // Portfolio isotope and filter - IMPROVED VERSION
   let portfolioIsotope = document.querySelector('.isotope-container');
   if (portfolioIsotope) {
     let portfolioFilters = document.querySelectorAll('.portfolio-filters li');
-    
+
     window.addEventListener('load', () => {
       // Wait for all images to load before initializing Isotope
       if (typeof imagesLoaded !== 'undefined') {
-        imagesLoaded(portfolioIsotope, function() {
+        imagesLoaded(portfolioIsotope, function () {
           initIsotope();
         });
       } else {
         // Fallback if imagesLoaded is not available
         setTimeout(initIsotope, 500);
       }
-      
+
       function initIsotope() {
         let iso = new Isotope(portfolioIsotope, {
           itemSelector: '.isotope-item',
@@ -147,28 +147,28 @@ document.addEventListener('DOMContentLoaded', function() {
             gutter: 30
           }
         });
-        
+
         // Initial filter
         iso.arrange({
           filter: '*'
         });
-        
+
         // Filter items on button click
         portfolioFilters.forEach(filter => {
-          filter.addEventListener('click', function(e) {
+          filter.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             portfolioFilters.forEach(el => {
               el.classList.remove('filter-active');
             });
             this.classList.add('filter-active');
-            
+
             iso.arrange({
               filter: this.getAttribute('data-filter')
             });
-            
+
             // Re-layout Isotope after filtering
-            setTimeout(function() {
+            setTimeout(function () {
               iso.layout();
             }, 300);
           });
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
+
   // Initialize GLightbox for portfolio items
   const glightbox = GLightbox({
     selector: '.glightbox',
@@ -184,7 +184,50 @@ document.addEventListener('DOMContentLoaded', function() {
     loop: true,
     autoplayVideos: true
   });
-  
+
   // PureCounter initialization
   new PureCounter();
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  // --------- MAKE CALL ---------
+  function makeCall() {
+    const phoneNumber = "+919104828680";
+    window.location.href = `tel:${phoneNumber}`;
+    console.log('Call initiated for property inquiry');
+    const modalElement = document.getElementById('quickCallModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) modal.hide();
+    }
+  }
+
+  // --------- ISOTOPE FILTER LIMIT ---------
+  const container = document.querySelector('.isotope-container');
+  const filterButtons = document.querySelectorAll('.isotope-filters li');
+
+  function limitItems(filter, limit = 6) {
+    const items = container.querySelectorAll('.portfolio-item');
+    let visibleCount = 0;
+
+    items.forEach(item => {
+      const shouldShow = filter === '*' || item.classList.contains(filter.replace('.', ''));
+      if (shouldShow && visibleCount < limit) {
+        item.style.display = 'block';
+        visibleCount++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const filter = this.getAttribute('data-filter');
+      filterButtons.forEach(btn => btn.classList.remove('filter-active'));
+      this.classList.add('filter-active');
+      limitItems(filter, 6);
+    });
+  });
+  limitItems('*', 6);
 });

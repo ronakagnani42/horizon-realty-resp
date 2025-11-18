@@ -9,11 +9,13 @@
 
 {% block extra_css %}
 <link href="{% static 'css/contact_us.css' %}" rel="stylesheet">
+<link href="{% static 'css/chatbot.css' %}" rel="stylesheet">
 <style>
   /* Hero Section - Corporate Solid Background - Specific targeting */
+/* Hero Section - Corporate Solid Background - Fully Responsive without Media Queries */
 .hero-section {
     position: relative;
-    min-height: 50vh;
+    min-height: clamp(40vh, 50vh, 60vh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,8 +24,9 @@
     background: linear-gradient(135deg, #f4b400 0%, #e6a300 25%, #f4b400 75%, #d89200 100%);
     z-index: 1;
 }
+
 .index-page .header {
-  --background-color: rgba(0, 0, 0, 0.8)  !important;
+    --background-color: rgba(0, 0, 0, 0.8) !important;
 }
 
 /* Background layers for depth and corporate feel - Scoped to hero section */
@@ -38,7 +41,7 @@
         radial-gradient(circle at 75% 75%, rgba(255,255,255,0.12) 0%, transparent 40%),
         linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
         linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%);
-    background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+    background-size: 100% 100%, 100% 100%, clamp(60px, 10vw, 80px) clamp(60px, 10vw, 80px), clamp(60px, 10vw, 80px) clamp(60px, 10vw, 80px);
     z-index: 1;
 }
 
@@ -77,7 +80,7 @@
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-size: clamp(40px, 8vw, 60px) clamp(40px, 8vw, 60px);
     opacity: 0.7;
     z-index: 4;
 }
@@ -86,14 +89,14 @@
 .hero-section .gradient-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
+    filter: blur(clamp(40px, 8vw, 60px));
     opacity: 0.3;
     z-index: 5;
 }
 
 .hero-section .orb-1 {
-    width: 300px;
-    height: 300px;
+    width: clamp(150px, 35vw, 300px);
+    height: clamp(150px, 35vw, 300px);
     top: 10%;
     left: 10%;
     background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
@@ -101,8 +104,8 @@
 }
 
 .hero-section .orb-2 {
-    width: 200px;
-    height: 200px;
+    width: clamp(100px, 25vw, 200px);
+    height: clamp(100px, 25vw, 200px);
     bottom: 10%;
     right: 10%;
     background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
@@ -124,11 +127,19 @@
     background: rgba(255,255,255,0.1);
     border: 1px solid rgba(255,255,255,0.2);
     backdrop-filter: blur(10px);
+    opacity: 0;
+}
+
+/* Show floating elements on larger containers using container queries */
+@container (min-width: 768px) {
+    .hero-section .floating-element {
+        opacity: 1;
+    }
 }
 
 .hero-section .square-1 {
-    width: 60px;
-    height: 60px;
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
     top: 20%;
     left: 80%;
     transform: rotate(45deg);
@@ -136,8 +147,8 @@
 }
 
 .hero-section .square-2 {
-    width: 40px;
-    height: 40px;
+    width: clamp(30px, 6vw, 40px);
+    height: clamp(30px, 6vw, 40px);
     top: 60%;
     left: 15%;
     transform: rotate(15deg);
@@ -145,8 +156,8 @@
 }
 
 .hero-section .square-3 {
-    width: 30px;
-    height: 30px;
+    width: clamp(20px, 4vw, 30px);
+    height: clamp(20px, 4vw, 30px);
     top: 80%;
     left: 75%;
     transform: rotate(-30deg);
@@ -154,8 +165,8 @@
 }
 
 .hero-section .square-4 {
-    width: 50px;
-    height: 50px;
+    width: clamp(35px, 7vw, 50px);
+    height: clamp(35px, 7vw, 50px);
     top: 30%;
     left: 5%;
     transform: rotate(60deg);
@@ -169,13 +180,15 @@
     text-align: center;
     color: white;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    max-width: min(800px, 90vw);
+    padding: 0 clamp(15px, 3vw, 20px);
 }
 
 .hero-section .content h1 {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 6vw, 3.5rem);
     font-weight: 700;
-    margin-bottom: 1rem;
-    letter-spacing: 2px;
+    margin-bottom: clamp(0.8rem, 1.5vw, 1rem);
+    letter-spacing: clamp(1px, 0.3vw, 2px);
     text-transform: uppercase;
     background: linear-gradient(45deg, #ffffff 0%, #f0f0f0 100%);
     background-clip: text;
@@ -184,32 +197,33 @@
 }
 
 .hero-section .professional-line {
-    width: 100px;
-    height: 3px;
+    width: clamp(60px, 15vw, 100px);
+    height: clamp(2px, 0.4vw, 3px);
     background: linear-gradient(90deg, transparent 0%, white 50%, transparent 100%);
-    margin: 2rem auto;
+    margin: clamp(1.5rem, 3vw, 2rem) auto;
     border-radius: 2px;
 }
 
 .hero-section .subtitle {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
     font-weight: 300;
-    margin-bottom: 3rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
     opacity: 0.9;
-    letter-spacing: 1px;
+    letter-spacing: clamp(0.5px, 0.2vw, 1px);
 }
 
 /* Contact icons - Scoped to hero section */
 .hero-section .contact-icons {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    margin-top: 3rem;
+    gap: clamp(0.8rem, 3vw, 2rem);
+    margin-top: clamp(2rem, 5vw, 3rem);
+    flex-wrap: wrap;
 }
 
 .hero-section .icon-wrapper {
-    width: 60px;
-    height: 60px;
+    width: clamp(50px, 8vw, 60px);
+    height: clamp(50px, 8vw, 60px);
     background: rgba(255,255,255,0.15);
     border: 2px solid rgba(255,255,255,0.3);
     border-radius: 50%;
@@ -229,7 +243,7 @@
 }
 
 .hero-section .icon-wrapper i {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
     color: white;
 }
 
@@ -244,43 +258,20 @@
     50% { transform: translateY(-15px) rotate(var(--rotation, 0deg)); }
 }
 
-/* Responsive design - Scoped to hero section */
-@media (max-width: 768px) {
-    .hero-section .content h1 {
-        font-size: 2.5rem;
-    }
-    
-    .hero-section .subtitle {
-        font-size: 1.1rem;
-    }
-    
-    .hero-section .contact-icons {
-        gap: 1rem;
-    }
-    
-    .hero-section .icon-wrapper {
-        width: 50px;
-        height: 50px;
+/* Touch device optimization */
+@media (hover: none) and (pointer: coarse) {
+    .hero-section .icon-wrapper:hover {
+        transform: none;
     }
     
     .hero-section .floating-element {
-        opacity: 0.5;
+        opacity: 0.3;
     }
 }
 
-@media (max-width: 480px) {
-    .hero-section .content h1 {
-        font-size: 2rem;
-    }
-    
-    .hero-section .subtitle {
-        font-size: 1rem;
-    }
-    
-    .hero-section .contact-icons {
-        flex-wrap: wrap;
-        gap: 0.8rem;
-    }
+/* Container query support */
+.hero-section {
+    container-type: inline-size;
 }
 </style>
 {% endblock %}
@@ -459,76 +450,11 @@
     </div>
   </div>
 </section><!-- /Contact Section -->
-<button class="chat-bubble" id="chatBubble">
-  <i class="bi bi-chat-dots"></i>
-</button>
-
-<!-- Chat Overlay -->
-<div class="chat-overlay" id="chatOverlay">
-  <div class="chat-container">
-    <div class="chat-header">
-      <div>
-        <h5>AskHorizon</h5>
-        <small>Property Assistant</small>
-      </div>
-      <button class="chat-close" id="chatClose">
-        <i class="bi bi-x"></i>
-      </button>
-    </div>
-    
-    <div class="chat-messages" id="chatMessages">
-      <div class="message bot">
-        <div class="avatar">👩</div>
-        <div class="content">
-        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
-        </div>
-      </div>
-    </div>
-    <div class="typing-indicator" id="typingIndicator">
-      <div class="typing-avatar">👩</div>
-      <div class="typing-content">
-        <div class="typing-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </div>
-    <div class="quick-options" id="quickOptions">
-      <div class="quick-options-title">Quick Options:</div>
-      <div class="quick-options-buttons">
-        <button class="quick-option-btn" data-option="about">
-          <i class="bi bi-info-circle"></i>
-          What is Horizon Reality?
-        </button>
-        <button class="quick-option-btn" data-option="services">
-          <i class="bi bi-gear"></i>
-          Our Services
-        </button>
-        <button class="quick-option-btn" data-option="properties">
-          <i class="bi bi-house"></i>
-          Show Properties
-        </button>
-      </div>
-    </div>
-
-    <!-- FIXED Typing Indicator -->
-   
-
-    <div class="chat-input">
-      <div class="chat-input-group">
-        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
-        <button class="chat-send-btn" id="chatSend">
-          <i class="bi bi-send"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
+{% include "chatbot.html" %}
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/chatbott.js' %}"></script> 
 <script>
   // JavaScript to make the messages fade out after 5 seconds
   window.onload = function() {
@@ -562,312 +488,5 @@
                 parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
-    document.addEventListener('DOMContentLoaded', function() {
-     const chatBubble = document.getElementById('chatBubble');
-    const chatOverlay = document.getElementById('chatOverlay');
-    const chatClose = document.getElementById('chatClose');
-    const chatInput = document.getElementById('chatInput');
-    const chatSend = document.getElementById('chatSend');
-    const chatMessages = document.getElementById('chatMessages');
-    const typingIndicator = document.getElementById('typingIndicator');
-    const quickOptions = document.getElementById('quickOptions');
-
-    // Ensure all elements are found
-    if (!chatBubble || !chatOverlay || !chatClose || !chatInput || !chatSend || !chatMessages || !typingIndicator) {
-        console.error('One or more chat elements not found');
-        return;
-    }
-
-    // Initialize typing indicator
-    typingIndicator.style.display = 'none';
-
-    // Quick options responses
-    const quickOptionsResponses = {
-        about: `🏠 **About Horizon Reality**
-
-👋 Welcome to Horizon Reality : Your Gateway to Real Estate Excellence!
-
-I'm your virtual guide here to make your real estate journey easy, informed, and personalized.
-✨ Whether you're buying, selling, investing, or designing your space, we've got you covered.
-
-• Get expert help with managing your investment portfolio, financing, legal advice, and interiors.
-• Access premium properties through our trusted developer network.
-• Explore trending listings and unlock the best market deals.
-• Receive tailored support backed by real insights.
-
-Personal Consultation: Book time with our team for personalized guidance.
-Let's turn your dream space into a reality with trust, transparency, and complete support.
-
-How can I assist you today? 💬`,
-
-        services: `🛠️ **Our Services**
-
-**Property Services:**
-🛠 Our Services
-
-Property Services:
-🏠 Residential Properties
-🏢 Commercial Properties
-🔄 Resale & Leasing 
-💰 Property Investment Consultation
-
-Additional Services:
-🎨 Interior Design consultancy & Turnkey Solutions
-📋 Legal Documentation & Financing
-📊 Market Analysis & Insights
-🤝 Developer Partnerships
-
-Why Choose Us:
-✨ Client-centric approach with personalized solutions
-✨ Transparent and reliable processes
-✨ One-stop solution for all property needs
-✨ Strong network with trusted developers
-
-Want to know more about any specific service? Just ask! 😊`,
-
-        properties: `🏘️ **Our Property Portfolio**
-
-**Residential Properties:**
-🏠 1BHK, 2BHK, 3BHK, 4BHK, 5BHK Apartments
-🏡 Villas & Bungalows
-🏘 Duplex & Penthouse Options
-🏠 Tenements & Row Houses
-
-Commercial Properties:
-🏢 Office Spaces
-🏪 Retail Showrooms
-🏬 Shop Spaces
-🏢 Corporate Floors
-
-Property Categories:
-🆕 New Launch Projects
-🔄 Resale Properties
-🏠 Rental/Leasing Options
-💼 Investment Properties
-
-Some of the Popular Locations in Ahmedabad:
-📍Thaltej , South Bopal, Shela
-📍 Gota , Vaishnodevi, Science Park 
-📍 Prahlad Nagar, Satellite, SG Highway
-📍  Iscon, Ambli, Bodakdev, Vastrapur 
-
-Want to search for specific properties? Try asking:
-• "2BHK in Bopal under 50 lakhs"
-• "Commercial office space in SG Highway"
-• "Villas in Shela"`
-    };
-
-    // Handle quick option clicks
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('quick-option-btn')) {
-            const option = e.target.getAttribute('data-option');
-            const optionText = e.target.textContent.trim();
-            
-            // Add user message
-            addMessage(optionText, 'user');
-            
-            // KEEP QUICK OPTIONS VISIBLE - Remove this line
-            // if (quickOptions) {
-            //     quickOptions.style.display = 'none';
-            // }
-            
-            // Show typing indicator
-            showTyping();
-            
-            // Simulate delay and show response
-            setTimeout(() => {
-                hideTyping();
-                const response = quickOptionsResponses[option] || "Thanks for your question! How can I help you with your property needs?";
-                addMessage(response, 'bot');
-            }, 1500);
-        }
-    });
-
-    chatBubble.addEventListener('click', () => {
-        console.log('Chat bubble clicked');
-        chatOverlay.classList.add('show');
-        
-        // Quick options are always visible, no need to show/hide
-        
-        setTimeout(() => {
-            chatInput.focus();
-        }, 300);
-    });
-
-    chatClose.addEventListener('click', () => {
-        chatOverlay.classList.remove('show');
-        
-        // Quick options remain visible, no reset needed
-    });
-
-    chatOverlay.addEventListener('click', function (e) {
-        if (e.target === chatOverlay) {
-            chatOverlay.classList.remove('show');
-            
-            // Quick options remain visible, no reset needed
-        }
-    });
-
-    chatSend.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    function sendMessage() {
-    const message = chatInput.value.trim();
-    if (!message) return;
-
-    console.log('Sending message:', message);
-    addMessage(message, 'user');
-    chatInput.value = '';
-    
-    // Ensure quick options remain visible (no hiding)
-    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
-    
-    chatSend.disabled = true;
-    chatInput.disabled = true;
-    chatBubble.classList.add('typing');
-
-    showTyping();
-
-    setTimeout(() => {
-        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                hideTyping();
-                chatBubble.classList.remove('typing');
-                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
-                addMessage(formattedResponse, 'bot');
-                chatSend.disabled = false;
-                chatInput.disabled = false;
-                chatInput.focus();
-            })
-            .catch(error => {
-                console.error('Chat error:', error);
-                hideTyping();
-                chatBubble.classList.remove('typing');
-                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
-                chatSend.disabled = false;
-                chatInput.disabled = false;
-                chatInput.focus();
-            });
-    }, 1500);
-}
-
-    function addMessage(text, sender) {
-        const div = document.createElement('div');
-        div.className = `message ${sender}`;
-
-        if (sender === 'user') {
-            // Remove the "You" label by just showing the content
-            div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
-        } else {
-            const formattedText = text
-                .replace(/\n/g, '<br>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/🔗\s*<a\s+href="([^"]+)"\s+target="_blank"\s+class="property-link">([^<]+)<\/a>/g,
-                    '🔗 <a href="$1" target="_blank" class="property-link">$2</a>')
-                .replace(/📞\s*<a\s+href="([^"]+)"\s+class="contact-link">([^<]+)<\/a>/g,
-                    '📞 <a href="$1" class="contact-link">$2</a>');
-
-            div.innerHTML = `<div class="avatar">👩</div><div class="content">${formattedText}</div>`;
-        }
-
-        chatMessages.appendChild(div);
-
-        // Handle property links
-        div.querySelectorAll('.property-link').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const url = this.getAttribute('href');
-                window.open(url, '_blank');
-                console.log('Opening property link:', url);
-            });
-        });
-
-        // Handle contact links
-        div.querySelectorAll('.contact-link').forEach(link => {
-            link.addEventListener('click', function (e) {
-                console.log('Calling:', this.getAttribute('href'));
-            });
-        });
-
-        // Smooth scroll to bottom
-        chatMessages.scrollTo({
-            top: chatMessages.scrollHeight,
-            behavior: 'smooth'
-        });
-    }
-
-    function formatBotResponse(response) {
-        let formatted = response
-            .replace(/\*\*[^*]+\*\*/g, match => match)
-            .replace(/🏠|🏡|🔑|💰|📍|🏢|🔗|✅|📊|🛠️|🏘️|🆕|🔄|💼|📋|🎨|🏗️|🤝|✨|🌟|😊|😄|👋|💙|🤗|🌟|💫/g, match => match)
-            .replace(/Location:\s*/g, '\n📍 Location: ')
-            .replace(/Type:\s*/g, '\n🏗️ Type: ')
-            .replace(/Area:\s*/g, '\n📐 Area: ')
-            .replace(/Budget:\s*/g, '\n💰 Budget: ')
-            .replace(/Status:\s*/g, '\n📅 Status: ')
-            .replace(/View Details:/g, '\n🔗 View Details: ')
-            .replace(/\s+/g, ' ')
-            .replace(/\n+/g, '\n')
-            .trim();
-
-        if (formatted.includes('Found') && formatted.includes('properties')) {
-            formatted = formatted.replace(/Found \d+ properties for you:/, 'I found some properties for you:\n\n');
-            formatted = formatted.replace(/\n\n+/g, '\n\n');
-        }
-
-        return formatted;
-    }
-
-    function showTyping() {
-        console.log('Showing typing indicator');
-        typingIndicator.style.display = 'flex';
-        typingIndicator.classList.add('show');
-        chatMessages.scrollTo({
-            top: chatMessages.scrollHeight,
-            behavior: 'smooth'
-        });
-    }
-
-    function hideTyping() {
-        console.log('Hiding typing indicator');
-        typingIndicator.classList.remove('show');
-        setTimeout(() => {
-            typingIndicator.style.display = 'none';
-        }, 300);
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    // Optional: Keyboard shortcut Ctrl + Space to open chat
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.code === 'Space') {
-            e.preventDefault();
-            if (!chatOverlay.classList.contains('show')) {
-                chatBubble.click();
-            }
-        }
-    });
-
-    // Make makeCall function globally available
-    window.makeCall = makeCall;
-});
 </script>
 {% endblock %}

@@ -38,20 +38,21 @@ document.addEventListener('DOMContentLoaded', function () {
               year: 'numeric'
             });
 
+            //  FIXED: Changed blog.pk to blog.slug 
             const blogCard = `
               <div class="blog-card">
-                <a href="/blogs/${blog.pk}/">
+                <a href="/blogs/${blog.slug}/">
                   <img src="${blog.image}" alt="${blog.title}">
                 </a>
                 <div class="blog-content">
                   <div class="blog-date">
                     <i class="bi bi-calendar-date"></i> ${blogDate}
                   </div>
-                  <a href="/blogs/${blog.pk}/">
+                  <a href="/blogs/${blog.slug}/">
                     <h3>${blog.title}</h3>
                   </a>
                   <p>${blog.description ? blog.description.slice(0, 100) + '...' : 'No description available.'}</p>
-                  <a href="/blogs/${blog.pk}/" class="read-more">
+                  <a href="/blogs/${blog.slug}/" class="read-more">
                     Read More <i class="bi bi-arrow-right"></i>
                   </a>
                 </div>

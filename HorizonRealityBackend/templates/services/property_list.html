@@ -668,72 +668,8 @@
       </div>
     </div>
   </div>
-<button class="chat-bubble" id="chatBubble">
-  <i class="bi bi-chat-dots"></i>
-</button>
+{% include "chatbot.html" %}
 
-<!-- Chat Overlay -->
-<div class="chat-overlay" id="chatOverlay">
-  <div class="chat-container">
-    <div class="chat-header">
-      <div>
-        <h5>AskHorizon</h5>
-        <small>Property Assistant</small>
-      </div>
-      <button class="chat-close" id="chatClose">
-        <i class="bi bi-x"></i>
-      </button>
-    </div>
-    
-    <div class="chat-messages" id="chatMessages">
-      <div class="message bot">
-        <div class="avatar">👩</div>
-        <div class="content">
-        Hi there! 👋 I'm AskHorizon, your smart property assistant. How can I help you find the perfect place today?
-        </div>
-      </div>
-    </div>
-    <div class="typing-indicator" id="typingIndicator">
-      <div class="typing-avatar">👩</div>
-      <div class="typing-content">
-        <div class="typing-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </div>
-    <div class="quick-options" id="quickOptions">
-      <div class="quick-options-title">Quick Options:</div>
-      <div class="quick-options-buttons">
-        <button class="quick-option-btn" data-option="about">
-          <i class="bi bi-info-circle"></i>
-          What is Horizon Reality?
-        </button>
-        <button class="quick-option-btn" data-option="services">
-          <i class="bi bi-gear"></i>
-          Our Services
-        </button>
-        <button class="quick-option-btn" data-option="properties">
-          <i class="bi bi-house"></i>
-          Show Properties
-        </button>
-      </div>
-    </div>
-
-    <!-- FIXED Typing Indicator -->
-    
-
-    <div class="chat-input">
-      <div class="chat-input-group">
-        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
-        <button class="chat-send-btn" id="chatSend">
-          <i class="bi bi-send"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
   <script>
   // Store selected properties for comparison
   // Store selected properties for comparison

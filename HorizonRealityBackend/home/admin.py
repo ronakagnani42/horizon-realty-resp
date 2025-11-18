@@ -48,8 +48,39 @@ Each model is registered with the admin site, using the custom configurations ab
 class AboutUsAdmin(admin.ModelAdmin):
     list_display = ('short_welcome_text', 'short_mission', 'short_vision', 'updated_at')
     list_filter = ('updated_at',)
-    search_fields = ('welcome_text', 'mission_statement', 'vision_statement', 
-                    'team_member_1_name', 'team_member_2_name')
+    search_fields = (
+        'welcome_text', 'mission_statement', 'vision_statement',
+        'team_member_1_name', 'team_member_2_name'
+    )
+
+    fields = [
+        'welcome_text',
+        'introduction_video',
+
+        'team_photo',
+        'team_description',
+
+        'team_member_1_name',
+        'team_member_1_designation',
+        'team_member_1_description',
+        'team_member_1_photo',
+
+        'team_member_2_name',
+        'team_member_2_designation',
+        'team_member_2_description',
+        'team_member_2_photo',
+
+        'mission_statement',
+        'vision_statement',
+
+        'achievement_title_1',
+        'achievement_description_1',
+        'achievement_photo_1',
+
+        'achievement_title_2',
+        'achievement_description_2',
+        'achievement_photo_2',
+    ]
     
     def short_welcome_text(self, obj):
         return self._shorten_text(obj.welcome_text)
@@ -71,35 +102,6 @@ class AboutUsAdmin(admin.ModelAdmin):
             )
         return text
     
-    fieldsets = (
-        ('Introduction', {
-            'fields': ('welcome_text', 'introduction_video')
-        }),
-        ('Team Section', {
-            'fields': ('team_photo', 'team_description'),
-            'description': "Upload a common team photo and write a team description."
-        }),
-        ('Team Member 1', {
-            'fields': ('team_member_1_name', 'team_member_1_designation', 
-                      'team_member_1_description', 'team_member_1_photo'),
-            'description': "Information about team member 1."
-        }),
-        ('Team Member 2', {
-            'fields': ('team_member_2_name', 'team_member_2_designation', 
-                      'team_member_2_description', 'team_member_2_photo'),
-            'description': "Information about team member 2."
-        }),
-        ('Mission & Vision', {
-            'fields': ('mission_statement', 'vision_statement')
-        }),
-        ('Achievements', {
-            'fields': (
-                'achievement_title_1', 'achievement_description_1', 'achievement_photo_1',
-                'achievement_title_2', 'achievement_description_2', 'achievement_photo_2'
-            ),
-            'description': "Highlight your company's achievements."
-        }),
-    )
     
     def has_add_permission(self, request):
         return not AboutUs.objects.exists()
@@ -111,9 +113,15 @@ class TeamMemberAdmin(admin.ModelAdmin):
 
 @admin.register(Statistics)
 class StatisticsAdmin(admin.ModelAdmin):
-    list_display = ('happy_clients', 'projects', 'hours_of_support', 'hard_workers')
+    list_display = ('happy_clients', 'projects', 'hours_of_support', 'hard_workers','is_stats_active')
     list_editable = ('projects', 'hours_of_support', 'hard_workers') 
     list_display_links = ('happy_clients',) 
+    
+    def has_add_permission(self, request):
+        # If one instance exists, disable the Add button
+        if Statistics.objects.exists():
+            return False
+        return True
 
 @admin.register(Testimonial)
 class TestimonialAdmin(admin.ModelAdmin):

@@ -110,6 +110,7 @@ class Statistics(models.Model):
     projects = models.PositiveIntegerField(default=0)
     hours_of_support = models.PositiveIntegerField(default=0)
     hard_workers = models.PositiveIntegerField(default=0)
+    is_stats_active = models.BooleanField(default=False)
 
     def __str__(self):
         return "Statistics"

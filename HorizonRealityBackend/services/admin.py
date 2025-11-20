@@ -200,25 +200,10 @@ class PropertyInquiryAdmin(admin.ModelAdmin):
 
 @admin.register(PropertyCalculatorInquiry)
 class PropertyCalculatorInquiryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'property_type', 'floor', 'location', 'owner_name', 'phone_number', 'area', 'created_at')
+    list_display = (
+        'title', 'property_type', 'floor', 'location', 
+        'owner_name', 'phone_number', 'area', 'created_at'
+    )
     list_filter = ('title', 'property_type', 'location', 'created_at')
     search_fields = ('title', 'property_type', 'location', 'owner_name', 'phone_number', 'flat_society_name')
     readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('title', 'property_type', 'owner_name', 'phone_number')
-        }),
-        ('Property Details', {
-            'fields': ('location', 'flat_society_name', 'floor', 'area', 'property_life')
-        }),
-        ('Media Files', {
-            'fields': ('photo', 'document')
-        }),
-        ('Additional Information', {
-            'fields': ('additional_info',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        })
-    )

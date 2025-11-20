@@ -6,14 +6,28 @@
     --warning-color: #f39c12;
     --light-bg: #f8f9fa;
     --container-max-width: 1200px;
-    --border-radius-sm: 8px;
-    --border-radius-md: 15px;
-    --border-radius-lg: 20px;
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
+    --border-radius-sm: clamp(6px, 1vw, 8px);
+    --border-radius-md: clamp(10px, 2vw, 15px);
+    --border-radius-lg: clamp(15px, 2.5vw, 20px);
+    
+    /* Fluid spacing system */
+    --spacing-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+    --spacing-sm: clamp(0.5rem, 1vw, 1rem);
+    --spacing-md: clamp(0.75rem, 1.5vw, 1.5rem);
+    --spacing-lg: clamp(1rem, 2vw, 2rem);
+    --spacing-xl: clamp(1.5rem, 3vw, 3rem);
+    --spacing-2xl: clamp(2rem, 4vw, 4rem);
+    --spacing-3xl: clamp(3rem, 6vw, 6rem);
+    
+    /* Fluid typography */
+    --font-xs: clamp(0.7rem, 1.5vw, 0.8rem);
+    --font-sm: clamp(0.75rem, 1.8vw, 0.9rem);
+    --font-base: clamp(0.85rem, 2vw, 1rem);
+    --font-md: clamp(0.9rem, 2.2vw, 1.1rem);
+    --font-lg: clamp(1rem, 2.5vw, 1.2rem);
+    --font-xl: clamp(1.2rem, 3vw, 1.6rem);
+    --font-2xl: clamp(1.25rem, 4vw, 2rem);
+    --font-3xl: clamp(1.5rem, 4.5vw, 3rem);
 }
 
 * {
@@ -22,7 +36,7 @@
 }
 
 html {
-    font-size: 16px;
+    font-size: clamp(14px, 1.5vw, 18px);
     scroll-behavior: smooth;
 }
 
@@ -37,19 +51,19 @@ body {
 
 .main-container {
     width: 100%;
-    max-width: var(--container-max-width);
+    max-width: min(var(--container-max-width), 95vw);
     margin: 0 auto;
-    padding: clamp(2rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem) clamp(2rem, 6vw, 4rem);
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
 }
 
 .profile-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 clamp(15px, 3vw, 20px) clamp(30px, 5vw, 40px) rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     overflow: hidden;
-    margin-top: clamp(0.5rem, 2vw, 1rem);
+    margin-top: var(--spacing-sm);
     width: 100%;
     max-width: 100%;
 }
@@ -57,10 +71,10 @@ body {
 .profile-header {
     background: #f4b400;
     color: white;
-    padding: clamp(1.5rem, 4vw, 2rem);
+    padding: var(--spacing-lg);
     text-align: center;
     position: relative;
-    min-height: 200px;
+    min-height: clamp(160px, 25vh, 200px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -97,11 +111,12 @@ body {
 .profile-header h2 {
     margin: 0;
     font-weight: 600;
-    font-size: clamp(1.25rem, 4vw, 2rem);
+    font-size: var(--font-2xl);
     position: relative;
     z-index: 1;
     word-break: break-word;
     hyphens: auto;
+    line-height: 1.3;
 }
 
 .profile-header .user-info {
@@ -113,7 +128,7 @@ body {
 
 .profile-header .user-email {
     opacity: 0.9;
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-size: var(--font-md);
     margin-bottom: var(--spacing-xs);
     word-break: break-all;
 }
@@ -121,16 +136,16 @@ body {
 .profile-header .user-badge {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);
-    padding: 0.3rem 1rem;
+    padding: clamp(0.25rem, 0.5vw, 0.3rem) clamp(0.75rem, 1.5vw, 1rem);
     border-radius: var(--border-radius-lg);
-    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    font-size: var(--font-sm);
     text-transform: capitalize;
-    margin: 0.25rem;
+    margin: var(--spacing-xs);
     white-space: nowrap;
 }
 
 .profile-section {
-    padding: clamp(1rem, 4vw, 2rem);
+    padding: var(--spacing-lg);
 }
 
 .profile-info-grid {
@@ -154,7 +169,7 @@ body {
 .info-card:hover {
     background: rgba(255, 255, 255, 0.95);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 clamp(6px, 1.5vw, 8px) clamp(20px, 3vw, 25px) rgba(0, 0, 0, 0.1);
 }
 
 .info-card h5 {
@@ -164,7 +179,7 @@ body {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-size: var(--font-lg);
     word-break: break-word;
 }
 
@@ -172,7 +187,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 0.75rem 0;
+    padding: clamp(0.5rem, 1vw, 0.75rem) 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     gap: var(--spacing-sm);
     flex-wrap: wrap;
@@ -188,19 +203,19 @@ body {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    font-size: clamp(0.85rem, 2vw, 1rem);
+    font-size: var(--font-base);
     min-width: 0;
-    flex: 1;
+    flex: 1 1 min(150px, 100%);
 }
 
 .info-value {
     font-weight: 600;
     color: var(--primary-color);
     text-align: right;
-    font-size: clamp(0.85rem, 2vw, 1rem);
+    font-size: var(--font-base);
     word-break: break-word;
     hyphens: auto;
-    flex: 1;
+    flex: 1 1 min(150px, 100%);
     min-width: 0;
 }
 
@@ -216,25 +231,29 @@ body {
     justify-content: center;
     margin-top: var(--spacing-lg);
     width: 100%;
+    max-width: min(600px, 100%);
+    margin-inline: auto;
 }
 
 .btn-primary,
 .btn-secondary,
 .btn-outline-primary {
-    border-radius: 10px;
-    padding: 0.75rem clamp(1rem, 4vw, 2rem);
+    border-radius: var(--border-radius-sm);
+    padding: clamp(0.6rem, 1.2vw, 0.75rem) clamp(1rem, 2vw, 2rem);
     font-weight: 600;
     transition: all 0.3s ease;
     text-decoration: none;
     border: none;
     cursor: pointer;
-    font-size: clamp(0.85rem, 2.2vw, 1rem);
-    min-width: 120px;
+    font-size: var(--font-base);
+    min-width: min(120px, 45%);
     text-align: center;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
+    flex: 1 1 min(120px, 45%);
+    min-height: max(44px, 2.75rem);
 }
 
 .btn-primary {
@@ -244,8 +263,9 @@ body {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    background: #f4b400;
+    background: #e6a200;
     color: white;
+    box-shadow: 0 4px 15px rgba(244, 180, 0, 0.3);
 }
 
 .btn-primary:focus,
@@ -266,6 +286,7 @@ body {
 .btn-secondary:hover {
     transform: translateY(-2px);
     background: #5a6268;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
 }
 
 .btn-outline-primary {
@@ -279,6 +300,7 @@ body {
     color: white;
     transform: translateY(-2px);
     border-color: #f4b400;
+    box-shadow: 0 4px 15px rgba(244, 180, 0, 0.3);
 }
 
 .btn-outline-primary:focus,
@@ -308,25 +330,31 @@ input[type="submit"] {
     gap: var(--spacing-sm);
     justify-content: center;
     border-radius: 0 !important;
-
+    overflow-x: auto;
+    scrollbar-width: thin;
 }
 
 .navigation-links a {
     text-decoration: none;
     color: #6c757d;
     font-weight: 500;
-    font-size: clamp(0.85rem, 2vw, 1rem);
-    padding: 0.5rem;
+    font-size: var(--font-base);
+    padding: var(--spacing-xs) var(--spacing-sm);
     white-space: nowrap;
     border-radius: 0 !important;
+    flex-shrink: 0;
+    transition: color 0.3s ease;
 }
 
+.navigation-links a:hover {
+    color: var(--primary-color);
+}
 
 .status-badge {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
+    padding: clamp(0.2rem, 0.5vw, 0.25rem) clamp(0.5rem, 1vw, 0.75rem);
     border-radius: var(--border-radius-md);
-    font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+    font-size: var(--font-xs);
     font-weight: 500;
     text-transform: uppercase;
     white-space: nowrap;
@@ -343,11 +371,12 @@ input[type="submit"] {
 }
 
 .alert {
-    border-radius: 10px;
+    border-radius: var(--border-radius-sm);
     border: none;
     padding: var(--spacing-sm) var(--spacing-md);
     margin-bottom: var(--spacing-md);
     word-wrap: break-word;
+    font-size: var(--font-base);
 }
 
 .alert-success {
@@ -355,133 +384,80 @@ input[type="submit"] {
     color: white;
 }
 
-/* Enhanced Mobile Responsiveness */
-@media (max-width: 480px) {
-    html {
-        font-size: 14px;
-    }
-    
-    .main-container {
-        padding: 1rem 0.75rem;
-    }
-
-    .profile-card {
-        margin-top: 0.5rem;
-        border-radius: var(--border-radius-md);
-    }
-
-    .profile-header {
-        padding: 1.5rem 1rem;
-        min-height: 160px;
-    }
-
-    .profile-header h2 {
-        font-size: 1.2rem;
-        line-height: 1.3;
-    }
-
-    .profile-section {
-        padding: 1rem;
-    }
-
-    .profile-info-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .info-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
-    }
-    
-    .info-label,
-    .info-value {
-        text-align: left;
-        width: 100%;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-    }
-
-    .action-buttons .btn-primary,
-    .action-buttons .btn-secondary,
-    .action-buttons .btn-outline-primary {
-        width: 100%;
-        min-width: auto;
-    }
-
-    .navigation-links {
-        padding: 0.75rem;
-        justify-content: flex-start;
-        overflow-x: auto;
-        white-space: nowrap;
-        border-radius: 0 !important;
-
-    }
-    
-    .navigation-links a {
-        flex-shrink: 0;
-        border-radius: 0 !important;
-
-    }
+/* Breadcrumb section */
+.breadcrumb-section {
+    background-color: #ffffff;
+    padding: clamp(30px, 5vw, 50px) 0;
+    border-bottom: 1px solid #e9ecef;
+    margin-top: clamp(60px, 10vw, 80px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
-/* Tablet Responsiveness */
-@media (min-width: 481px) and (max-width: 768px) {
-    .main-container {
-        padding: 2rem 1.5rem;
-    }
-
-    .profile-info-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-    }
-
-    .action-buttons {
-        justify-content: center;
-        max-width: 500px;
-        margin: 2rem auto 0;
-    }
+.breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
 }
 
-/* Desktop and Large Screen Optimizations */
-@media (min-width: 769px) {
-    .profile-info-grid {
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    }
-    
-    .action-buttons {
-        justify-content: center;
-        max-width: 600px;
-        margin: 2rem auto 0;
-    }
+.breadcrumb-item {
+    font-size: var(--font-sm);
+    font-weight: 500;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/* Very Large Screens */
-@media (min-width: 1200px) {
-    .main-container {
-        padding: 6rem 2rem 4rem;
-    }
-
-    .profile-info-grid {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 2rem;
-    }
+.breadcrumb-item + .breadcrumb-item {
+    padding-left: clamp(1rem, 2vw, 1.5rem);
 }
 
-/* Ultra-wide Screens */
-@media (min-width: 1600px) {
-    :root {
-        --container-max-width: 1400px;
-    }
-    
-    html {
-        font-size: 18px;
-    }
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "\F285";
+    font-family: "bootstrap-icons";
+    color: #ccc;
+    font-size: clamp(10px, 1.5vw, 12px);
+    padding-right: clamp(1rem, 2vw, 1.5rem);
+}
+
+.breadcrumb-item a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item a:hover {
+    color: #ff9d1f;
+}
+
+.breadcrumb-item.active {
+    color: #ff9d1f;
+    font-weight: 600;
+}
+
+.breadcrumb-home-icon {
+    margin-right: clamp(4px, 1vw, 6px);
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+.breadcrumb-item a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #ff9d1f;
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+.breadcrumb-item a:hover::after {
+    width: 100%;
 }
 
 /* High DPI / Retina Display Support */
@@ -559,8 +535,10 @@ input[type="submit"] {
     
     .navigation-links {
         background: rgba(255, 255, 255, 0.05);
-        border-radius: 0 !important;
-
+    }
+    
+    .info-label {
+        color: #b0b0b0;
     }
 }
 
@@ -576,345 +554,45 @@ a:focus {
     outline: 2px solid #f4b400;
     outline-offset: 2px;
 }
-        .breadcrumb-section {
-          background-color: #ffffff;
-          padding: 50px 0;
-          border-bottom: 1px solid #e9ecef;
-          margin-top: 80px; /* Space below the fixed header */
-          box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
 
-        .breadcrumb {
-          margin-bottom: 0;
-          padding: 0;
-          background: transparent;
-          display: flex;
-          flex-wrap: wrap;
-        }
-
-        .breadcrumb-item {
-          font-size: 14px;
-          font-weight: 500;
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-
-        .breadcrumb-item + .breadcrumb-item {
-          padding-left: 1.5rem;
-        }
-
-        .breadcrumb-item + .breadcrumb-item::before {
-          content: "\F285"; /* Bootstrap icon chevron-right */
-          font-family: "bootstrap-icons";
-          color: #ccc;
-          font-size: 12px;
-          padding-right: 1.5rem;
-        }
-
-        .breadcrumb-item a {
-          color: #666;
-          text-decoration: none;
-          transition: color 0.3s ease;
-          display: flex;
-          align-items: center;
-        }
-
-        .breadcrumb-item a:hover {
-          color: #ff9d1f;
-        }
-
-        .breadcrumb-item.active {
-          color: #ff9d1f;
-          font-weight: 600;
-        }
-
-        /* Home icon styling */
-        .breadcrumb-home-icon {
-          margin-right: 6px;
-          font-size: 16px;
-        }
-
-        /* Animation for hover state */
-        .breadcrumb-item a::after {
-          content: "";
-          display: block;
-          width: 0;
-          height: 2px;
-          background: #ff9d1f;
-          transition: width 0.3s;
-          position: absolute;
-          bottom: -3px;
-          left: 0;
-        }
-
-/*--------------------------------------------------------------
-# Responsive Design for Profile View Page
---------------------------------------------------------------*/
-
-/* Tablets (768px to 1199px) */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .main-container {
-        padding: clamp(1.5rem, 6vw, 4rem) clamp(1rem, 3vw, 1.5rem) clamp(1.5rem, 5vw, 3rem);
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-outline-primary:hover,
+    .info-card:hover {
+        transform: none;
     }
     
-    .profile-card {
-        border-radius: 12px;
+    /* Ensure tap targets meet accessibility standards */
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline-primary {
+        min-height: 48px;
+        padding: var(--spacing-sm) var(--spacing-md);
     }
     
-    .profile-header {
-        padding: clamp(1.5rem, 4vw, 2.5rem);
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .profile-avatar {
-        width: clamp(100px, 20vw, 120px);
-        height: clamp(100px, 20vw, 120px);
-        margin-bottom: 1.5rem;
-    }
-    
-    .profile-info h1 {
-        font-size: clamp(1.5rem, 4vw, 2rem);
-    }
-    
-    .profile-info p {
-        font-size: 13px;
-    }
-}
-
-/* Mobile Phones (576px to 767px) */
-@media (min-width: 576px) and (max-width: 767.98px) {
-    .main-container {
-        padding: clamp(1.2rem, 5vw, 2rem) clamp(0.8rem, 3vw, 1.2rem) clamp(1.2rem, 4vw, 2rem);
-    }
-    
-    .profile-card {
-        border-radius: 10px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-    }
-    
-    .profile-header {
-        padding: clamp(1.2rem, 3vw, 2rem);
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .profile-avatar {
-        width: clamp(90px, 18vw, 110px);
-        height: clamp(90px, 18vw, 110px);
-        margin-bottom: 1.2rem;
-    }
-    
-    .profile-info h1 {
-        font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-        margin-bottom: 0.5rem;
-    }
-    
-    .profile-info p {
-        font-size: 12px;
-        margin-bottom: 0.25rem;
-    }
-    
-    .profile-actions {
-        gap: 0.8rem;
-    }
-    
-    .profile-actions button {
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-}
-
-/* Small Mobile Phones (360px to 575px) */
-@media (max-width: 575.98px) {
-    html {
-        font-size: 14px;
-    }
-    
-    body {
-        background-color: #f5f5f5;
-    }
-    
-    .main-container {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 1rem 0.75rem 1.5rem;
-    }
-    
-    .profile-card {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        border: none;
-        overflow: hidden;
-    }
-    
-    .profile-header {
-        padding: 1.2rem 1rem;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 0;
-    }
-    
-    .profile-avatar {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 1rem;
-        border-width: 3px;
-    }
-    
-    .profile-info {
-        flex: 1;
-        width: 100%;
-    }
-    
-    .profile-info h1 {
-        font-size: 1.2rem;
-        margin-bottom: 0.3rem;
-        font-weight: 600;
-    }
-    
-    .profile-info p {
-        font-size: 12px;
-        margin: 2px 0;
-        color: #666;
-    }
-    
-    .profile-actions {
+    .navigation-links a {
+        padding: var(--spacing-sm);
+        min-height: 44px;
         display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .profile-actions button {
-        flex: 1;
-        min-width: 100px;
-        padding: 6px 12px;
-        font-size: 11px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .profile-details {
-        padding: 1rem;
-    }
-    
-    .detail-section {
-        margin-bottom: 1.2rem;
-    }
-    
-    .detail-section h2 {
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 0.5rem;
-    }
-    
-    .detail-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.6rem 0;
-        font-size: 12px;
-        border-bottom: 1px solid #f5f5f5;
-    }
-    
-    .detail-item:last-child {
-        border-bottom: none;
-    }
-    
-    .detail-label {
-        font-weight: 600;
-        color: #333;
-    }
-    
-    .detail-value {
-        color: #666;
-        text-align: right;
-        flex: 1;
-        padding-left: 1rem;
-        word-break: break-word;
-    }
-    
-    .breadcrumb {
-        padding: 0.5rem 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .breadcrumb-item {
-        font-size: 11px;
-    }
-    
-    .breadcrumb-item + .breadcrumb-item {
-        padding-left: 0.75rem;
-    }
-    
-    .breadcrumb-item + .breadcrumb-item::before {
-        padding-right: 0.75rem;
-        font-size: 10px;
-    }
-    
-    .breadcrumb-home-icon {
-        font-size: 12px;
-        margin-right: 4px;
+        align-items: center;
     }
 }
 
-/* Extra Small Mobile (360px and below) */
-@media (max-width: 359.98px) {
+/* Landscape orientation on mobile */
+@media (orientation: landscape) and (max-height: 500px) {
     .main-container {
-        padding: 0.8rem 0.5rem 1.2rem;
+        padding: var(--spacing-sm) var(--spacing-md);
     }
     
     .profile-header {
-        padding: 1rem 0.8rem;
+        min-height: 140px;
+        padding: var(--spacing-md);
     }
     
     .profile-avatar {
-        width: 70px;
-        height: 70px;
-        margin-bottom: 0.8rem;
-    }
-    
-    .profile-info h1 {
-        font-size: 1.1rem;
-    }
-    
-    .profile-info p {
-        font-size: 11px;
-    }
-    
-    .profile-actions button {
-        min-width: 80px;
-        padding: 5px 10px;
-        font-size: 10px;
+        width: clamp(60px, 12vw, 80px);
+        height: clamp(60px, 12vw, 80px);
     }
 }
-
-/* Landscape Mobile */
-@media (max-height: 500px) and (orientation: landscape) {
-    .main-container {
-        padding: clamp(0.5rem, 2vh, 1rem) clamp(0.5rem, 2vw, 1rem);
-    }
-    
-    .profile-header {
-        gap: 1rem;
-    }
-    
-    .profile-avatar {
-        width: 60px;
-        height: 60px;
-        margin-bottom: 0;
-    }
-}
-
-        .breadcrumb-item a:hover::after {
-          width: 100%;
-        }

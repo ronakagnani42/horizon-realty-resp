@@ -58,40 +58,21 @@ class NewsletterAdmin(admin.ModelAdmin):
     search_fields = ('email', 'name')
     readonly_fields = ('subscribed_at', 'unsubscribed_at', 'unsubscribe_token')
     ordering = ('-subscribed_at',)
-    fieldsets = (
-        (None, {
-            'fields': ('email', 'name', 'status', 'source')
-        }),
-        ('Timestamps', {
-            'fields': ('subscribed_at', 'unsubscribed_at'),
-        }),
-        ('Tokens', {
-            'fields': ('unsubscribe_token',),
-        }),
+
+    fields = (
+        'email',
+        'name',
+        'status',
+        'source',
+        'subscribed_at',
+        'unsubscribed_at',
+        'unsubscribe_token',
     )
 
 @admin.register(ContactInformation)
 class ContactInformationAdmin(admin.ModelAdmin):
     list_display = ('office_name', 'city', 'primary_phone', 'primary_email', 'is_main_office', 'last_updated')
     list_filter = ('is_main_office', 'city', 'state')
-    search_fields = ('office_name', 'street_address', 'city', 'primary_phone', 'primary_email')
-    fieldsets = (
-        ('Office Information', {
-            'fields': ('office_name', 'is_main_office')
-        }),
-        ('Address', {
-            'fields': ('street_address', 'area', 'city', 'state', 'postal_code', 'country')
-        }),
-        ('Contact Details', {
-            'fields': ('primary_phone', 'secondary_phone', 'primary_email', 'secondary_email')
-        }),
-        ('Office Hours', {
-            'fields': (
-                ('weekday_hours_start', 'weekday_hours_end'),
-                ('saturday_hours_start', 'saturday_hours_end'),
-                ('sunday_hours_start', 'sunday_hours_end')
-            )
-        })
-    )
+    search_fields = ('office_name', 'street_address', 'area', 'city', 'primary_phone', 'primary_email')
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(ContactSubmission, ContactSubmissionAdmin)

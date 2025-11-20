@@ -6,56 +6,218 @@
     --accent-color: #f9f3e0;
     --text-color: #444;
     --light-color: #fff;
-    --border-radius: 12px;
+    --border-radius: clamp(6px, 1vw, 12px);
     --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  }
+    
+    /* Fluid spacing */
+    --space-xs: clamp(0.5rem, 1vw, 0.75rem);
+    --space-sm: clamp(0.75rem, 1.5vw, 1rem);
+    --space-md: clamp(1rem, 2vw, 1.5rem);
+    --space-lg: clamp(1.5rem, 3vw, 2.5rem);
+    --space-xl: clamp(2rem, 5vw, 4rem);
+    
+    /* Fluid font sizes */
+    --font-xs: clamp(0.625rem, 0.8vw + 0.4rem, 0.875rem);
+    --font-sm: clamp(0.75rem, 0.9vw + 0.5rem, 1rem);
+    --font-base: clamp(0.875rem, 1vw + 0.5rem, 1.125rem);
+    --font-md: clamp(1rem, 1.2vw + 0.6rem, 1.25rem);
+    --font-lg: clamp(1.125rem, 1.5vw + 0.7rem, 1.5rem);
+}
+
 * {
+    box-sizing: border-box;
     font-family: 'Times New Roman', Times, serif;
 }
 
-  body {
+body {
     font-family: 'Times New Roman', Times, serif;
     margin: 0;
     padding: 0;
     background-color: #f5f5f5;
     color: var(--text-color);
-  }
+    font-size: var(--font-base);
+}
 
-  .filter-container {
-    max-width: 1200px;
-    margin: 200px auto;
-    padding: 30px 20px;
+/* Fluid container with automatic margins */
+.filter-container {
+    width: min(95%, 1200px);
+    margin-block: clamp(120px, 15vw, 200px) var(--space-lg);
+    margin-inline: auto;
+    padding: clamp(12px, 3vw, 30px) clamp(10px, 2vw, 20px);
     background-color: var(--light-color);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-  }
-
-  .page-content /* or whatever container wraps your content */ {
-    padding-top: 40px;
 }
 
-  .filter-tabs {
+.page-content {
+    padding-block-start: clamp(20px, 5vw, 40px);
+}
+
+/* Flexible tabs with automatic wrapping */
+.filter-tabs {
     display: flex;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #eee;
-  }
-  .button-container {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-block-end: var(--space-md);
+    border-block-end: 2px solid #eee;
+}
+
+.filter-tab {
+    padding: clamp(8px, 1.5vw, 12px) clamp(12px, 3vw, 25px);
+    cursor: pointer;
+    font-weight: 600;
+    background: none;
+    border: none;
+    border-block-end: 3px solid transparent;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+    font-size: var(--font-sm);
+    flex: 1 1 auto;
+    min-width: max-content;
+}
+
+.filter-tab.active {
+    color: var(--primary-color);
+    border-block-end: 3px solid var(--primary-color);
+}
+
+.filter-tab:hover:not(.active) {
+    border-block-end: 3px solid var(--primary-color-light);
+}
+
+.filter-content {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.filter-content.active {
+    display: block;
+}
+
+/* Fluid property type tabs */
+.property-type-tabs {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: clamp(6px, 1.5vw, 15px);
+    margin-block-end: var(--space-md);
+}
+
+.property-type-tab {
+    padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2.5vw, 20px);
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    font-weight: 500;
+    font-size: var(--font-sm);
+    flex: 1 1 auto;
+    min-width: max-content;
+    text-align: center;
+}
+
+.property-type-tab.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.property-type-tab:hover:not(.active) {
+    background-color: var(--accent-color);
+    border-color: var(--primary-color-light);
+}
+
+.filter-form {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.filter-form.active {
+    display: block;
+}
+
+/* Form elements with fluid sizing */
+.form-group {
+    margin-block-end: var(--space-md);
+}
+
+.form-label {
+    display: block;
+    margin-block-end: var(--space-xs);
+    font-weight: 500;
+    color: var(--secondary-color);
+    font-size: var(--font-sm);
+}
+
+.form-control {
+    width: 100%;
+    padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 15px);
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: var(--font-sm);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 180, 0, 0.1);
+}
+
+/* Auto-responsive checkbox grid */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap: clamp(6px, 1.5vw, 12px);
+    margin-block-start: var(--space-sm);
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: clamp(3px, 0.5vw, 6px);
+}
+
+.checkbox-item input[type="checkbox"] {
+    accent-color: var(--primary-color);
+    width: clamp(13px, 1.5vw, 16px);
+    height: clamp(13px, 1.5vw, 16px);
+    cursor: pointer;
+}
+
+.checkbox-item label {
+    font-size: var(--font-xs);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Fluid location filter grid */
+.location-filter {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: clamp(6px, 1.5vw, 10px);
+}
+
+/* Button container with flexible layout */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(8px, 2vw, 20px);
     justify-content: center;
-    margin-top: 30px;
+    margin-block-start: var(--space-lg);
 }
 
 .btn {
-    padding: 12px 25px;
+    padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 25px);
     border-radius: var(--border-radius);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
-    font-size: 16px;
-    min-width: 150px;
+    font-size: var(--font-sm);
+    min-width: clamp(120px, 20vw, 150px);
     text-align: center;
+    flex: 1 1 auto;
+    max-width: 300px;
 }
 
 .search-btn {
@@ -88,20 +250,22 @@
     box-shadow: none;
 }
 
-/* Toast notification styles */
+/* Responsive toast notification */
 .toast {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    inset-block-start: clamp(10px, 2vw, 20px);
+    inset-inline-end: clamp(5px, 2vw, 20px);
     background-color: #ff4444;
     color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
+    padding: clamp(8px, 1.5vw, 15px) clamp(12px, 2vw, 20px);
+    border-radius: clamp(6px, 1vw, 8px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     opacity: 0;
     transform: translateX(100%);
     transition: all 0.3s ease;
+    font-size: var(--font-xs);
+    max-width: min(90vw, 300px);
 }
 
 .toast.show {
@@ -113,543 +277,123 @@
     background-color: #4CAF50;
 }
 
-@media (max-width: 768px) {
-    .button-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .btn {
-        width: 100%;
-        max-width: 300px;
-    }
+/* Range slider with fluid styling */
+.range-slider {
+    width: 100%;
+    margin-block-start: var(--space-sm);
 }
 
-  .filter-tab {
-    padding: 12px 25px;
-    cursor: pointer;
-    font-weight: 600;
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
-    color: var(--text-color);
-    font-size: 16px;
-  }
-
-  .filter-tab.active {
-    color: var(--primary-color);
-    border-bottom: 3px solid var(--primary-color);
-  }
-
-  .filter-tab:hover:not(.active) {
-    border-bottom: 3px solid var(--primary-color-light);
-  }
-
-  .filter-content {
-    display: none;
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .filter-content.active {
-    display: block;
-  }
-
-  .property-type-tabs {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-  }
-
-  .property-type-tab {
-    padding: 10px 20px;
-    background-color: #f0f0f0;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    font-weight: 500;
-  }
-
-  .property-type-tab.active {
-    background-color: var(--primary-color);
-    color: white;
-  }
-
-  .property-type-tab:hover:not(.active) {
-    background-color: var(--accent-color);
-    border-color: var(--primary-color-light);
-  }
-
-  .filter-form {
-    display: none;
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .filter-form.active {
-    display: block;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--secondary-color);
-  }
-
-  .form-control {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: var(--border-radius);
-    font-size: 14px;
-    transition: all 0.3s ease;
-  }
-
-  .form-control:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(244, 180, 0, 0.1);
-  }
-
-  .checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 10px;
-  }
-
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
-    margin-bottom: 10px;
-  }
-
-  .checkbox-item input[type="checkbox"] {
-    margin-right: 6px;
-    accent-color: var(--primary-color);
-    width: 16px;
-    height: 16px;
-  }
-
-  .checkbox-item label {
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  .range-slider {
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  .range-values {
+.range-values {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
-    font-size: 14px;
+    margin-block-start: var(--space-sm);
+    font-size: var(--font-sm);
     color: var(--secondary-color);
-  }
+}
 
-  .location-filter {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
+/* Terms checkbox */
+.terms-checkbox {
+    margin-block-end: var(--space-md);
+}
 
-  
-  .checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .search-btn {
-    background-color: #f4b400;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-    transition: background-color 0.3s;
-  }
-  
-  .search-btn:hover {
-    background-color: #f4b400;
-  }
-  
-  .terms-checkbox {
-    margin-bottom: 15px;
-  }
-  
-  .terms-checkbox label {
+.terms-checkbox label {
     color: #555;
-    font-size: 14px;
-  }
-  
-  .terms-link {
-    color: #f4b400;
+    font-size: var(--font-sm);
+}
+
+.terms-link {
+    color: var(--primary-color);
     text-decoration: underline;
-  }
-  
-  .terms-link:hover {
-    color: #f4b400;
-  }
-  
-  input[type="checkbox"] {
-    transform: scale(1.2);
-    margin-right: 6px;
-  }
+}
 
-  @media (max-width: 992px) {
-    .location-filter {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
+.terms-link:hover {
+    color: var(--primary-color-dark);
+}
 
-  @media (max-width: 768px) {
-    .location-filter {
-      grid-template-columns: repeat(2, 1fr);
+/* Animations */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
     }
-  }
-
-  @media (max-width: 576px) {
-    .location-filter {
-      grid-template-columns: 1fr;
-    }
-    
-    .filter-tabs {
-      flex-direction: column;
-      border-bottom: none;
-    }
-    
-    .filter-tab {
-      border-bottom: 1px solid #eee;
-      text-align: center;
-    }
-    
-    .property-type-tabs {
-      flex-direction: column;
-    }
-    
-    .property-type-tab {
-      text-align: center;
-    }
-  }
-  
-  .search-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: block;
-    margin: 30px auto 10px;
-    width: 200px;
-    text-align: center;
-  }
-  
-  .search-btn:hover {
-    background-color: var(--primary-color-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(244, 180, 0, 0.3);
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-/*--------------------------------------------------------------
-# Enhanced Responsive Design for Services Page
---------------------------------------------------------------*/
-
-/* Tablets (992px to 1199px) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-    .filter-container {
-        max-width: 1000px;
-        margin: 180px auto;
-        padding: 25px 20px;
-    }
-    
-    .button-container {
-        gap: 15px;
-    }
-    
-    .btn {
-        padding: 10px 20px;
-        font-size: 15px;
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
     }
 }
 
-/* Small Tablets (768px to 991px) */
-@media (min-width: 768px) and (max-width: 991.98px) {
+/* Container queries support (progressive enhancement) */
+@supports (container-type: inline-size) {
     .filter-container {
-        max-width: 100%;
-        margin: 170px 20px 0;
-        padding: 20px;
+        container-type: inline-size;
+        container-name: filter;
     }
     
-    .filter-tabs {
-        margin-bottom: 15px;
-    }
-    
-    .filter-tab {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-    
-    .property-type-tabs {
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .property-type-tab {
-        padding: 8px 15px;
-        font-size: 13px;
-    }
-    
-    .form-group {
-        margin-bottom: 15px;
-    }
-    
-    .form-control {
-        font-size: 13px;
-        padding: 10px 12px;
-    }
-    
-    .location-filter {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-    
-    .checkbox-group {
-        gap: 10px;
-    }
-    
-    .checkbox-item {
-        font-size: 13px;
-        margin-right: 10px;
-    }
-    
-    .button-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    
-    .btn {
-        width: 100%;
-        max-width: 300px;
-        padding: 10px 15px;
-        font-size: 14px;
+    @container filter (max-width: 600px) {
+        .filter-tabs {
+            flex-direction: column;
+        }
+        
+        .property-type-tabs {
+            flex-direction: column;
+        }
     }
 }
 
-/* Mobile Phones (576px to 767px) */
-@media (min-width: 576px) and (max-width: 767.98px) {
+/* Print styles */
+@media print {
     .filter-container {
-        max-width: 100%;
-        margin: 160px 15px 0;
-        padding: 15px;
-        border-radius: 8px;
-    }
-    
-    .filter-tabs {
-        flex-wrap: wrap;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 12px;
-    }
-    
-    .filter-tab {
-        padding: 8px 12px;
-        font-size: 12px;
-        border-bottom: none;
-        text-align: center;
-    }
-    
-    .filter-tab.active {
-        border-bottom: 2px solid var(--primary-color);
-    }
-    
-    .property-type-tabs {
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-    
-    .property-type-tab {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-    
-    .form-group {
-        margin-bottom: 12px;
-    }
-    
-    .form-control {
-        font-size: 12px;
-        padding: 8px 10px;
-    }
-    
-    .location-filter {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    
-    .checkbox-group {
-        gap: 8px;
-    }
-    
-    .checkbox-item {
-        font-size: 12px;
-        margin-right: 8px;
-        margin-bottom: 6px;
-    }
-    
-    .button-container {
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 15px;
+        box-shadow: none;
+        border: 1px solid #ddd;
     }
     
     .btn {
-        width: 100%;
-        max-width: 280px;
-        padding: 8px 15px;
-        font-size: 13px;
-    }
-}
-
-/* Small Mobile Phones (360px to 575px) */
-@media (max-width: 575.98px) {
-    body {
-        font-size: 13px;
-    }
-    
-    .filter-container {
-        max-width: 100%;
-        margin: 140px 10px 0;
-        padding: 12px;
-        border-radius: 6px;
-    }
-    
-    .filter-tabs {
         display: none;
     }
-    
-    .filter-content {
-        display: block !important;
-    }
-    
-    .property-type-tabs {
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 12px;
-    }
-    
-    .property-type-tab {
-        width: 100%;
-        padding: 6px 12px;
-        font-size: 11px;
-        text-align: center;
-    }
-    
-    .form-group {
-        margin-bottom: 10px;
-    }
-    
-    .form-label {
-        font-size: 11px;
-        margin-bottom: 4px;
-    }
-    
-    .form-control {
-        font-size: 12px;
-        padding: 8px 10px;
-        height: auto;
-    }
-    
-    .location-filter {
-        grid-template-columns: 1fr;
-        gap: 6px;
-    }
-    
-    .checkbox-group {
-        flex-direction: column;
-        gap: 6px;
-    }
-    
-    .checkbox-item {
-        font-size: 11px;
-        margin-right: 0;
-        margin-bottom: 5px;
-    }
-    
-    .checkbox-item input[type="checkbox"] {
-        width: 13px;
-        height: 13px;
-        margin-right: 3px;
-    }
-    
-    .button-container {
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 12px;
-    }
-    
-    .btn {
-        width: 100%;
-        max-width: 100%;
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    .toast {
-        top: 10px;
-        right: 5px;
-        font-size: 11px;
-        padding: 8px 12px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
 
-/* Extra Small Mobile (360px and below) */
-@media (max-width: 359.98px) {
-    .filter-container {
-        margin: 120px 8px 0;
-        padding: 10px;
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .filter-tab.active {
+        border-block-end-width: 4px;
+    }
+    
+    .form-control:focus {
+        outline: 3px solid var(--primary-color);
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #e0e0e0;
+        --secondary-color: #f5f5f5;
+        --light-color: #1e1e1e;
+        --accent-color: #2a2a2a;
+    }
+    
+    body {
+        background-color: #121212;
     }
     
     .property-type-tab {
-        font-size: 10px;
-    }
-    
-    .form-label {
-        font-size: 10px;
+        background-color: #2a2a2a;
     }
     
     .form-control {
-        font-size: 11px;
-    }
-    
-    .btn {
-        font-size: 11px;
-        padding: 7px 10px;
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        border-color: #444;
     }
 }

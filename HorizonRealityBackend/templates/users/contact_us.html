@@ -11,9 +11,10 @@
 <link href="{% static 'css/contact_us.css' %}" rel="stylesheet">
 <style>
   /* Hero Section - Corporate Solid Background - Specific targeting */
+/* Hero Section - Corporate Solid Background - Fully Responsive without Media Queries */
 .hero-section {
     position: relative;
-    min-height: 50vh;
+    min-height: clamp(40vh, 50vh, 60vh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,8 +23,9 @@
     background: linear-gradient(135deg, #f4b400 0%, #e6a300 25%, #f4b400 75%, #d89200 100%);
     z-index: 1;
 }
+
 .index-page .header {
-  --background-color: rgba(0, 0, 0, 0.8)  !important;
+    --background-color: rgba(0, 0, 0, 0.8) !important;
 }
 
 /* Background layers for depth and corporate feel - Scoped to hero section */
@@ -38,7 +40,7 @@
         radial-gradient(circle at 75% 75%, rgba(255,255,255,0.12) 0%, transparent 40%),
         linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
         linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%);
-    background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+    background-size: 100% 100%, 100% 100%, clamp(60px, 10vw, 80px) clamp(60px, 10vw, 80px), clamp(60px, 10vw, 80px) clamp(60px, 10vw, 80px);
     z-index: 1;
 }
 
@@ -77,7 +79,7 @@
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-size: clamp(40px, 8vw, 60px) clamp(40px, 8vw, 60px);
     opacity: 0.7;
     z-index: 4;
 }
@@ -86,14 +88,14 @@
 .hero-section .gradient-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
+    filter: blur(clamp(40px, 8vw, 60px));
     opacity: 0.3;
     z-index: 5;
 }
 
 .hero-section .orb-1 {
-    width: 300px;
-    height: 300px;
+    width: clamp(150px, 35vw, 300px);
+    height: clamp(150px, 35vw, 300px);
     top: 10%;
     left: 10%;
     background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
@@ -101,8 +103,8 @@
 }
 
 .hero-section .orb-2 {
-    width: 200px;
-    height: 200px;
+    width: clamp(100px, 25vw, 200px);
+    height: clamp(100px, 25vw, 200px);
     bottom: 10%;
     right: 10%;
     background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
@@ -124,11 +126,19 @@
     background: rgba(255,255,255,0.1);
     border: 1px solid rgba(255,255,255,0.2);
     backdrop-filter: blur(10px);
+    opacity: 0;
+}
+
+/* Show floating elements on larger containers using container queries */
+@container (min-width: 768px) {
+    .hero-section .floating-element {
+        opacity: 1;
+    }
 }
 
 .hero-section .square-1 {
-    width: 60px;
-    height: 60px;
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
     top: 20%;
     left: 80%;
     transform: rotate(45deg);
@@ -136,8 +146,8 @@
 }
 
 .hero-section .square-2 {
-    width: 40px;
-    height: 40px;
+    width: clamp(30px, 6vw, 40px);
+    height: clamp(30px, 6vw, 40px);
     top: 60%;
     left: 15%;
     transform: rotate(15deg);
@@ -145,8 +155,8 @@
 }
 
 .hero-section .square-3 {
-    width: 30px;
-    height: 30px;
+    width: clamp(20px, 4vw, 30px);
+    height: clamp(20px, 4vw, 30px);
     top: 80%;
     left: 75%;
     transform: rotate(-30deg);
@@ -154,8 +164,8 @@
 }
 
 .hero-section .square-4 {
-    width: 50px;
-    height: 50px;
+    width: clamp(35px, 7vw, 50px);
+    height: clamp(35px, 7vw, 50px);
     top: 30%;
     left: 5%;
     transform: rotate(60deg);
@@ -169,13 +179,15 @@
     text-align: center;
     color: white;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    max-width: min(800px, 90vw);
+    padding: 0 clamp(15px, 3vw, 20px);
 }
 
 .hero-section .content h1 {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 6vw, 3.5rem);
     font-weight: 700;
-    margin-bottom: 1rem;
-    letter-spacing: 2px;
+    margin-bottom: clamp(0.8rem, 1.5vw, 1rem);
+    letter-spacing: clamp(1px, 0.3vw, 2px);
     text-transform: uppercase;
     background: linear-gradient(45deg, #ffffff 0%, #f0f0f0 100%);
     background-clip: text;
@@ -184,32 +196,33 @@
 }
 
 .hero-section .professional-line {
-    width: 100px;
-    height: 3px;
+    width: clamp(60px, 15vw, 100px);
+    height: clamp(2px, 0.4vw, 3px);
     background: linear-gradient(90deg, transparent 0%, white 50%, transparent 100%);
-    margin: 2rem auto;
+    margin: clamp(1.5rem, 3vw, 2rem) auto;
     border-radius: 2px;
 }
 
 .hero-section .subtitle {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
     font-weight: 300;
-    margin-bottom: 3rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
     opacity: 0.9;
-    letter-spacing: 1px;
+    letter-spacing: clamp(0.5px, 0.2vw, 1px);
 }
 
 /* Contact icons - Scoped to hero section */
 .hero-section .contact-icons {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    margin-top: 3rem;
+    gap: clamp(0.8rem, 3vw, 2rem);
+    margin-top: clamp(2rem, 5vw, 3rem);
+    flex-wrap: wrap;
 }
 
 .hero-section .icon-wrapper {
-    width: 60px;
-    height: 60px;
+    width: clamp(50px, 8vw, 60px);
+    height: clamp(50px, 8vw, 60px);
     background: rgba(255,255,255,0.15);
     border: 2px solid rgba(255,255,255,0.3);
     border-radius: 50%;
@@ -229,7 +242,7 @@
 }
 
 .hero-section .icon-wrapper i {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
     color: white;
 }
 
@@ -244,43 +257,20 @@
     50% { transform: translateY(-15px) rotate(var(--rotation, 0deg)); }
 }
 
-/* Responsive design - Scoped to hero section */
-@media (max-width: 768px) {
-    .hero-section .content h1 {
-        font-size: 2.5rem;
-    }
-    
-    .hero-section .subtitle {
-        font-size: 1.1rem;
-    }
-    
-    .hero-section .contact-icons {
-        gap: 1rem;
-    }
-    
-    .hero-section .icon-wrapper {
-        width: 50px;
-        height: 50px;
+/* Touch device optimization */
+@media (hover: none) and (pointer: coarse) {
+    .hero-section .icon-wrapper:hover {
+        transform: none;
     }
     
     .hero-section .floating-element {
-        opacity: 0.5;
+        opacity: 0.3;
     }
 }
 
-@media (max-width: 480px) {
-    .hero-section .content h1 {
-        font-size: 2rem;
-    }
-    
-    .hero-section .subtitle {
-        font-size: 1rem;
-    }
-    
-    .hero-section .contact-icons {
-        flex-wrap: wrap;
-        gap: 0.8rem;
-    }
+/* Container query support */
+.hero-section {
+    container-type: inline-size;
 }
 </style>
 {% endblock %}

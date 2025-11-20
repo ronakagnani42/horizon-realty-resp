@@ -16,509 +16,514 @@ property search, real estate, buy property, sell property, rent property, reside
 {% block extra_css %}
 <link href="{% static 'css/services.css' %}" rel="stylesheet">
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Times New Roman', Times, serif;
-    }
+      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
 
-    body {
-        font-family: 'Times New Roman', Times, serif;
-        min-height: 100vh;
-        color: #333;
-    }
+body {
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 100vh;
+    color: #333;
+}
 
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
+.container {
+    max-width: min(1200px, 95vw);
+    margin: 0 auto;
+    padding: clamp(1rem, 3vw, 2rem);
+}
 
-    .header {
-        text-align: center;
-        margin-bottom: 3rem;
-        color: white;
-    }
+.header {
+    text-align: center;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    color: white;
+}
 
-    .header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
+.header h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
 
-    .header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-    }
+.header p {
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    opacity: 0.9;
+}
 
-    /* Toast Notification Styles */
-    .toast {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-        color: white;
-        padding: 1.5rem 2rem;
-        border-radius: 15px;
-        box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
-        z-index: 10000;
-        min-width: 350px;
-        transform: translateX(400px);
+/* Toast Notification Styles */
+.toast {
+    position: fixed;
+    top: clamp(10px, 2vw, 20px);
+    right: clamp(10px, 2vw, 20px);
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: clamp(1rem, 2vw, 1.5rem) clamp(1.5rem, 3vw, 2rem);
+    border-radius: clamp(12px, 2vw, 15px);
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+    z-index: 10000;
+    min-width: min(350px, calc(100vw - 40px));
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1rem);
+}
+
+.toast-icon {
+    font-size: clamp(1.3rem, 3vw, 1.5rem);
+    flex-shrink: 0;
+}
+
+.toast-text {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    margin-bottom: 0.3rem;
+}
+
+.toast-message {
+    font-size: clamp(0.9rem, 2vw, 0.95rem);
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 clamp(12px, 2vw, 15px) clamp(12px, 2vw, 15px);
+    animation: progressBar 10s linear forwards;
+}
+
+@keyframes progressBar {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}
+
+/* Success Message Styles */
+.success-message {
+    background: linear-gradient(135deg, #ffc107, #ffb347);
+    color: white;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-radius: clamp(15px, 3vw, 20px);
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideInFromTop 0.6s ease-out;
+}
+
+.success-message h3 {
+    font-size: clamp(1.3rem, 3vw, 1.5rem);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.success-message p {
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    opacity: 0.9;
+    margin: 0;
+}
+
+.success-icon {
+    font-size: clamp(2.5rem, 5vw, 3rem);
+    margin-bottom: clamp(0.75rem, 2vw, 1rem);
+    display: block;
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-50px);
         opacity: 0;
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
     }
-
-    .toast.success {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
-    }
-
-    .toast.show {
-        transform: translateX(0);
+    100% {
+        transform: translateY(0);
         opacity: 1;
     }
+}
 
-    .toast-content {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
+.filter-container {
+    margin-top: clamp(0.5rem, 2vw, 1rem);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: clamp(15px, 3vw, 20px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+}
 
-    .toast-icon {
-        font-size: 1.5rem;
-        flex-shrink: 0;
-    }
+.filter-tabs {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-    .toast-text {
-        flex: 1;
-    }
+.filter-tab {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: clamp(1rem, 2.5vw, 1.5rem) clamp(2rem, 4vw, 3rem);
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-    .toast-title {
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 0.3rem;
-    }
+.filter-tab.active {
+    background: rgba(255,255,255,0.2);
+}
 
-    .toast-message {
-        font-size: 0.95rem;
-        opacity: 0.9;
-        line-height: 1.4;
-    }
+.filter-tab:hover {
+    background: rgba(255,255,255,0.1);
+}
 
-    .toast-progress {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 3px;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 0 0 15px 15px;
-        animation: progressBar 10s linear forwards;
-    }
-    @keyframes progressBar {
-        0% { width: 100%; }
-        100% { width: 0%; }
-    }
+.filter-content {
+    padding: clamp(2rem, 4vw, 3rem);
+    display: block;
+}
 
-    /* Success Message Styles */
-    .success-message {
-        background:#ffc107;
-        color: white;
-        padding: 2rem;
-        border-radius: 20px;
-        margin-bottom: 2rem;
-        margin-top: 7rem;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        animation: slideInFromTop 0.6s ease-out;
-    }
+.form-group {
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
 
-    .success-message h3 {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: clamp(0.6rem, 1.5vw, 0.8rem);
+    font-size: clamp(0.95rem, 2vw, 1rem);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-    .success-message p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 0;
-    }
+.form-control {
+    width: 100%;
+    padding: clamp(0.85rem, 2vw, 1rem) clamp(1.2rem, 2.5vw, 1.5rem);
+    border: 2px solid #e1e8ed;
+    border-radius: clamp(10px, 2vw, 12px);
+    font-size: clamp(0.95rem, 2vw, 1rem);
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+}
 
-    .success-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        display: block;
-    }
+.form-control:focus {
+    outline: none;
+    border-color: #ffc107;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    transform: translateY(-2px);
+}
 
-    @keyframes slideInFromTop {
-        0% {
-            transform: translateY(-50px);
-            opacity: 0;
-        }
-        100% {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
+/* Radio Button Styles */
+.radio-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: clamp(0.75rem, 2vw, 1rem);
+    margin-top: clamp(0.75rem, 2vw, 1rem);
+}
 
-    .filter-container {
-        margin-top: clamp(0.5rem, 2vw, 1rem);
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
+.radio-item {
+    position: relative;
+}
 
-    .filter-tabs {
-        padding: 0;
-        display: flex;
-        justify-content: center;
-    }
+.radio-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
 
-    .filter-tab {
-        background: transparent;
-        border: none;
-        color: white;
-        padding: 1.5rem 3rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+.radio-item label {
+    display: flex;
+    align-items: center;
+    padding: clamp(0.85rem, 2vw, 1rem) clamp(1.2rem, 2.5vw, 1.5rem);
+    background: #f8f9fa;
+    border: 2px solid #e1e8ed;
+    border-radius: clamp(10px, 2vw, 12px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    position: relative;
+    overflow: hidden;
+}
 
-    .filter-tab.active {
-        background: rgba(255,255,255,0.2);
-    }
+.radio-item label:before {
+    content: '';
+    width: clamp(18px, 3vw, 20px);
+    height: clamp(18px, 3vw, 20px);
+    border: 2px solid #ccc;
+    background: #fff;
+    margin-right: clamp(10px, 2vw, 12px);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
 
-    .filter-tab:hover {
-        background: rgba(255,255,255,0.1);
-    }
+.radio-item input:checked + label {
+    background: #ffc107;
+    color: white;
+    border-color: #ffc107;
+    transform: translateY(-2px);
+}
 
-    .filter-content {
-        padding: 3rem;
-        display: block;
-    }
+.radio-item input:checked + label:before {
+    background: white;
+    border-color: white;
+    background-image: radial-gradient(circle, #ffc107 40%, transparent 50%);
+}
 
-    .form-group {
-        margin-bottom: 2rem;
-    }
+.radio-item label:hover {
+    border-color: #ffc107;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-    .form-label {
-        display: block;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 0.8rem;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+/* Checkbox styles */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: clamp(0.75rem, 2vw, 1rem);
+    margin-top: clamp(0.75rem, 2vw, 1rem);
+}
 
-    .form-control {
-        width: 100%;
-        padding: 1rem 1.5rem;
-        border: 2px solid #e1e8ed;
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-        color: #333;
-    }
+.checkbox-item {
+    position: relative;
+}
 
-    .form-control:focus {
-        outline: none;
-        border-color: #ffc107;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        transform: translateY(-2px);
-    }
+.checkbox-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
 
-    .radio-group, .checkbox-group {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-    }
+.checkbox-item label {
+    display: flex;
+    align-items: center;
+    padding: clamp(0.85rem, 2vw, 1rem) clamp(1.2rem, 2.5vw, 1.5rem);
+    background: #f8f9fa;
+    border: 2px solid #e1e8ed;
+    border-radius: clamp(10px, 2vw, 12px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    position: relative;
+    overflow: hidden;
+}
 
-    .radio-item, .checkbox-item {
-        position: relative;
-    }
+.checkbox-item label:before {
+    content: '';
+    width: clamp(18px, 3vw, 20px);
+    height: clamp(18px, 3vw, 20px);
+    border: 2px solid #ccc;
+    background: #fff;
+    margin-right: clamp(10px, 2vw, 12px);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    border-radius: 4px;
+}
 
-    .radio-item input[type="radio"],
-    .checkbox-item input[type="checkbox"] {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-    }
+.checkbox-item input:checked + label {
+    background: #ffc107;
+    color: white;
+    border-color: #ffc107;
+    transform: translateY(-2px);
+}
 
-    .radio-item label,
-    .checkbox-item label {
-        display: flex;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        background: #f8f9fa;
-        border: 2px solid #e1e8ed;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        position: relative;
-        overflow: hidden;
-    }
+.checkbox-item input:checked + label:before {
+    background: white;
+    border-color: white;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%233498db' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
+}
 
-    .radio-item label:before,
-    .checkbox-item label:before {
-        content: '';
-        width: 20px;
-        height: 20px;
-        border: 2px solid white;
-        margin-right: 12px;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
+.checkbox-item label:hover {
+    border-color: #ffc107;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-    .checkbox-item label:before {
-        border: 2px solid #ccc;
-        background: #fff;
-    }
+.search-btn {
+    background: #ffc107;
+    color: white;
+    border: none;
+    padding: clamp(1rem, 2.5vw, 1.2rem) clamp(2.5rem, 4vw, 3rem);
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
+    font-weight: 600;
+    border-radius: clamp(10px, 2vw, 12px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 100%;
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+}
 
-    .radio-item label:before {
-        border-radius: 50%;
-    }
+.search-btn:hover {
+    transform: translateY(-3px);
+}
 
-    .checkbox-item label:before {
-        border-radius: 4px;
-    }
+.search-btn:active {
+    transform: translateY(-1px);
+}
 
-    .radio-item input:checked + label,
-    .checkbox-item input:checked + label {
-        background: #ffc107;
-        color: white;
-        border-color: #ffc107;
-        transform: translateY(-2px);
-    }
+.alert {
+    padding: clamp(0.85rem, 2vw, 1rem) clamp(1.2rem, 2.5vw, 1.5rem);
+    border-radius: clamp(10px, 2vw, 12px);
+    margin: clamp(0.85rem, 2vw, 1rem) 0;
+    font-weight: 500;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
 
-    .radio-item input:checked + label:before,
-    .checkbox-item input:checked + label:before {
-        background: white;
-        border-color: white;
-    }
+.alert-danger {
+    background: #fee;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
 
-    .radio-item input:checked + label:before {
-        box-shadow: inset 0 0 0 4px #ffc107;
-    }
+.alert-success {
+    background: #f0fff4;
+    color: #22543d;
+    border: 1px solid #9ae6b4;
+}
 
-    .checkbox-item input:checked + label:before {
-        background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%233498db' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
-    }
+.messages {
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
 
-    .radio-item label:hover,
-    .checkbox-item label:hover {
-        border-color: #ffc107;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+.form-section {
+    background: #f8f9fa;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-radius: clamp(12px, 2.5vw, 16px);
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    border-left: 4px solid #ffc107;
+}
 
-    .search-btn {
-        background: #ffc107;
-        color: white;
-        border: none;
-        padding: 1.2rem 3rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        width: 100%;
-        margin-top: 2rem;
-    }
+.form-section h3 {
+    color: #2c3e50;
+    margin-bottom: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.2rem, 2.5vw, 1.3rem);
+    font-weight: 600;
+}
 
-    .search-btn:hover {
-        transform: translateY(-3px);
-    }
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: clamp(1.2rem, 2.5vw, 1.5rem);
+}
 
-    .search-btn:active {
-        transform: translateY(-1px);
-    }
+.file-upload-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
 
-    .alert {
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        font-weight: 500;
-    }
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
 
-    .alert-danger {
-        background: #fee;
-        color: #c53030;
-        border: 1px solid #feb2b2;
-    }
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border: 2px dashed #bdc3c7;
+    border-radius: clamp(10px, 2vw, 12px);
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #7f8c8d;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
 
-    .alert-success {
-        background: #f0fff4;
-        color: #22543d;
-        border: 1px solid #9ae6b4;
-    }
+.file-upload-label:hover {
+    border-color: #3498db;
+    background: #ecf0f1;
+    color: #3498db;
+}
 
-    .messages {
-        margin-bottom: 2rem;
-    }
+/* Conditional field styles */
+.conditional-field {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    transform: translateY(-10px);
+}
 
-    .form-section {
-        background: #f8f9fa;
-        padding: 2rem;
-        border-radius: 16px;
-        margin-bottom: 2rem;
-        border-left: 4px solid #ffc107;
-    }
+.conditional-field.show {
+    opacity: 1;
+    max-height: clamp(150px, 25vw, 200px);
+    transform: translateY(0);
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
 
-    .form-section h3 {
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-        font-size: 1.3rem;
-        font-weight: 600;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-
-    /* Conditional display styles */
-    .floor-unit-fields, .property-subtype-field {
-        transition: all 0.3s ease;
-        opacity: 1;
-        max-height: 200px;
-        overflow: hidden;
-    }
-
-    .floor-unit-fields.hidden, .property-subtype-field.hidden {
-        opacity: 0;
-        max-height: 0;
-        margin: 0;
-        padding: 0;
-    }
-
-    .file-upload-wrapper {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .file-upload-wrapper input[type="file"] {
-        position: absolute;
-        opacity: 0;
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-    }
-
-    .file-upload-label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        border: 2px dashed #bdc3c7;
-        border-radius: 12px;
-        background: #f8f9fa;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        color: #7f8c8d;
-    }
-
-    .file-upload-label:hover {
-        border-color: #3498db;
-        background: #ecf0f1;
-        color: #3498db;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 1rem;
-        }
-
-        .filter-content {
-            padding: 2rem 1.5rem;
-        }
-
-        .radio-group, .checkbox-group {
-            grid-template-columns: 1fr;
-        }
-
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-        }
-
-        .success-message {
-            padding: 1.5rem;
-        }
-
-        .success-icon {
-            font-size: 2.5rem;
-        }
-
-        .toast {
-            right: 10px;
-            left: 10px;
-            min-width: auto;
-            transform: translateY(-100px);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-        }
-    }
-            
+/* Chat Bubble */
 .chat-bubble {
     position: fixed;
-    bottom: 70px;
-    right: 20px;
+    bottom: clamp(15px, 3vw, 70px);
+    right: clamp(15px, 3vw, 20px);
     background-color: #f4b400;
     color: white;
-    width: 80px;
-    height: 80px;
+    width: clamp(55px, 10vw, 80px);
+    height: clamp(55px, 10vw, 80px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); */
     transition: transform 0.3s ease, background-color 0.3s ease;
     z-index: 1000;
-    font-size: 24px;
+    font-size: clamp(20px, 4vw, 24px);
     animation: bounceBubble 1.2s ease-in-out infinite;
 }
 
 .chat-bubble::before {
     content: 'Chat with us!';
     position: absolute;
-    bottom: 70px; /* Adjusted to start closer to bubble center */
-    right: 0px; /* Centered relative to bubble */
-    transform-origin: center bottom; /* Origin at bubble's top center */
+    bottom: clamp(50px, 10vw, 70px);
+    right: 0;
+    transform-origin: center bottom;
     background-color: #333;
     color: white;
-    padding: 10px 14px;
+    padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 14px);
     border-radius: 6px;
-    font-size: 16px;
+    font-size: clamp(14px, 2.5vw, 16px);
     white-space: nowrap;
     opacity: 0;
-    transform: scale(0.5); /* Start small, as if from inside */
+    transform: scale(0.5);
     transition: opacity 0.3s ease, transform 0.3s ease;
     pointer-events: none;
     z-index: 1001;
@@ -526,26 +531,26 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 .chat-bubble:hover::before {
-    animation: none; /* Disable tooltip animation on hover */
+    animation: none;
     opacity: 1;
-    transform: scale(1) translateY(-10px); /* Slight upward shift on hover */
+    transform: scale(1) translateY(-10px);
 }
 
 .chat-bubble.typing::before {
     content: 'Typing...';
-    animation: none; /* Disable tooltip animation during typing */
+    animation: none;
     opacity: 1;
     transform: scale(1) translateY(-10px);
 }
 
 .chat-bubble:hover {
-    transform: scale(1.1); /* Override bounce animation on hover */
+    transform: scale(1.1);
     background-color: #f4b400;
-    animation: none; /* Disable bounce animation on hover */
+    animation: none;
 }
 
 .chat-bubble.typing {
-    animation: pulse 1.5s infinite; /* Use existing pulse for typing */
+    animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
@@ -555,25 +560,19 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 @keyframes bounceBubble {
-    0% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-15px); /* Increased upward bounce */
-    }
-    100% {
-        transform: translateY(0);
-    }
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0); }
 }
 
 @keyframes fadeInOutTooltip {
     0% {
         opacity: 0;
-        transform: scale(0.5); /* Start small, from bubble center */
+        transform: scale(0.5);
     }
     20% {
         opacity: 1;
-        transform: scale(1) translateY(-10px); /* Move up and full size */
+        transform: scale(1) translateY(-10px);
     }
     80% {
         opacity: 1;
@@ -581,16 +580,11 @@ property search, real estate, buy property, sell property, rent property, reside
     }
     100% {
         opacity: 0;
-        transform: scale(0.5); /* Shrink back to center */
+        transform: scale(0.5);
     }
 }
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
 
-/* Chat Overlay - Positioned from Right Bottom */
+/* Chat Overlay */
 .chat-overlay {
     display: none;
     position: fixed;
@@ -610,30 +604,23 @@ property search, real estate, buy property, sell property, rent property, reside
     opacity: 1;
 }
 
-/* Chat Container - Made Much Wider */
 .chat-container {
-    width: 100%;
-    max-width: 600px; /* Increased from 400px to 600px */
-    height: 80vh;
+    width: min(600px, 95vw);
+    height: min(80vh, calc(100vh - 40px));
     background: #fff;
-    border-radius: 10px;
+    border-radius: clamp(8px, 2vw, 10px);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    margin: 20px;
+    margin: clamp(10px, 2vw, 20px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.chat-overlay.show .chat-container {
-    transform: translateY(0);
-}
-
-/* Chat Header */
 .chat-header {
     background: #f4b400;
     color: white;
-    padding: 15px 20px;
-    border-radius: 12px 12px 0 0;
+    padding: clamp(12px, 2vw, 15px) clamp(15px, 3vw, 20px);
+    border-radius: clamp(10px, 2vw, 12px) clamp(10px, 2vw, 12px) 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -642,36 +629,32 @@ property search, real estate, buy property, sell property, rent property, reside
 .chat-header h5 {
     margin: 0;
     font-weight: 600;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
 }
 
 .chat-header small {
     opacity: 0.9;
-    font-size: 0.8em;
+    font-size: clamp(0.75em, 2vw, 0.8em);
 }
 
 .chat-close {
     background: none;
     border: none;
-    /* color: white; */
-    font-size: 20px;
+    font-size: clamp(18px, 3vw, 20px);
     cursor: pointer;
-    padding: 5px;
+    padding: clamp(4px, 1vw, 5px);
     border-radius: 4px;
     transition: background 0.2s;
 }
 
-.chat-close:hover {
-    background: white;
-}
-
-/* Chat Messages Area */
 .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 20px; /* Increased padding for wider container */
+    padding: clamp(15px, 3vw, 20px);
 }
+
 .chat-messages::-webkit-scrollbar {
-    width: 6px;
+    width: clamp(4px, 1vw, 6px);
 }
 
 .chat-messages::-webkit-scrollbar-track {
@@ -684,15 +667,11 @@ property search, real estate, buy property, sell property, rent property, reside
     border-radius: 3px;
 }
 
-.chat-messages::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Message Styling */
 .message {
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: clamp(12px, 2vw, 15px);
     align-items: flex-start;
+    gap: clamp(8px, 2vw, 10px);
 }
 
 .message.bot {
@@ -704,20 +683,23 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 .message .avatar {
-    width: 40px;
-    height: 40px;
+    width: clamp(35px, 6vw, 40px);
+    height: clamp(35px, 6vw, 40px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 10px;
-    font-size: 20px;
+    font-size: clamp(18px, 3vw, 20px);
+    flex-shrink: 0;
 }
+
 .message .content {
-    max-width: 80%; /* Increased from 70% to 80% for wider messages */
-    padding: 10px 15px;
-    border-radius: 10px;
+    max-width: min(80%, 450px);
+    padding: clamp(10px, 2vw, 12px) clamp(14px, 2.5vw, 16px);
+    border-radius: clamp(15px, 2.5vw, 18px);
     line-height: 1.4;
+    word-wrap: break-word;
+    font-size: clamp(0.9rem, 2vw, 1rem);
 }
 
 .message.bot .content {
@@ -729,16 +711,7 @@ property search, real estate, buy property, sell property, rent property, reside
     color: #fff;
 }
 
-.message.user::before {
-    display: none !important;
-}
-
-.message.user .user-label {
-    display: none !important;
-}
-
 .message.user .avatar {
-    /* background: #f4b400; */
     color: white;
 }
 
@@ -747,30 +720,17 @@ property search, real estate, buy property, sell property, rent property, reside
     border: 2px solid #e9ecef;
 }
 
-.message .content {
-    max-width: 80%; /* Increased from 75% to 80% */
-    padding: 12px 16px;
-    border-radius: 18px;
-    line-height: 1.4;
-    word-wrap: break-word;
-}
-
 .message.user .content {
-    background: #f4b400;
-    color: white;
     border-bottom-right-radius: 4px;
 }
 
 .message.bot .content {
-    background: #f8f9fa;
-    color: #333;
     border-bottom-left-radius: 4px;
     border: 1px solid #e9ecef;
 }
 
-/* BLACK LINKS STYLING */
 .chat-messages .content a {
-    color: #000000 !important; /* Black color for all links */
+    color: #000000 !important;
     text-decoration: none;
     font-weight: 600;
     border-bottom: 1px solid #000000;
@@ -778,57 +738,39 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 .chat-messages .content a:hover {
-    color: #333333 !important; /* Slightly lighter black on hover */
+    color: #333333 !important;
     border-bottom-color: #333333;
-    text-decoration: none;
 }
 
-.chat-messages .content .property-link {
-    background: #000000 !important; /* Black background */
-    color: white !important;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.9em;
-    border: none;
-    display: inline-block;
-    margin-left: 8px;
-    font-weight: 500;
-    border-bottom: none;
-}
-
-.chat-messages .content .property-link:hover {
-    background: #333333 !important; /* Dark gray on hover */
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
+.chat-messages .content .property-link,
 .chat-messages .content .contact-link {
-    background: #000000 !important; /* Black background */
+    background: #000000 !important;
     color: white !important;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.9em;
+    padding: clamp(5px, 1vw, 6px) clamp(10px, 2vw, 12px);
+    border-radius: clamp(5px, 1vw, 6px);
+    font-size: clamp(0.85em, 2vw, 0.9em);
     border: none;
     display: inline-block;
-    margin-left: 8px;
+    margin-left: clamp(6px, 1.5vw, 8px);
     font-weight: 500;
     border-bottom: none;
 }
 
+.chat-messages .content .property-link:hover,
 .chat-messages .content .contact-link:hover {
-    background: #333333 !important; /* Dark gray on hover */
+    background: #333333 !important;
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
 
-/* Typing Indicator */
 .typing-indicator {
     display: none;
     opacity: 0;
     transition: opacity 0.3s ease;
-    padding: 10px 15px;
+    padding: clamp(8px, 2vw, 10px) clamp(12px, 2.5vw, 15px);
     display: flex;
     align-items: center;
+    gap: clamp(8px, 2vw, 10px);
 }
 
 .typing-indicator.show {
@@ -837,32 +779,21 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 .typing-avatar {
-    width: 40px;
-    height: 40px;
+    width: clamp(35px, 6vw, 40px);
+    height: clamp(35px, 6vw, 40px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    margin-right: 10px;
-}
-
-.typing-content {
-    display: flex;
-    align-items: center;
-}
-
-.typing-dots {
-    display: flex;
-    align-items: center;
+    font-size: clamp(18px, 3vw, 20px);
 }
 
 .typing-dots span {
-    width: 8px;
-    height: 8px;
+    width: clamp(6px, 1.5vw, 8px);
+    height: clamp(6px, 1.5vw, 8px);
     background: #888;
     border-radius: 50%;
-    margin: 0 3px;
+    margin: 0 clamp(2px, 0.5vw, 3px);
     animation: typing 1s infinite;
 }
 
@@ -886,68 +817,25 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 .chat-input {
-    padding: 10px;
-    border-top: 1px solid #ddd;
-}
-
-.chat-input-group {
-    display: flex;
-    align-items: center;
-}
-
-#chatInput {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    outline: none;
-}
-
-.chat-send-btn {
-    background: #f4b400;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-    cursor: pointer;
-}
-
-.chat-send-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-@keyframes typing {
-    0%, 60%, 100% { opacity: 0.3; }
-    30% { opacity: 1; }
-}
-
-/* Chat Input */
-.chat-input {
-    padding: 15px 20px;
+    padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 20px);
     border-top: 1px solid #e9ecef;
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 clamp(10px, 2vw, 12px) clamp(10px, 2vw, 12px);
     background: white;
 }
 
 .chat-input-group {
     display: flex;
-    gap: 10px;
+    gap: clamp(8px, 2vw, 10px);
     align-items: center;
 }
 
 .chat-input input {
     flex: 1;
-    padding: 12px 16px;
+    padding: clamp(10px, 2vw, 12px) clamp(14px, 2.5vw, 16px);
     border: 1px solid #ddd;
     border-radius: 25px;
     outline: none;
-    font-size: 14px;
+    font-size: clamp(13px, 2vw, 14px);
     transition: border-color 0.3s;
 }
 
@@ -957,8 +845,8 @@ property search, real estate, buy property, sell property, rent property, reside
 }
 
 .chat-send-btn {
-    width: 45px;
-    height: 45px;
+    width: clamp(40px, 7vw, 45px);
+    height: clamp(40px, 7vw, 45px);
     border: none;
     background: #f4b400;
     color: white;
@@ -968,7 +856,8 @@ property search, real estate, buy property, sell property, rent property, reside
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 16px;
+    font-size: clamp(14px, 2.5vw, 16px);
+    flex-shrink: 0;
 }
 
 .chat-send-btn:hover:not(:disabled) {
@@ -981,67 +870,22 @@ property search, real estate, buy property, sell property, rent property, reside
     cursor: not-allowed;
 }
 
-/* Mobile Responsiveness - Updated for wider chatbox */
-@media (max-width: 768px) {
-    .chat-container {
-        width: 98vw; /* Increased from 95vw */
-        height: 80vh;
-        margin: 10px;
-        margin-bottom: 80px;
-        max-width: 500px; /* Set max-width for tablets */
-    }
-    
-    .chat-bubble {
-        bottom: 15px;
-        right: 15px;
-        width: 55px;
-        height: 55px;
-        font-size: 22px;
-    }
-    
-    .chat-overlay {
-        padding: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .chat-container {
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        border-radius: 0;
-        max-height: 100vh;
-        max-width: none; /* Remove max-width restriction on small screens */
-    }
-    
-    .chat-header {
-        border-radius: 0;
-    }
-    
-    .chat-input {
-        border-radius: 0;
-    }
-    
-    .message .content {
-        max-width: 85%; /* Even wider on mobile for better use of space */
-    }
-}
-
+/* Quick Options - Fully Responsive */
 .quick-options {
-    padding: 15px 20px;
+    padding: clamp(0.75rem, 2vw, 0.938rem) clamp(1rem, 2.5vw, 1.25rem);
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
-    margin-bottom: 15px;
+    margin-block-end: clamp(0.75rem, 2vw, 0.938rem);
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .quick-options-title {
-    font-size: 12px;
+    font-size: clamp(0.688rem, 1.8vw, 0.75rem);
     font-weight: 600;
     color: #6c757d;
-    margin-bottom: 12px;
+    margin-block-end: clamp(0.625rem, 2vw, 0.75rem);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -1049,19 +893,19 @@ property search, real estate, buy property, sell property, rent property, reside
 .quick-options-buttons {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: clamp(0.5rem, 1.5vw, 0.5rem);
 }
 
 .quick-option-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
+    gap: clamp(0.5rem, 1.5vw, 0.5rem);
+    padding: clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2.5vw, 1rem);
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border: 1px solid #e9ecef;
     border-radius: 20px;
     color: #495057;
-    font-size: 13px;
+    font-size: clamp(0.75rem, 1.8vw, 0.813rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1075,18 +919,17 @@ property search, real estate, buy property, sell property, rent property, reside
     color: white;
     border-color: #f4b400;
     transform: translateY(-1px);
-    /* box-shadow: 0 4px 12px rgba(0,123,255,0.3); */
 }
 
 .quick-option-btn:active {
     transform: translateY(0);
-    /* box-shadow: 0 2px 4px rgba(0,123,255,0.2); */
 }
 
 .quick-option-btn i {
-    font-size: 14px;
+    font-size: clamp(0.813rem, 2vw, 0.875rem);
     color: #f4b400;
     transition: color 0.3s ease;
+    flex-shrink: 0;
 }
 
 .quick-option-btn:hover i {
@@ -1096,6 +939,81 @@ property search, real estate, buy property, sell property, rent property, reside
 /* Animation for quick options appearance */
 .quick-options {
     animation: slideInUp 0.4s ease-out;
+}
+/* Breadcrumb - Fully Responsive */
+.breadcrumb-section {
+    background-color: #ffffff;
+    padding-block: clamp(2rem, 5vw, 3.125rem);
+    border-bottom: 1px solid #e9ecef;
+    margin-block-start: clamp(3rem, 10vw, 5rem);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+.breadcrumb-item {
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-weight: 500;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+    padding-inline-start: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "\F285";
+    font-family: "bootstrap-icons";
+    color: #ccc;
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+    padding-inline-end: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.breadcrumb-item a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item a:hover {
+    color: #ff9d1f;
+}
+
+.breadcrumb-item.active {
+    color: #ff9d1f;
+    font-weight: 600;
+}
+
+.breadcrumb-home-icon {
+    margin-inline-end: clamp(0.25rem, 1vw, 0.375rem);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.breadcrumb-item a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #ff9d1f;
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+.breadcrumb-item a:hover::after {
+    width: 100%;
 }
 
 @keyframes slideInUp {
@@ -1109,98 +1027,19 @@ property search, real estate, buy property, sell property, rent property, reside
     }
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .quick-options {
-        padding: 12px 15px;
-        margin-bottom: 12px;
+/* Container Queries Support (Progressive Enhancement) */
+@supports (container-type: inline-size) {
+    .filter-container {
+        container-type: inline-size;
     }
     
-    .quick-option-btn {
-        padding: 10px 14px;
-        font-size: 12px;
-        border-radius: 16px;
-    }
-    
-    .quick-options-buttons {
-        gap: 6px;
+    @container (max-width: 600px) {
+        .checkbox-group {
+            grid-template-columns: 1fr;
+        }
     }
 }
-.breadcrumb-section {
-          background-color: #ffffff;
-          padding: 50px 0;
-          border-bottom: 1px solid #e9ecef;
-          margin-top: 80px; /* Space below the fixed header */
-          box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
 
-        .breadcrumb {
-          margin-bottom: 0;
-          padding: 0;
-          background: transparent;
-          display: flex;
-          flex-wrap: wrap;
-        }
-
-        .breadcrumb-item {
-          font-size: 14px;
-          font-weight: 500;
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-
-        .breadcrumb-item + .breadcrumb-item {
-          padding-left: 1.5rem;
-        }
-
-        .breadcrumb-item + .breadcrumb-item::before {
-          content: "\F285"; /* Bootstrap icon chevron-right */
-          font-family: "bootstrap-icons";
-          color: #ccc;
-          font-size: 12px;
-          padding-right: 1.5rem;
-        }
-
-        .breadcrumb-item a {
-          color: #666;
-          text-decoration: none;
-          transition: color 0.3s ease;
-          display: flex;
-          align-items: center;
-        }
-
-        .breadcrumb-item a:hover {
-          color: #ff9d1f;
-        }
-
-        .breadcrumb-item.active {
-          color: #ff9d1f;
-          font-weight: 600;
-        }
-
-        /* Home icon styling */
-        .breadcrumb-home-icon {
-          margin-right: 6px;
-          font-size: 16px;
-        }
-
-        /* Animation for hover state */
-        .breadcrumb-item a::after {
-          content: "";
-          display: block;
-          width: 0;
-          height: 2px;
-          background: #ff9d1f;
-          transition: width 0.3s;
-          position: absolute;
-          bottom: -3px;
-          left: 0;
-        }
-
-        .breadcrumb-item a:hover::after {
-          width: 100%;
-        }
 </style>
 {% endblock %}
 

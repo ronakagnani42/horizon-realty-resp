@@ -84,11 +84,17 @@ WSGI_APPLICATION = "HorizonRealityBackend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE", default="django.db.backends.sqlite3"),
-        "NAME": BASE_DIR / config("DB_NAME", default="db.sqlite3"),
+        'ENGINE': config("DB_ENGINE", default="django.db.backends.mysql"),
+        'NAME': config('DB_NAME', 'horizon_reality_db'),
+        'USER': config('DB_USER', 'horizon_user'),
+        'PASSWORD': config('DB_PASSWORD', 'HorizonProd2024!@#'),
+        'HOST': config('DB_HOST', '127.0.0.1'),
+        'PORT': config('DB_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        }
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

@@ -509,3 +509,7 @@ def commercial_property_search_results(request):
         }
     }
     return render(request, 'home/commercial_property_search_results.html', context)
+
+
+def test(request):
+    return render(request,'test.html')

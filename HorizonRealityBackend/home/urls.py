@@ -45,8 +45,5 @@ urlpatterns = [
     path('property-search-results/', views.property_search_results, name='property_search_results'),
     path('commercial-property-search-results/', views.commercial_property_search_results, name='commercial_property_search_results'),
     path('buy-commercial-property/', views.buy_commercial_property, name='buy_commercial_property'),
-
-
-
-
+    path('test/', views.test,name='test')
 ]

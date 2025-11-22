@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Files Test - Horizon Reality</title>
+    
+    <!-- Test CSS Loading -->
+    <link href="{% static 'css/test.css' %}" rel="stylesheet">
+
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Static Files Test Page</h1>
+        
+        <div class="test-section info">
+            <h2>ℹ️ Test Information</h2>
+            <p><strong>Purpose:</strong> This page helps verify that your static files are loading correctly on the production server.</p>
+            <div class="timestamp">
+                <strong>Current Time:</strong> {{ current_time }}<br>
+                <strong>Cache Buster:</strong> {{ cache_buster }}
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📁 Static Files Configuration</h2>
+            <p><strong>STATIC_URL:</strong></p>
+            <div class="file-path">{{ STATIC_URL }}</div>
+            
+            <p><strong>STATIC_ROOT:</strong></p>
+            <div class="file-path">{{ STATIC_ROOT }}</div>
+            
+            <p><strong>DEBUG Mode:</strong> {{ DEBUG }}</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 CSS Files Test</h2>
+            <p>Check if these CSS files are loading:</p>
+            <ul>
+                <li>blogs.css: <code>{% static 'css/blogs.css' %}</code></li>
+                <li>main.css: <code>{% static 'css/main.css' %}</code></li>
+            </ul>
+            <p><strong>Open browser console (F12) to check for 404 errors on CSS files.</strong></p>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Troubleshooting Checklist</h2>
+            <ul class="checklist">
+                <li>Run: <code>python manage.py collectstatic</code></li>
+                <li>Verify files exist in STATIC_ROOT directory</li>
+                <li>Check web server (Nginx/Apache) configuration</li>
+                <li>Verify file permissions (755 for directories, 644 for files)</li>
+                <li>Clear browser cache (Ctrl+Shift+R or Cmd+Shift+R)</li>
+                <li>Restart application server (Gunicorn/uWSGI)</li>
+                <li>Check browser console for 404 errors</li>
+                <li>Verify ALLOWED_HOSTS includes your domain</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔄 Actions</h2>
+            <button class="btn" onclick="location.reload(true)">Hard Reload Page</button>
+            <button class="btn" onclick="clearCache()">Clear Cache & Reload</button>
+        </div>
+
+        <div class="test-section success">
+            <h2>✨ If You See This With Styling</h2>
+            <p>✅ Your static files are loading correctly!</p>
+            <p>If the blogs.css and main.css styles are applied, your setup is working.</p>
+        </div>
+
+        <div class="test-section error">
+            <h2>❌ If This Looks Plain</h2>
+            <p>⚠️ Static files are NOT loading properly. Follow the troubleshooting checklist above.</p>
+        </div>
+    </div>
+
+    <script>
+        function clearCache() {
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            location.reload(true);
+        }
+
+        // Log static URLs to console
+        console.log('Static URL Test:');
+        console.log('STATIC_URL:', "{{ STATIC_URL }}");
+        console.log('blogs.css URL:', "{% static 'css/blogs.css' %}");
+        console.log('main.css URL:', "{% static 'css/main.css' %}");
+    </script>
+</body>
+</html>

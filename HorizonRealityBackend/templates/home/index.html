@@ -15,10 +15,17 @@
 {% block content %}
 <!-- Hero Section -->
 <section id="hero" class="hero section dark-background">
-  <video autoplay loop muted class="hero-video">
+  <video 
+    autoplay 
+    loop 
+    muted 
+    playsinline 
+    class="hero-video"
+    preload="auto"
+    id="heroVideo">
     <source src="{% static 'videos/new_logo.mp4' %}" type="video/mp4">
     Your browser does not support the video tag.
-  </video>
+</video>
 </section><!-- /Hero Section -->
 
 <!-- About Section -->
@@ -785,6 +792,32 @@ Want to search for specific properties? Try asking:
 
     // Make makeCall function globally available
     window.makeCall = makeCall;
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('heroVideo');
+    
+    if (video) {
+        // Try to play immediately
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Video playing');
+            }).catch(error => {
+                console.log('Autoplay prevented:', error);
+                
+                // If autoplay fails, try playing on user interaction
+                document.body.addEventListener('touchstart', function() {
+                    video.play();
+                }, { once: true });
+            });
+        }
+        
+        // Ensure video properties
+        video.muted = true;
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+    }
 });
 </script>
 {% endblock %}

@@ -56,6 +56,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-direction: row !important; /* Force left-to-right */
             padding: 15px 60px;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
@@ -88,11 +89,13 @@
             align-items: center;
             z-index: 10001;
             position: relative;
+            order: 1; /* Force logo to be first */
+            margin-right: auto; /* Push everything else to the right */
         }
 
         .logo-img {
-            height: 60px;
-            width: 160px;
+            height: 80px;
+            width: 200px;
             object-fit: contain;
             transition: all 0.3s ease;
         }
@@ -108,6 +111,8 @@
             background: none;
             border: none;
             position: relative;
+            order: 3; /* Force hamburger to be last */
+            margin-left: auto; /* Ensure it stays on the right */
         }
 
         .menu-toggle span {
@@ -137,6 +142,7 @@
             gap: 25px;
             align-items: center;
             flex-wrap: nowrap;
+            order: 2; /* Nav stays in the middle */
         }
 
         .nav > a,
@@ -309,8 +315,8 @@
             }
 
             .logo-img {
-                height: 55px;
-                width: 145px;
+                height: 70px;    /* Increased from 55px */
+                width: 180px;    /* Increased from 145px */
             }
         }
 
@@ -329,9 +335,9 @@
                 padding: 6px 8px;
             }
             
-            .logo-img {
-                height: 50px;
-                width: 135px;
+             .logo-img {
+                height: 65px;    /* Increased from 50px */
+                width: 170px;    /* Increased from 135px */
             }
         }
 
@@ -355,9 +361,9 @@
                 z-index: 10001 !important;
             }
 
-            .logo-img {
-                height: 45px;
-                width: 120px;
+             .logo-img {
+                height: 55px;    /* Increased from 45px */
+                width: 145px;    /* Increased from 120px */
             }
 
             /* Mobile Navigation Menu */
@@ -526,8 +532,8 @@
             }
 
             .logo-img {
-                height: 42px;
-                width: 112px;
+                height: 50px;    /* Increased from 42px */
+                width: 135px;    /* Increased from 112px */
             }
 
             .nav {
@@ -556,8 +562,8 @@
             }
 
             .logo-img {
-                height: 38px;
-                width: 100px;
+                height: 45px;    /* Increased from 38px */
+                width: 120px;    /* Increased from 100px */
             }
 
             .menu-toggle {
@@ -611,8 +617,8 @@
             }
 
             .logo-img {
-                height: 35px;
-                width: 92px;
+                height: 42px;    /* Increased from 35px */
+                width: 110px;    /* Increased from 92px */
             }
 
             .menu-toggle {
@@ -670,9 +676,9 @@
                 padding: 18px 80px;
             }
 
-            .logo-img {
-                height: 70px;
-                width: 180px;
+             .logo-img {
+                height: 90px;    /* Increased from 70px */
+                width: 230px;    /* Increased from 180px */
             }
 
             .nav {
@@ -722,7 +728,7 @@
         </div>
 
         <a href="{% url 'property:property_home' %}">Properties</a>
-        <a href="{% url 'property_calc' %}">Property Calculator</a>
+        <a href="{% url 'property_calculator' %}">Property Calculator</a>
         <a href="{% url 'blogs:blog_list' %}">Blogs</a>
         <a href="{% url 'contact-us' %}">Contact Us</a>
 

@@ -33,7 +33,7 @@ urlpatterns = [
     path('favorite-status/<int:property_id>/', services_views.get_favorite_status, name='get_favorite_status'),
     path('my-favorites/', services_views.my_favorites, name='my_favorites'),
     path('properties/', services_views.property_list_view, name='property_list'),
-    path('property-calc/', services_views.property_calculator_view, name='property_calc'),
+    path('property-calculator/', services_views.property_calculator_view, name='property_calculator'),
     path('property/', include(('services.urls', 'property'), namespace='property')),
     path('blogs/', include(('blogs.urls', 'blogs'), namespace='blogs')),
     path('chatbot/', include('chatbot.urls')),

@@ -639,7 +639,7 @@
               <i class="fas fa-phone"></i>
               Call Now
             </button>
-            <button class="btn btn-whatsapp" onclick="openWhatsAppDetailed()">
+            <button class="btn btn-whatsapp">
               <i class="fab fa-whatsapp"></i>
               WhatsApp
             </button>
@@ -1586,6 +1586,7 @@ function makeCall() {
     }
 }
 // Store current property details for inquiry
+// Store current property details for inquiry
 let currentPropertyDetails = {};
 
 // Enhanced Quick Call button click handler
@@ -1619,6 +1620,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // **FIX: Add event listener for WhatsApp button**
+    const whatsappButton = document.querySelector('.btn-whatsapp');
+    if (whatsappButton) {
+        whatsappButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            openWhatsAppDetailed();
+        });
+    }
 });
 
 // Enhanced WhatsApp function with project details
@@ -1627,19 +1637,27 @@ function openWhatsAppDetailed() {
     
     // Use captured property details
     const propertyName = currentPropertyDetails.name || 'Property';
+    const propertyLocation = currentPropertyDetails.location || 'Location not specified';
+    const propertyPrice = currentPropertyDetails.price || 'Price on request';
+    const propertyArea = currentPropertyDetails.area || 'Area not specified';
     
     const message = `Hi! I'm interested in a property listing on your website.
+
 *Property Details:*
 *Project:* ${propertyName}
+*Location:* ${propertyLocation}
+*Price:* ${propertyPrice}
+*Area:* ${propertyArea}
 
 I would like to know more about:
-Complete price details and payment plans,
-Available units and floor plans,
-Site visit arrangement,
-Amenities and facilities,
-Documentation and legal clearances,
-Possession timeline,
-Loan assistance.
+✓ Complete price details and payment plans
+✓ Available units and floor plans
+✓ Site visit arrangement
+✓ Amenities and facilities
+✓ Documentation and legal clearances
+✓ Possession timeline
+✓ Loan assistance
+
 Please get back to me at your earliest convenience.
 
 Thank you!`;
@@ -1647,17 +1665,23 @@ Thank you!`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     
-    console.log('Enhanced WhatsApp URL with project details:', whatsappUrl);
+    console.log('WhatsApp URL:', whatsappUrl);
     console.log('Property details sent:', currentPropertyDetails);
     
+    // Open WhatsApp in new window
     window.open(whatsappUrl, '_blank');
     
+    // Close the modal
     const modalElement = document.getElementById('quickCallModal');
     if (modalElement) {
         const modal = bootstrap.Modal.getInstance(modalElement);
         if (modal) modal.hide();
     }
 }
+
+// Make functions globally available
+window.openWhatsAppDetailed = openWhatsAppDetailed;
+window.makeCall = makeCall;
 
 // Debug function
 function debugComparison() {

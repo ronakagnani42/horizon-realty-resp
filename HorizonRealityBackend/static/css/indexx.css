@@ -80,8 +80,8 @@ section.dark-background {
   height: 100vh;
   overflow: hidden;
   position: relative;
-  margin-top: -80px; /* Adjust based on your header height */
-  padding-top: 80px; /* Same as negative margin */
+  margin-top: 20px; /* Add 20px gap below nav */
+  padding-top: 60px; /* Adjust padding accordingly */
 }
 
 .hero-video {

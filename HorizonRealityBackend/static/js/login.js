@@ -1,7 +1,47 @@
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function () {
+    initializeLoginPage();
+});
+
+function initializeLoginPage() {
+    // Initialize form validation
+    initializeFormValidation();
+    
+    // Initialize login button loading state
+    initializeLoginButton();
+    
+    // Auto-focus first input
+    const firstInput = document.querySelector('input[type="email"]');
+    if (firstInput) {
+        firstInput.focus();
+    }
+    
+    // Check if modal exists
+    const modal = document.getElementById('resetModal');
+    if (!modal) {
+        console.error('Reset modal element not found in DOM');
+    }
+}
+
 // Password toggle functionality
 function togglePassword(fieldId) {
     const field = document.getElementById(fieldId);
-    const icon = field.nextElementSibling.querySelector('i');
+    if (!field) {
+        console.error('Password field not found:', fieldId);
+        return;
+    }
+    
+    const toggleBtn = field.parentElement.querySelector('.toggle-password');
+    if (!toggleBtn) {
+        console.error('Toggle button not found');
+        return;
+    }
+    
+    const icon = toggleBtn.querySelector('i');
+    if (!icon) {
+        console.error('Icon not found');
+        return;
+    }
 
     if (field.type === 'password') {
         field.type = 'text';
@@ -14,29 +54,79 @@ function togglePassword(fieldId) {
 
 // Modal functionality
 function openResetModal() {
-    document.getElementById('resetModal').classList.add('show');
+    const modal = document.getElementById('resetModal');
+    if (!modal) {
+        console.error('Reset modal not found');
+        alert('Unable to open password reset form. Please refresh the page and try again.');
+        return;
+    }
+    
+    modal.style.display = 'flex';
+    // Force reflow before adding class for animation
+    modal.offsetHeight;
+    modal.classList.add('show');
     document.body.style.overflow = 'hidden';
+    
+    // Focus on email input
+    setTimeout(() => {
+        const emailInput = document.getElementById('resetEmail');
+        if (emailInput) {
+            emailInput.focus();
+        }
+    }, 100);
 }
 
 function closeResetModal() {
-    document.getElementById('resetModal').classList.remove('show');
+    const modal = document.getElementById('resetModal');
+    if (!modal) return;
+    
+    modal.classList.remove('show');
+    // Wait for animation before hiding
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
     document.body.style.overflow = 'auto';
-    // Reset form and hide success message
+    
+    // Reset form and hide messages
     const form = document.getElementById('resetPasswordForm');
     if (form) form.reset();
-    document.getElementById('resetSuccess').style.display = 'none';
+    
+    const successMsg = document.getElementById('resetSuccess');
+    if (successMsg) successMsg.style.display = 'none';
+    
+    const errorMsg = document.getElementById('resetError');
+    if (errorMsg) errorMsg.style.display = 'none';
 }
 
 // Close modal when clicking outside
 window.onclick = function (event) {
     const modal = document.getElementById('resetModal');
-    if (event.target === modal) {
+    if (modal && event.target === modal) {
         closeResetModal();
     }
 }
 
-// Enhanced form validation
-document.addEventListener('DOMContentLoaded', function () {
+// Keyboard shortcuts
+document.addEventListener('keydown', function (e) {
+    // Close modal with Escape key
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('resetModal');
+        if (modal && modal.classList.contains('show')) {
+            closeResetModal();
+        }
+    }
+
+    // Submit form with Ctrl+Enter
+    if (e.ctrlKey && e.key === 'Enter') {
+        const form = document.querySelector('form[action*="login"]');
+        if (form) {
+            form.requestSubmit();
+        }
+    }
+});
+
+// Form validation functions
+function initializeFormValidation() {
     const form = document.querySelector('form[action*="login"]');
     if (!form) return;
 
@@ -64,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
         }
     });
-});
+}
 
 function validateField(field) {
     const value = field.value.trim();
@@ -81,7 +171,7 @@ function validateField(field) {
         }
     }
 
-    if (field.type === 'password') {
+    if (field.type === 'password' && field.name !== 'email') {
         if (value.length < 6) {
             showError(field, 'Password must be at least 6 characters long');
             isValid = false;
@@ -98,7 +188,9 @@ function validateField(field) {
 
 function showError(field, message) {
     const formGroup = field.closest('.form-group');
-    let errorDiv = formGroup.querySelector('.error-message');
+    if (!formGroup) return;
+    
+    let errorDiv = formGroup.querySelector('.error-message:not([data-server-error])');
 
     if (!errorDiv) {
         errorDiv = document.createElement('div');
@@ -112,20 +204,27 @@ function showError(field, message) {
 
 function clearErrors(field) {
     const formGroup = field.closest('.form-group');
-    const errorDiv = formGroup.querySelector('.error-message');
-
-    if (errorDiv && !errorDiv.hasAttribute('data-server-error')) {
-        errorDiv.remove();
-    }
+    if (!formGroup) return;
+    
+    const errorDivs = formGroup.querySelectorAll('.error-message:not([data-server-error])');
+    errorDivs.forEach(div => div.remove());
 
     field.style.borderColor = '';
 }
 
 // Loading state for login button
-const loginForm = document.querySelector('form[action*="login"]');
-if (loginForm) {
-    loginForm.addEventListener('submit', function () {
+function initializeLoginButton() {
+    const loginForm = document.querySelector('form[action*="login"]');
+    if (!loginForm) return;
+    
+    loginForm.addEventListener('submit', function (e) {
         const button = this.querySelector('.login-button');
+        if (!button) return;
+        
+        // Only show loading if form is valid
+        const isValid = loginForm.checkValidity();
+        if (!isValid) return;
+        
         const originalText = button.textContent;
 
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
@@ -139,26 +238,28 @@ if (loginForm) {
     });
 }
 
-// Keyboard shortcuts
-document.addEventListener('keydown', function (e) {
-    // Close modal with Escape key
-    if (e.key === 'Escape') {
-        closeResetModal();
-    }
-
-    // Submit form with Ctrl+Enter
-    if (e.ctrlKey && e.key === 'Enter') {
-        const form = document.querySelector('form[action*="login"]');
-        if (form) {
-            form.submit();
+// Handle password reset form submission (optional AJAX)
+document.addEventListener('DOMContentLoaded', function() {
+    const resetForm = document.getElementById('resetPasswordForm');
+    if (!resetForm) return;
+    
+    resetForm.addEventListener('submit', function(e) {
+        const submitBtn = document.getElementById('resetSubmitBtn');
+        const email = document.getElementById('resetEmail').value;
+        
+        if (!email) {
+            e.preventDefault();
+            alert('Please enter your email address');
+            return;
         }
-    }
-});
-
-// Auto-focus first input
-window.addEventListener('load', function () {
-    const firstInput = document.querySelector('input[type="email"]');
-    if (firstInput) {
-        firstInput.focus();
-    }
+        
+        // Show loading state
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+        }
+        
+        // Form will submit normally to Django backend
+        // If you want AJAX submission, prevent default and use fetch here
+    });
 });

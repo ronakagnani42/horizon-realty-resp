@@ -767,7 +767,7 @@
  }
 
  .modal.show {
-     display: flex;
+     display: flex !important; 
      align-items: center;
      justify-content: center;
      animation: modalFadeIn 0.4s ease-out;

@@ -14,10 +14,19 @@
             font-family: 'Times New Roman', Times, serif !important;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             font-family: 'Times New Roman', Times, serif !important;
             background-color: #faf8f5;
             transition: background 0.3s ease;
+            overflow-x: hidden;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
         }
 
         /* Overlay when menu opens */
@@ -28,33 +37,46 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0,0,0,0.5);
             z-index: 999;
             pointer-events: all;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.menu-open::before {
+            opacity: 1;
+        }
+
+        body.menu-open {
+            overflow: hidden;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: clamp(12px, 2vw, 20px) clamp(15px, 4vw, 60px);
+            padding: 15px 60px;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
             z-index: 1000;
             transition: all 0.3s ease;
+            min-height: 70px;
+            margin: 0 !important;
         }
         
-        /* Black transparent when at top */
         .header.transparent {
             background: rgba(0, 0, 0, 0.6);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* Black transparent when scrolled */
         .header.scrolled {
             background: rgba(0, 0, 0, 0.7);
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -65,15 +87,17 @@
             display: flex;
             align-items: center;
             z-index: 10001;
+            position: relative;
         }
 
         .logo-img {
-            height: clamp(35px, 6vw, 80px);
-            width: clamp(100px, 18vw, 180px);
+            height: 60px;
+            width: 160px;
             object-fit: contain;
+            transition: all 0.3s ease;
         }
 
-        /* Hamburger Menu Toggle - Hidden by default on desktop */
+        /* Hamburger Menu Toggle */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -83,13 +107,14 @@
             padding: 10px;
             background: none;
             border: none;
+            position: relative;
         }
 
         .menu-toggle span {
-            width: 25px;
+            width: 28px;
             height: 3px;
             background: #f4b400;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             display: block;
             border-radius: 2px;
         }
@@ -103,13 +128,13 @@
         }
 
         .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
+            transform: rotate(-45deg) translate(8px, -8px);
         }
 
-        /* Navigation - Desktop default */
+        /* Navigation - Desktop */
         .nav {
             display: flex;
-            gap: clamp(8px, 2vw, 30px);
+            gap: 25px;
             align-items: center;
             flex-wrap: nowrap;
         }
@@ -118,13 +143,13 @@
         .nav-item > a {
             text-decoration: none;
             color: #ffffff;
-            font-size: clamp(12px, 1.8vw, 16px);
+            font-size: 16px;
             transition: all 0.3s ease;
             cursor: pointer;
             white-space: nowrap;
             font-weight: 500;
             position: relative;
-            padding: 6px 8px;
+            padding: 8px 10px;
         }
 
         /* Hover effect with bottom border */
@@ -132,7 +157,7 @@
         .nav-item > a::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: 0;
             left: 0;
             width: 0;
             height: 2px;
@@ -168,9 +193,9 @@
             border-radius: 4px;
             z-index: 1001;
             border-top: 3px solid #f4b400;
+            margin-top: 5px;
         }
 
-        /* Fix user dropdown going off-screen */
         .nav-item:last-of-type .submenu {
             left: auto;
             right: 0;
@@ -267,69 +292,117 @@
             transform: scaleY(1);
         }
 
-        /* Responsive breakpoints */
+        /* Tablet Breakpoint - Medium Screens */
         @media (max-width: 1200px) {
+            .header {
+                padding: 15px 40px;
+            }
+
             .nav {
-                gap: clamp(6px, 1.5vw, 20px);
+                gap: 18px;
             }
             
             .nav > a,
             .nav-item > a {
-                font-size: clamp(11px, 1.6vw, 14px);
-                padding: 5px 6px;
+                font-size: 15px;
+                padding: 6px 8px;
+            }
+
+            .logo-img {
+                height: 55px;
+                width: 145px;
             }
         }
 
         @media (max-width: 1024px) {
             .header {
-                padding: clamp(12px, 2vw, 18px) clamp(15px, 3vw, 40px);
+                padding: 12px 30px;
             }
 
             .nav {
-                gap: clamp(5px, 1.2vw, 15px);
+                gap: 15px;
             }
             
             .nav > a,
             .nav-item > a {
-                font-size: 13px;
-                padding: 5px 6px;
+                font-size: 14px;
+                padding: 6px 8px;
             }
             
             .logo-img {
-                height: clamp(35px, 5vw, 60px);
-                width: clamp(100px, 16vw, 150px);
+                height: 50px;
+                width: 135px;
             }
         }
 
-        /* CRITICAL: Mobile menu styles - Show hamburger, hide nav */
+        /* Mobile Navigation - Critical Fixes */
         @media (max-width: 900px) {
-            /* Show hamburger menu */
-            .menu-toggle {
-                display: flex !important;
+            .header {
+                padding: 12px 25px !important;
+                min-height: 60px !important;
+                background: rgba(0, 0, 0, 0.95) !important;
+                position: fixed !important;
+                width: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
             }
 
-            /* Hide desktop nav by default */
+            /* Force hamburger to show */
+            .menu-toggle {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                z-index: 10001 !important;
+            }
+
+            .logo-img {
+                height: 45px;
+                width: 120px;
+            }
+
+            /* Mobile Navigation Menu */
             .nav {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                height: 100vh;
-                width: 80%;
-                max-width: 350px;
-                background: rgba(0, 0, 0, 0.98);
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 80px 20px 20px;
-                overflow-y: auto;
-                z-index: 10000;
-                transition: left 0.35s ease;
-                box-shadow: 2px 0 15px rgba(0,0,0,0.4);
-                gap: 0;
+                position: fixed !important;
+                top: 0 !important;
+                left: -100% !important;
+                height: 100vh !important;
+                width: 85% !important;
+                max-width: 380px !important;
+                background: rgba(0, 0, 0, 0.98) !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                padding: 90px 0 30px !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                z-index: 10000 !important;
+                transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                box-shadow: 2px 0 20px rgba(0,0,0,0.5) !important;
+                gap: 0 !important;
+            }
+
+            /* Smooth scrolling for mobile menu */
+            .nav {
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                scrollbar-color: #f4b400 rgba(0, 0, 0, 0.3);
+            }
+
+            .nav::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .nav::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            .nav::-webkit-scrollbar-thumb {
+                background: #f4b400;
+                border-radius: 3px;
             }
 
             /* Show nav when active */
             .nav.active {
-                left: 0;
+                left: 0 !important;
             }
 
             .nav > a,
@@ -340,9 +413,12 @@
             .nav > a,
             .nav-item > a {
                 width: 100%;
-                padding: 15px 10px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 16px 25px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 font-size: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
 
             /* Remove hover effects on mobile */
@@ -351,27 +427,33 @@
                 display: none;
             }
 
+            .nav > a:active,
+            .nav-item > a:active {
+                background: rgba(244, 180, 0, 0.1);
+            }
+
             /* Mobile submenu - accordion style */
             .submenu {
                 position: static;
                 width: 100%;
-                background: rgba(244, 180, 0, 0.1);
+                background: rgba(244, 180, 0, 0.08);
                 overflow: hidden;
                 max-height: 0;
-                transition: max-height 0.3s ease;
+                transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 box-shadow: none;
                 border-radius: 0;
                 padding: 0;
                 left: 0 !important;
                 right: auto !important;
                 border-top: none;
+                margin-top: 0;
             }
 
             /* Show submenu when parent is active */
             .nav-item.active > .submenu {
                 display: block;
-                max-height: 500px;
-                padding: 10px 0;
+                max-height: 600px;
+                padding: 8px 0;
             }
 
             /* Mobile nested submenu */
@@ -380,7 +462,7 @@
                 background: rgba(244, 180, 0, 0.05);
                 overflow: hidden;
                 max-height: 0;
-                transition: max-height 0.3s ease;
+                transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 box-shadow: none;
                 border-radius: 0;
                 padding: 0;
@@ -390,19 +472,34 @@
             /* Show nested submenu when parent is active */
             .submenu-item.active > .nested-submenu {
                 display: block;
-                max-height: 400px;
-                padding: 10px 0;
+                max-height: 500px;
+                padding: 8px 0;
             }
 
             .submenu a,
             .nested-submenu a {
-                padding: 12px 20px;
+                padding: 14px 25px 14px 40px;
                 font-size: 15px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .nested-submenu a {
+                padding-left: 55px;
+                font-size: 14px;
             }
 
             .submenu a:hover,
             .nested-submenu a:hover {
-                padding-left: 30px;
+                padding-left: 45px;
+            }
+
+            .nested-submenu a:hover {
+                padding-left: 60px;
+            }
+
+            .submenu a:active,
+            .nested-submenu a:active {
+                background: rgba(244, 180, 0, 0.15);
             }
 
             /* Override desktop hover behavior on mobile */
@@ -413,24 +510,178 @@
             .submenu-item:hover > .nested-submenu {
                 display: none;
             }
+
+            .submenu a::before,
+            .nested-submenu a::before {
+                display: none;
+            }
         }
 
-        @media (max-width: 480px) {
-            .logo-img {
-                height: 35px;
-                width: 100px;
+        /* Small Tablets */
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 20px !important;
+                min-height: 55px !important;
+                background: rgba(0, 0, 0, 0.95) !important;
             }
 
+            .logo-img {
+                height: 42px;
+                width: 112px;
+            }
+
+            .nav {
+                width: 90% !important;
+                max-width: 350px !important;
+                padding: 80px 0 25px !important;
+            }
+
+            .menu-toggle {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            .menu-toggle span {
+                width: 26px;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media (max-width: 480px) {
             .header {
-                padding: 10px 15px;
+                padding: 10px 15px !important;
+                min-height: 50px !important;
+                background: rgba(0, 0, 0, 0.95) !important;
+            }
+
+            .logo-img {
+                height: 38px;
+                width: 100px;
             }
 
             .menu-toggle {
                 padding: 8px;
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            .menu-toggle span {
+                width: 24px;
+                height: 2.5px;
+            }
+
+            .nav {
+                width: 100% !important;
+                max-width: 320px !important;
+                padding: 75px 0 20px !important;
+            }
+
+            .nav > a,
+            .nav-item > a {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+
+            .submenu a {
+                padding: 12px 20px 12px 35px;
+                font-size: 14px;
+            }
+
+            .nested-submenu a {
+                padding-left: 50px;
+                font-size: 13px;
+            }
+
+            .submenu a:hover {
+                padding-left: 40px;
+            }
+
+            .nested-submenu a:hover {
+                padding-left: 55px;
+            }
+        }
+
+        /* Extra Small Devices */
+        @media (max-width: 360px) {
+            .header {
+                padding: 8px 12px !important;
+                background: rgba(0, 0, 0, 0.95) !important;
+            }
+
+            .logo-img {
+                height: 35px;
+                width: 92px;
+            }
+
+            .menu-toggle {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
 
             .menu-toggle span {
                 width: 22px;
+            }
+
+            .nav {
+                max-width: 280px !important;
+            }
+
+            .nav > a,
+            .nav-item > a {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+
+            .submenu a {
+                padding: 11px 18px 11px 32px;
+                font-size: 13px;
+            }
+
+            .nested-submenu a {
+                padding-left: 46px;
+                font-size: 12px;
+            }
+        }
+
+        /* Landscape mode for mobile devices */
+        @media (max-width: 900px) and (orientation: landscape) {
+            .nav {
+                padding: 70px 0 20px !important;
+            }
+
+            .header {
+                min-height: 50px !important;
+                background: rgba(0, 0, 0, 0.95) !important;
+            }
+
+            .menu-toggle {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* Very large screens */
+        @media (min-width: 1600px) {
+            .header {
+                padding: 18px 80px;
+            }
+
+            .logo-img {
+                height: 70px;
+                width: 180px;
+            }
+
+            .nav {
+                gap: 35px;
+            }
+
+            .nav > a,
+            .nav-item > a {
+                font-size: 17px;
             }
         }
     </style>
@@ -439,10 +690,9 @@
 <body>
 
 <header class="header">
-
-     <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-lg-0">
-                <img src="{% static 'img/icons/logo.png' %}" alt="Logo" class="logo-img">
-            </a>
+    <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'img/icons/logo.png' %}" alt="Logo" class="logo-img">
+    </a>
 
     <nav class="nav" id="navMenu">
         <a href="{% url 'home' %}">Home</a>
@@ -495,156 +745,175 @@
         <span></span>
         <span></span>
     </div>
-
 </header>
 
 <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const navMenu = document.getElementById('navMenu');
-    const body = document.body;
-    const header = document.querySelector('.header');
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const body = document.body;
+        const header = document.querySelector('.header');
 
-    const servicesDropdown = document.getElementById('servicesDropdown');
-    const buyDropdown = document.getElementById('buyDropdown');
-    const sellDropdown = document.getElementById('sellDropdown');
-    const userDropdown = document.getElementById('userDropdown');
+        const servicesDropdown = document.getElementById('servicesDropdown');
+        const buyDropdown = document.getElementById('buyDropdown');
+        const sellDropdown = document.getElementById('sellDropdown');
+        const userDropdown = document.getElementById('userDropdown');
 
-    // Check screen size
-    function checkScreenSize() {
-        if (window.innerWidth <= 900) {
-            // Mobile view - ensure hamburger is visible
-            menuToggle.style.display = 'flex';
-        } else {
-            // Desktop view - clean up mobile states
+        // Force check on load
+        function forceCheckMobile() {
+            const isMobile = window.innerWidth <= 900;
+            
+            if (isMobile) {
+                menuToggle.style.display = 'flex';
+                menuToggle.style.visibility = 'visible';
+                menuToggle.style.opacity = '1';
+            } else {
+                navMenu.classList.remove('active');
+                body.classList.remove('menu-open');
+                menuToggle.classList.remove('active');
+                menuToggle.style.display = 'none';
+                
+                document.querySelectorAll('.nav-item, .submenu-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+            }
+        }
+
+        // Run immediately
+        forceCheckMobile();
+        
+        // Run after a small delay to ensure styles are loaded
+        setTimeout(forceCheckMobile, 100);
+
+        // Debounced resize handler
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(forceCheckMobile, 150);
+        });
+        
+        // Optimized scroll effect
+        let scrollTimer;
+        window.addEventListener('scroll', function() {
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(function() {
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (currentScroll > 100) {
+                    header.classList.add('scrolled');
+                    header.classList.remove('transparent');
+                } else if (currentScroll < 50) {
+                    header.classList.add('transparent');
+                    header.classList.remove('scrolled');
+                } else {
+                    header.classList.remove('transparent');
+                    header.classList.remove('scrolled');
+                }
+            }, 10);
+        }, { passive: true });
+        
+        if (window.pageYOffset < 50) {
+            header.classList.add('transparent');
+        }
+
+        // Toggle mobile menu
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Setup dropdowns
+        function setupDropdown(element) {
+            if (!element) return;
+
+            const link = element.querySelector(':scope > a');
+
+            link.addEventListener('click', function(e) {
+                if (window.innerWidth <= 900) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = element.parentElement;
+                    const siblings = parent.querySelectorAll(':scope > .nav-item, :scope > .submenu-item');
+                    siblings.forEach(sibling => {
+                        if (sibling !== element) {
+                            sibling.classList.remove('active');
+                        }
+                    });
+
+                    element.classList.toggle('active');
+                }
+            });
+        }
+
+        setupDropdown(servicesDropdown);
+        setupDropdown(buyDropdown);
+        setupDropdown(sellDropdown);
+        if (userDropdown) {
+            setupDropdown(userDropdown);
+        }
+
+        // Close menu helpers
+        function closeMenu() {
             navMenu.classList.remove('active');
             body.classList.remove('menu-open');
             menuToggle.classList.remove('active');
-            menuToggle.style.display = 'none';
             
-            // Remove all active states from dropdowns
             document.querySelectorAll('.nav-item, .submenu-item').forEach(item => {
                 item.classList.remove('active');
             });
         }
-    }
 
-    // Initial check
-    checkScreenSize();
-
-    // Check on resize with debounce
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(checkScreenSize, 100);
-    });
-    
-    // Add scroll effect for header transparency
-    let scrollTimer;
-    window.addEventListener('scroll', function() {
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(function() {
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-                header.classList.remove('transparent');
-            } else if (window.scrollY < 50) {
-                header.classList.add('transparent');
-                header.classList.remove('scrolled');
-            } else {
-                header.classList.remove('transparent');
-                header.classList.remove('scrolled');
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 900 && 
+                navMenu.classList.contains('active') &&
+                !navMenu.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                closeMenu();
             }
-        }, 10);
-    });
-    
-    // Set initial state
-    if (window.scrollY < 50) {
-        header.classList.add('transparent');
-    }
+        });
 
-    // Toggle mobile menu
-    menuToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        body.classList.toggle('menu-open');
-    });
+        body.addEventListener('click', function(e) {
+            if (body.classList.contains('menu-open') && 
+                !navMenu.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                closeMenu();
+            }
+        });
 
-    // Setup dropdown behavior
-    function setupDropdown(element) {
-        if (!element) return;
+        document.querySelectorAll('.nav > a:not(.nav-item > a)').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 900) {
+                    closeMenu();
+                }
+            });
+        });
 
-        const link = element.querySelector(':scope > a');
+        document.querySelectorAll('.submenu > a:not(.submenu-item > a), .nested-submenu a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 900) {
+                    closeMenu();
+                }
+            });
+        });
 
-        // Click behavior for mobile
-        link.addEventListener('click', function(e) {
-            if (window.innerWidth <= 900) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Close other dropdowns at same level
-                const parent = element.parentElement;
-                const siblings = parent.querySelectorAll(':scope > .nav-item, :scope > .submenu-item');
-                siblings.forEach(sibling => {
-                    if (sibling !== element) {
-                        sibling.classList.remove('active');
+        // Prevent body scroll when menu is open
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    if (body.classList.contains('menu-open')) {
+                        body.style.overflow = 'hidden';
+                    } else {
+                        body.style.overflow = '';
                     }
-                });
-
-                element.classList.toggle('active');
-            }
+                }
+            });
         });
-    }
 
-    setupDropdown(servicesDropdown);
-    setupDropdown(buyDropdown);
-    setupDropdown(sellDropdown);
-    if (userDropdown) {
-        setupDropdown(userDropdown);
-    }
-
-    // Close menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (window.innerWidth <= 900 && 
-            !navMenu.contains(e.target) && 
-            !menuToggle.contains(e.target) && 
-            navMenu.classList.contains('active')) {
-            navMenu.classList.remove('active');
-            body.classList.remove('menu-open');
-            menuToggle.classList.remove('active');
-        }
-    });
-
-    // Close menu when clicking overlay
-    body.addEventListener('click', function(e) {
-        if (body.classList.contains('menu-open') && 
-            !navMenu.contains(e.target) && 
-            !menuToggle.contains(e.target)) {
-            navMenu.classList.remove('active');
-            body.classList.remove('menu-open');
-            menuToggle.classList.remove('active');
-        }
-    });
-
-    // Close mobile menu when clicking on regular links (not dropdowns)
-    document.querySelectorAll('.nav > a').forEach(link => {
-        link.addEventListener('click', function() {
-            if (window.innerWidth <= 900) {
-                navMenu.classList.remove('active');
-                body.classList.remove('menu-open');
-                menuToggle.classList.remove('active');
-            }
-        });
-    });
-
-    // Close mobile menu when clicking on submenu links
-    document.querySelectorAll('.submenu a:not(.submenu-item > a), .nested-submenu a').forEach(link => {
-        link.addEventListener('click', function() {
-            if (window.innerWidth <= 900) {
-                navMenu.classList.remove('active');
-                body.classList.remove('menu-open');
-                menuToggle.classList.remove('active');
-            }
-        });
+        observer.observe(body, { attributes: true });
     });
 </script>
 

@@ -158,12 +158,12 @@ function validateField(field) {
             break;
 
         case 'contact_number':
-            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            const phoneRegex = /^\d{10}$/;
             if (!value) {
                 showError(name, 'Phone number is required');
                 return false;
             } else if (!phoneRegex.test(value.replace(/[\s\-\(\)]/g, ''))) {
-                showError(name, 'Please enter a valid phone number');
+                showError(name, 'Phone number must be exactly 10 digits');
                 return false;
             }
             break;
@@ -217,6 +217,7 @@ function validateForm() {
 }
 
 function submitForm() {
+    const form = document.getElementById('registration-form');
     const btn = document.getElementById('register-btn');
     const btnText = btn.querySelector('.button-text');
     const spinner = document.getElementById('loading-spinner');
@@ -226,46 +227,119 @@ function submitForm() {
     btnText.style.display = 'none';
     spinner.style.display = 'inline-block';
 
-    // Simulate form submission
-    setTimeout(() => {
+    // Get CSRF token
+    const csrftoken = getCookie('csrftoken');
+
+    // Prepare form data
+    const formData = new FormData(form);
+
+    // Submit form using fetch API
+    fetch(form.action || window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
         // Reset button state
         btn.disabled = false;
         btnText.style.display = 'inline-block';
         spinner.style.display = 'none';
 
-        // Show success notification
-        showNotification('success-notification');
+        if (data.success) {
+            // Show success notification
+            showNotification('success-notification', data.message);
 
-        // Reset form
-        document.getElementById('registration-form').reset();
+            // Reset form
+            form.reset();
 
-        // Reset password strength indicators
-        const meter = document.getElementById('strength-meter');
-        const text = document.getElementById('strength-text');
-        meter.className = 'strength-meter';
-        text.className = 'strength-text';
-        text.textContent = '';
+            // Reset password strength indicators
+            const meter = document.getElementById('strength-meter');
+            const text = document.getElementById('strength-text');
+            meter.className = 'strength-meter';
+            text.className = 'strength-text';
+            text.textContent = '';
 
-        // Reset all requirements
-        const requirements = document.querySelectorAll('.requirement');
-        requirements.forEach(req => {
-            req.classList.remove('valid');
-            const icon = req.querySelector('i');
-            icon.className = 'fas fa-circle invalid';
-        });
+            // Reset all requirements
+            const requirements = document.querySelectorAll('.requirement');
+            requirements.forEach(req => {
+                req.classList.remove('valid');
+                const icon = req.querySelector('i');
+                icon.className = 'fas fa-circle invalid';
+            });
 
-        // Hide conditional fields
-        const firmTypeContainer = document.getElementById('firm_type_container');
-        const firmNameContainer = document.getElementById('firm_name_container');
-        const accountTypeRow = document.getElementById('account-type-row');
+            // Hide conditional fields
+            const firmTypeContainer = document.getElementById('firm_type_container');
+            const firmNameContainer = document.getElementById('firm_name_container');
+            const accountTypeRow = document.getElementById('account-type-row');
 
-        firmTypeContainer.classList.add('hidden');
-        firmTypeContainer.classList.remove('visible');
-        firmNameContainer.classList.add('hidden');
-        firmNameContainer.classList.remove('visible');
-        accountTypeRow.classList.remove('two-columns');
+            firmTypeContainer.classList.add('hidden');
+            firmTypeContainer.classList.remove('visible');
+            firmNameContainer.classList.add('hidden');
+            firmNameContainer.classList.remove('visible');
+            accountTypeRow.classList.remove('two-columns');
 
-    }, 2000);
+            // Optionally redirect after a delay
+            // setTimeout(() => {
+            //     window.location.href = '/login/';
+            // }, 3000);
+
+        } else {
+            // Show error notification
+            let errorMessage = data.message || 'Registration failed. Please try again.';
+            
+            // Display field-specific errors
+            if (data.errors) {
+                Object.keys(data.errors).forEach(fieldName => {
+                    const errors = data.errors[fieldName];
+                    if (errors && errors.length > 0) {
+                        showError(fieldName, errors[0]);
+                    }
+                });
+                
+                // Create a combined error message
+                const errorMessages = Object.values(data.errors)
+                    .flat()
+                    .filter(msg => msg)
+                    .join('. ');
+                if (errorMessages) {
+                    errorMessage = errorMessages;
+                }
+            }
+            
+            showNotification('error-notification', errorMessage);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // Reset button state
+        btn.disabled = false;
+        btnText.style.display = 'inline-block';
+        spinner.style.display = 'none';
+
+        // Show error notification
+        showNotification('error-notification', 'An error occurred. Please try again later.');
+    });
+}
+
+// Helper function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 function showError(fieldName, message) {

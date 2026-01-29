@@ -66,7 +66,8 @@
                     <span class="notification-close" onclick="hideNotification('error-notification')"><i
                             class="fas fa-times"></i></span>
                 </div>
-                <form id="registration-form" action="#" method="POST">
+                <form id="registration-form" action="{% url 'register' %}" method="POST">
+                    {% csrf_token %}
                     <!-- First Name and Last Name on same row -->
                     <div class="form-row">
                         <div class="form-group">
@@ -118,6 +119,7 @@
                             <label for="user_type">Account Type</label>
                             <div class="input-with-icon">
                                 <select id="user_type" name="user_type" required>
+                                    <option value="">---</option>
                                     <option value="buyer">Buyer</option>
                                     <option value="broker">Broker</option>
                                 </select>
@@ -130,6 +132,7 @@
                             <label for="firm_type">Firm Type</label>
                             <div class="input-with-icon">
                                 <select id="firm_type" name="firm_type">
+                                    <option value="">---</option>
                                     <option value="individual">Individual</option>
                                     <option value="firm">Firm</option>
                                 </select>

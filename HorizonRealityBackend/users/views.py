@@ -18,15 +18,16 @@ from django.utils import timezone
 from .utils import send_newsletter_welcome_email
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
+from services.tasks import (
+    send_verification_email_task,
+    send_welcome_email_task,
+    send_newsletter_welcome_email_task
+)
 
 def register(request):
     """
     Handles user registration with email verification and newsletter subscription.
-    - Creates inactive user
-    - Handles newsletter subscription
-    - Sends verification email
-    - Sends newsletter welcome email if subscribed
-    - User is activated upon email verification
+    All emails are sent asynchronously via Celery.
     """
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
@@ -35,7 +36,6 @@ def register(request):
             user.is_active = False 
             user.save()
             newsletter_subscribed = form.cleaned_data.get('newsletter_subscription', False)
-            newsletter_created = False
             newsletter_obj = None
             if newsletter_subscribed:
                 try:
@@ -46,42 +46,34 @@ def register(request):
                     )
                     user.newsletter_subscribed = True
                     user.save()
+                    print(f"Newsletter subscription created for {user.email}")
                 except Exception as e:
                     print(f"ERROR creating newsletter subscription: {str(e)}")
-            else:
-                print("Newsletter subscription not selected")
+            
+            # Generate verification token and URL
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             current_site = get_current_site(request)
             verification_url = request.build_absolute_uri(
                 reverse('verify_email', kwargs={'uidb64': uid, 'token': token})
             )
+            
+            # Send verification email asynchronously via Celery
             try:
-                subject = 'Verify Your Horizon Reality Account'
-                html_message = render_to_string('emails/verification_email.html', {
-                    'user': user,
-                    'verification_url': verification_url,
-                    'domain': current_site.domain,
-                })
-                plain_message = strip_tags(html_message)
-                send_mail(
-                    subject,
-                    plain_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    html_message=html_message,
-                    fail_silently=False,
+                send_verification_email_task.delay(
+                    user_id=user.pk,
+                    verification_url=verification_url,
+                    domain=current_site.domain
                 )
-                print(f"Verification email sent successfully to {user.email}")
+                print(f"Verification email task queued for {user.email}")
             except Exception as e:
-                print(f"ERROR sending verification email: {str(e)}")
-            if newsletter_subscribed and newsletter_obj:
-                print("Newsletter subscription created. Welcome email will be sent after verification.")
-            else:
-                print(f"Newsletter welcome email will not be sent. Subscribed: {newsletter_subscribed}, Newsletter obj exists: {newsletter_obj is not None}")
+                print(f"ERROR queuing verification email: {str(e)}")
+            
+            # Prepare success message
             success_message = 'Registration successful! A confirmation email has been sent to your inbox.'
             if newsletter_subscribed:
                 success_message += ' You will receive a newsletter welcome email after verifying your account.'
+            
             return JsonResponse({
                 'success': True,
                 'message': success_message,
@@ -95,54 +87,55 @@ def register(request):
             }, status=400)
     else:
         form = UserRegistrationForm()
+    
     return render(request, 'users/registeration.html', {'form': form})
+
 
 def verify_email(request, uidb64, token):
     """
-    Activates user account upon email verification
-    and sends welcome email.
+    Activates user account upon email verification.
+    Sends welcome email and newsletter welcome email asynchronously via Celery.
     """
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = CustomUser.objects.get(pk=uid)
+        
         if default_token_generator.check_token(user, token):
+            # Activate user
             user.is_active = True
             user.is_verified = True
             user.save()
+            
+            # Send welcome email asynchronously
             try:
-                subject = 'Welcome to Horizon Reality!'
-                html_message = render_to_string('emails/welcome_email.html', {
-                    'user': user,
-                })
-                plain_message = strip_tags(html_message)
-                send_mail(
-                    subject,
-                    plain_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    html_message=html_message,
-                    fail_silently=False,
-                )
+                send_welcome_email_task.delay(user_id=user.pk)
+                print(f"Welcome email task queued for {user.email}")
             except Exception as e:
-                print(f"ERROR sending welcome email: {str(e)}")
+                print(f"ERROR queuing welcome email: {str(e)}")
+            
+            # Send newsletter welcome email if subscribed
             if user.newsletter_subscribed:
                 try:
                     newsletter_obj = Newsletter.objects.get(email=user.email)
-                    result = send_newsletter_welcome_email(
+                    send_newsletter_welcome_email_task.delay(
                         user_email=user.email,
                         user_name=f"{user.first_name} {user.last_name}".strip(),
                         unsubscribe_token=str(newsletter_obj.unsubscribe_token)
                     )
+                    print(f"Newsletter welcome email task queued for {user.email}")
                 except Newsletter.DoesNotExist:
                     print(f"Newsletter object not found for {user.email}")
                 except Exception as e:
-                    print(f"ERROR sending newsletter welcome email during verification: {str(e)}")
+                    print(f"ERROR queuing newsletter welcome email: {str(e)}")
             else:
                 print("User is not subscribed to newsletter, skipping newsletter welcome email")
+            
+            # Log user in
             login(request, user)
             return redirect('home')
         else:
             return render(request, 'users/verification_invalid.html')
+    
     except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist) as e:
         return render(request, 'users/verification_invalid.html')
 

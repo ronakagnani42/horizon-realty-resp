@@ -590,6 +590,7 @@ class TestimonialAdmin(admin.ModelAdmin):
     fields = (
         'name',
         'designation',
+        'text',
         'photo',
         'photo_display',
         'is_testimonial_active',

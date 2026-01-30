@@ -1309,7 +1309,7 @@ class PropertyInquiryAdmin(admin.ModelAdmin):
     contact_info.short_description = 'Contact'
     
     def property_link(self, obj):
-        url = reverse('admin:properties_buyproperties_change', args=[obj.property.pk])
+        url = reverse('admin:services_buyproperties_change', args=[obj.property.pk])
         return format_html(
             '<a href="{}" style="color: #2196F3; text-decoration: none; font-weight: 500;">🏠 {}</a>',
             url, obj.property.project_name or 'View Property'

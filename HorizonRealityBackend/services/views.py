@@ -146,7 +146,7 @@ def property_calculator_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your property information has been submitted successfully. Our team will contact you shortly with the valuation.')
-            return redirect('property_calc')
+            return redirect('property_calculator')
         else:
             messages.error(request, 'There was an error with your submission. Please check the form and try again.')
     else:

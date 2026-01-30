@@ -1,7 +1,7 @@
 {% extends "base.html" %} 
 {% load static %}
 
-{% block title %}Blogs -  Horizon Reality{% endblock %} 
+{% block title %}Blogs - Horizon Reality{% endblock %} 
 {% block meta_description %}Latest real estate insights and articles from Horizon Reality{% endblock %} 
 {% block meta_keywords %}real estate blogs, property insights, real estate tips, real estate market{% endblock %}
 
@@ -31,6 +31,7 @@
       </nav>
     </div>
 </div>
+
 <div class="blog-container" id="blog-container">
   {% if page_obj.object_list %}
     {% for blog in page_obj %}
@@ -51,20 +52,34 @@
       </div>
     {% endfor %}
   {% else %}
-  <div class="no-blogs-container">
-    <div class="no-blogs-message">
-      No blogs available at the moment. Please check back later.
+    <div class="no-blogs-container">
+      <div class="no-blogs-message">
+        No blogs available at the moment. Please check back later.
+      </div>
     </div>
-  </div>
-{% endif %}
+  {% endif %}
 </div>
 
-<div id="load-more-container">
+<div id="load-more-container" style="text-align: center; margin: 30px 0;">
   {% if page_obj.has_next %}
-    <button id="load-more">Load More</button>
+    <button id="load-more" style="padding: 12px 30px; font-size: 16px; cursor: pointer;">Load More</button>
   {% endif %}
   <div id="loader" style="display: none;"><span class="spinner"></span></div>
 </div>
+
+<!-- IMPORTANT: Define paginationData BEFORE loading blog.js -->
+<script>
+  // Define pagination data globally before other scripts load
+  window.paginationData = {
+    totalPages: {{ page_obj.paginator.num_pages }},
+    currentPage: {{ page_obj.number }},
+    hasNext: {% if page_obj.has_next %}true{% else %}false{% endif %}
+  };
+  
+  // Debug log
+  console.log('Pagination data initialized:', window.paginationData);
+</script>
+
 <button class="chat-bubble" id="chatBubble">
   <i class="bi bi-chat-dots"></i>
 </button>
@@ -118,8 +133,6 @@
       </div>
     </div>
 
-    <!-- FIXED Typing Indicator -->
-
     <div class="chat-input">
       <div class="chat-input-group">
         <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500">
@@ -130,20 +143,15 @@
     </div>
   </div>
 </div>
-<script>
-  const paginationData = {
-    totalPages: {{ page_obj.paginator.num_pages }},
-    currentPage: {{ page_obj.number }},
-    hasNext: {% if page_obj.has_next %}true{% else %}false{% endif %}
-  };
-</script>
+
 {% endblock %}
 
 {% block extra_js %}
+<!-- Load blog.js AFTER paginationData is defined -->
 <script src="{% static 'js/blog.js' %}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-     const chatBubble = document.getElementById('chatBubble');
+    const chatBubble = document.getElementById('chatBubble');
     const chatOverlay = document.getElementById('chatOverlay');
     const chatClose = document.getElementById('chatClose');
     const chatInput = document.getElementById('chatInput');
@@ -203,7 +211,7 @@ Why Choose Us:
 ✨ One-stop solution for all property needs
 ✨ Strong network with trusted developers
 
-Want to know more about any specific service? Just ask! 😊`,
+Want to know more about any specific service? Just ask! 😊`,
 
         properties: `🏘️ **Our Property Portfolio**
 
@@ -234,7 +242,7 @@ Some of the Popular Locations in Ahmedabad:
 Want to search for specific properties? Try asking:
 • "2BHK in Bopal under 50 lakhs"
 • "Commercial office space in SG Highway"
-• "Villas in Shela"`
+• "Villas in Shela"`
     };
 
     // Handle quick option clicks
@@ -245,11 +253,6 @@ Want to search for specific properties? Try asking:
             
             // Add user message
             addMessage(optionText, 'user');
-            
-            // KEEP QUICK OPTIONS VISIBLE - Remove this line
-            // if (quickOptions) {
-            //     quickOptions.style.display = 'none';
-            // }
             
             // Show typing indicator
             showTyping();
@@ -267,8 +270,6 @@ Want to search for specific properties? Try asking:
         console.log('Chat bubble clicked');
         chatOverlay.classList.add('show');
         
-        // Quick options are always visible, no need to show/hide
-        
         setTimeout(() => {
             chatInput.focus();
         }, 300);
@@ -276,15 +277,11 @@ Want to search for specific properties? Try asking:
 
     chatClose.addEventListener('click', () => {
         chatOverlay.classList.remove('show');
-        
-        // Quick options remain visible, no reset needed
     });
 
     chatOverlay.addEventListener('click', function (e) {
         if (e.target === chatOverlay) {
             chatOverlay.classList.remove('show');
-            
-            // Quick options remain visible, no reset needed
         }
     });
 
@@ -297,60 +294,56 @@ Want to search for specific properties? Try asking:
     });
 
     function sendMessage() {
-    const message = chatInput.value.trim();
-    if (!message) return;
+        const message = chatInput.value.trim();
+        if (!message) return;
 
-    console.log('Sending message:', message);
-    addMessage(message, 'user');
-    chatInput.value = '';
-    
-    // Ensure quick options remain visible (no hiding)
-    // quickOptions.style.display = 'block'; // Uncomment if needed to ensure visibility
-    
-    chatSend.disabled = true;
-    chatInput.disabled = true;
-    chatBubble.classList.add('typing');
+        console.log('Sending message:', message);
+        addMessage(message, 'user');
+        chatInput.value = '';
+        
+        chatSend.disabled = true;
+        chatInput.disabled = true;
+        chatBubble.classList.add('typing');
 
-    showTyping();
+        showTyping();
 
-    setTimeout(() => {
-        fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
+        setTimeout(() => {
+            fetch(`/chatbot/get-response/?message=${encodeURIComponent(message)}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
             })
-            .then(data => {
-                hideTyping();
-                chatBubble.classList.remove('typing');
-                const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
-                addMessage(formattedResponse, 'bot');
-                chatSend.disabled = false;
-                chatInput.disabled = false;
-                chatInput.focus();
-            })
-            .catch(error => {
-                console.error('Chat error:', error);
-                hideTyping();
-                chatBubble.classList.remove('typing');
-                addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
-                chatSend.disabled = false;
-                chatInput.disabled = false;
-                chatInput.focus();
-            });
-    }, 1500);
-}
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    hideTyping();
+                    chatBubble.classList.remove('typing');
+                    const formattedResponse = formatBotResponse(data.response || 'Thanks for your message! How can I help you with your property needs?');
+                    addMessage(formattedResponse, 'bot');
+                    chatSend.disabled = false;
+                    chatInput.disabled = false;
+                    chatInput.focus();
+                })
+                .catch(error => {
+                    console.error('Chat error:', error);
+                    hideTyping();
+                    chatBubble.classList.remove('typing');
+                    addMessage("Thanks for your message! I'm here to help with all your property needs. What would you like to know?", 'bot');
+                    chatSend.disabled = false;
+                    chatInput.disabled = false;
+                    chatInput.focus();
+                });
+        }, 1500);
+    }
 
     function addMessage(text, sender) {
         const div = document.createElement('div');
         div.className = `message ${sender}`;
 
         if (sender === 'user') {
-            // Remove the "You" label by just showing the content
             div.innerHTML = `<div class="content">${escapeHtml(text)}</div>`;
         } else {
             const formattedText = text

@@ -282,11 +282,6 @@ function submitForm() {
             firmNameContainer.classList.remove('visible');
             accountTypeRow.classList.remove('two-columns');
 
-            // Optionally redirect after a delay
-            // setTimeout(() => {
-            //     window.location.href = '/login/';
-            // }, 3000);
-
         } else {
             // Show error notification
             let errorMessage = data.message || 'Registration failed. Please try again.';
@@ -397,3 +392,36 @@ document.addEventListener('mousemove', function (e) {
         particle.style.transform = `translate(${x}px, ${y}px)`;
     });
 });
+
+// ================================
+// GOOGLE SIGN-UP HANDLER (UPDATED)
+// ================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const googleSignupBtn = document.getElementById('google-signup-btn');
+    
+    if (googleSignupBtn) {
+        googleSignupBtn.addEventListener('click', handleGoogleSignup);
+    }
+});
+
+/**
+ * Handle Google Sign-Up button click
+ * Simply redirects to the django-allauth Google OAuth URL
+ * Django-allauth handles the entire OAuth flow automatically
+ */
+function handleGoogleSignup(e) {
+    e.preventDefault();
+    
+    const btn = e.currentTarget;
+    const btnText = btn.querySelector('.google-btn-text');
+    const originalText = btnText.textContent;
+    
+    // Show loading state
+    btn.classList.add('loading');
+    btnText.textContent = 'Redirecting to Google...';
+    
+    // Redirect to Google OAuth (handled by django-allauth)
+    // This URL is provided by django-allauth when you include 'allauth.urls'
+    window.location.href = '/accounts/google/login/';
+}

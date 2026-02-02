@@ -37,6 +37,7 @@ urlpatterns = [
     path('property/', include(('services.urls', 'property'), namespace='property')),
     path('blogs/', include(('blogs.urls', 'blogs'), namespace='blogs')),
     path('chatbot/', include('chatbot.urls')),
+    path('accounts/', include('allauth.urls')),
 
 ]
 

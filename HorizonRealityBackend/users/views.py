@@ -381,3 +381,109 @@ def get_user_data_json(request):
         'last_profile_update': user.last_profile_update.isoformat() if hasattr(user, 'last_profile_update') and user.last_profile_update else None,
     }
     return JsonResponse(data)
+
+
+# ================================
+# ADDED: Complete Profile View for Google OAuth Users
+# ================================
+
+@login_required
+def complete_profile(request):
+    """
+    Complete profile for Google login users.
+    This view collects additional information that Google doesn't provide:
+    - contact_number
+    - user_type (buyer/broker)
+    - firm_type and firm_name (for brokers)
+    - newsletter subscription preference
+    """
+    user = request.user
+    
+    # If profile already complete, redirect to home
+    if user.profile_complete:
+        messages.info(request, 'Your profile is already complete.')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        try:
+            # Get form data
+            contact_number = request.POST.get('contact_number', '').strip()
+            user_type = request.POST.get('user_type', '').strip()
+            newsletter_subscription = request.POST.get('newsletter_subscription') == 'on'
+            
+            # Validation
+            if not contact_number:
+                messages.error(request, 'Contact number is required.')
+                return render(request, 'users/complete_profile.html', {'user': user})
+            
+            if not user_type:
+                messages.error(request, 'Please select your account type.')
+                return render(request, 'users/complete_profile.html', {'user': user})
+            
+            # Update user fields
+            user.contact_number = contact_number
+            user.user_type = user_type
+            user.newsletter_subscribed = newsletter_subscription
+            
+            # Handle broker-specific fields
+            if user_type == 'broker':
+                firm_type = request.POST.get('firm_type', '').strip()
+                user.firm_type = firm_type
+                
+                if firm_type == 'firm':
+                    firm_name = request.POST.get('firm_name', '').strip()
+                    if not firm_name:
+                        messages.error(request, 'Firm name is required when firm type is "Firm".')
+                        return render(request, 'users/complete_profile.html', {'user': user})
+                    user.firm_name = firm_name
+            
+            # Mark profile as complete
+            user.profile_complete = True
+            user.save()
+            
+            # ================================
+            # ADDED: Send Welcome Email for Google OAuth Users
+            # ================================
+            try:
+                send_welcome_email_task.delay(user_id=user.pk)
+                print(f"Welcome email task queued for Google user: {user.email}")
+            except Exception as e:
+                print(f"ERROR queuing welcome email for Google user: {str(e)}")
+            
+            # Subscribe to newsletter if checked
+            if newsletter_subscription:
+                try:
+                    newsletter_obj, created = Newsletter.subscribe_email(
+                        email=user.email,
+                        name=f"{user.first_name} {user.last_name}".strip(),
+                        source='google_signup'
+                    )
+                    print(f"Newsletter subscription created for Google user: {user.email}")
+                    
+                    # ================================
+                    # ADDED: Send Newsletter Welcome Email
+                    # ================================
+                    try:
+                        send_newsletter_welcome_email_task.delay(
+                            user_email=user.email,
+                            user_name=f"{user.first_name} {user.last_name}".strip(),
+                            unsubscribe_token=str(newsletter_obj.unsubscribe_token)
+                        )
+                        print(f"Newsletter welcome email task queued for Google user: {user.email}")
+                    except Exception as e:
+                        print(f"ERROR queuing newsletter welcome email for Google user: {str(e)}")
+                        
+                except Exception as e:
+                    print(f"Error creating newsletter subscription: {str(e)}")
+            
+            messages.success(request, 'Profile completed successfully! Welcome to Horizon Reality.')
+            return redirect('home')
+            
+        except Exception as e:
+            messages.error(request, f'Error updating profile: {str(e)}')
+            print(f"Error in complete_profile view: {str(e)}")
+    
+    context = {
+        'user': user
+    }
+    return render(request, 'users/complete_profile.html', context)

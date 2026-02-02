@@ -99,6 +99,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         help_text="Timestamp of the last profile update"
     )
     
+    # ADDED: Field to track if Google user has completed their profile
+    profile_complete = models.BooleanField(
+        default=False,
+        help_text="Whether user has completed their profile (used for Google OAuth users)"
+    )
+    
     objects = CustomUserManager()
     
     USERNAME_FIELD = 'email'

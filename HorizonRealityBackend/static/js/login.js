@@ -1,6 +1,7 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     initializeLoginPage();
+    initializeGoogleSignIn();
 });
 
 function initializeLoginPage() {
@@ -21,6 +22,37 @@ function initializeLoginPage() {
     if (!modal) {
         console.error('Reset modal element not found in DOM');
     }
+}
+
+// ================================
+// ADDED: Google Sign-In Handler
+// ================================
+function initializeGoogleSignIn() {
+    const googleSigninBtn = document.getElementById('google-signin-btn');
+    
+    if (googleSigninBtn) {
+        googleSigninBtn.addEventListener('click', handleGoogleSignIn);
+    }
+}
+
+/**
+ * Handle Google Sign-In button click
+ * Redirects to django-allauth Google OAuth URL
+ */
+function handleGoogleSignIn(e) {
+    e.preventDefault();
+    
+    const btn = e.currentTarget;
+    const btnText = btn.querySelector('.google-btn-text');
+    const originalText = btnText.textContent;
+    
+    // Show loading state
+    btn.classList.add('loading');
+    btn.disabled = true;
+    btnText.textContent = 'Redirecting to Google...';
+    
+    // Redirect to Google OAuth (handled by django-allauth)
+    window.location.href = '/accounts/google/login/';
 }
 
 // Password toggle functionality
